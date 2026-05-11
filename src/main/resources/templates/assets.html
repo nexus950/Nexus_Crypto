@@ -84,9 +84,10 @@
     .sidebar-profile {
       display: flex; align-items: center; gap: 11px;
       padding: 10px 13px; border-radius: 13px; cursor: pointer;
-      transition: background .17s;
+      transition: background .17s; text-decoration: none; color: inherit;
     }
     .sidebar-profile:hover { background: var(--card-h); }
+    a.sidebar-profile { -webkit-tap-highlight-color: transparent; }
     .s-avatar {
       width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
       background: linear-gradient(135deg, var(--cyan), var(--blue));
@@ -348,17 +349,13 @@
     </a>
   </nav>
   <div class="sidebar-bottom">
-    <div class="sidebar-profile">
-      <div class="s-avatar">
-        <a href="/home/profile" class="avatar-btn" th:text="${user.fullName.substring(0,1)}">
-        A
-      </a>
-      </div>
+    <a href="/home/profile" class="sidebar-profile" th:attr="aria-label=${'Open profile' + (user.fullName != null ? ' for ' + user.fullName : '')}">
+      <div class="s-avatar" th:text="${user.fullName != null and !#strings.isEmpty(user.fullName) ? #strings.substring(user.fullName, 0, 1) : '?'}">A</div>
       <div>
-        <div class="s-name" th:text="${user.fullName}">Alex Johnson</div>
+        <div class="s-name" th:text="${user.fullName != null ? user.fullName : 'Account'}">Alex Johnson</div>
         <div class="s-role" th:text="${user.vipLevel != null ? user.vipLevel : 'Pro Account'}">Pro Account</div>
       </div>
-    </div>
+    </a>
   </div>
 </aside>
 
@@ -368,7 +365,7 @@
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
     Nexus Crypto
   </div>
-  <div class="header-greeting" th:text="'Good morning, ' + ${user.fullName} + ' 👋'">Assets overview</div>
+  <div class="header-greeting" th:text="'Good morning, ' + ${user.fullName != null ? user.fullName : 'Trader'} + ' 👋'">Assets overview</div>
   <div style="flex:1;display:flex;justify-content:center;">
     <div class="header-search">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -379,10 +376,10 @@
     <span class="live-badge" id="liveBadge" title="Live updating" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; padding:6px 10px; border-radius:10px; background:rgba(34,211,238,.1); color:var(--cyan); border:1px solid rgba(34,211,238,.2); margin-right:8px;">
       <span class="live-dot" style="width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);"></span> LIVE
     </span>
-    <button class="icon-btn notif-dot">
+    <button type="button" class="icon-btn notif-dot" aria-label="Notifications (demo)">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </button>
-    <a href="/home/profile" class="avatar-btn" th:text="${user.fullName.substring(0,1)}">A</a>
+    <a href="/home/profile" class="avatar-btn" th:text="${user.fullName != null and !#strings.isEmpty(user.fullName) ? #strings.substring(user.fullName, 0, 1) : '?'}" th:attr="aria-label=${'Account' + (user.fullName != null ? ': ' + user.fullName : '')}">A</a>
   </div>
 </header>
 
@@ -462,12 +459,22 @@
       { name:"XRP", sym:"XRP", price:0.62, change:+1.20, icon:"https://cryptologos.cc/logos/xrp-xrp-logo.png", color:"#23292f" },
       { name:"Cardano", sym:"ADA", price:0.452, change:+0.85, icon:"https://cryptologos.cc/logos/cardano-ada-logo.png", color:"#0033ad" },
       { name:"Avalanche", sym:"AVAX", price:35.21, change:-2.10, icon:"https://cryptologos.cc/logos/avalanche-avax-logo.png", color:"#e84142" },
-      { name:"Dogecoin", sym:"DOGE", price:0.165, change:+12.45, icon:"https://cryptologos.cc/logos/dogecoin-doge-logo.png", color:"#c2a633" }
+      { name:"Dogecoin", sym:"DOGE", price:0.165, change:+12.45, icon:"https://cryptologos.cc/logos/dogecoin-doge-logo.png", color:"#c2a633" },
+      { name:"Tether", sym:"USDT", price:1.0, change:0, icon:"https://cryptologos.cc/logos/tether-usdt-logo.png", color:"#26a17b" }
     ];
 
+    function parseWalletBal(v) {
+      if (v == null || v === '') return 0;
+      const n = parseFloat(String(v).replace(/,/g, ''));
+      return Number.isFinite(n) ? n : 0;
+    }
+
     const DASH_WALLETS = /*[[${dashboard != null ? dashboard.wallets : null}]]*/ null;
-    const WALLETS = DASH_WALLETS && DASH_WALLETS.length > 0 
-      ? DASH_WALLETS.map(w => ({ sym: w.coinSymbol, bal: w.balance })) 
+    const WALLETS = DASH_WALLETS && DASH_WALLETS.length > 0
+      ? DASH_WALLETS.map(w => ({
+          sym: String(w.coinSymbol || '').trim().toUpperCase(),
+          bal: parseWalletBal(w.balance)
+        }))
       : [];
 
     // ----- HELPERS -----
@@ -617,7 +624,7 @@
     if (sortSelect) sortSelect.addEventListener('change', filterAndSort);
 
     // ----- LIVE POLLING -----
-    const CG_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano,avalanche-2,dogecoin&order=market_cap_desc&per_page=8&page=1&price_change_percentage=24h';
+    const CG_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano,avalanche-2,dogecoin,tether&order=market_cap_desc&per_page=12&page=1&price_change_percentage=24h';
 
     async function fetchLivePrices() {
       try {
@@ -643,7 +650,7 @@
 
     // Backend sync for wallet balances
     function refreshAssets() {
-      fetch('/api/dashboard', { headers: { 'Accept': 'application/json' } })
+      fetch('/api/dashboard', { headers: { 'Accept': 'application/json' }, credentials: 'include' })
         .then(res => {
           if (res.status === 401 || res.status === 403) {
             window.location.href = '/home/signin';
@@ -658,7 +665,10 @@
           }
           if (json && json.success && json.data && json.data.wallets) {
             WALLETS.length = 0;
-            json.data.wallets.forEach(w => WALLETS.push({ sym: w.coinSymbol, bal: parseFloat(w.balance) }));
+            json.data.wallets.forEach(w => WALLETS.push({
+              sym: String(w.coinSymbol || '').trim().toUpperCase(),
+              bal: parseWalletBal(w.balance)
+            }));
             filterAndSort();
           }
         })
@@ -668,6 +678,10 @@
     fetchLivePrices();
     setInterval(fetchLivePrices, 30000);
     setInterval(refreshAssets, 30000);
+    refreshAssets();
+    window.addEventListener('pageshow', function(ev) {
+      if (ev.persisted) refreshAssets();
+    });
 
     // Responsive layout adjustment for sidebar (no extra action needed, CSS handles)
     window.addEventListener('resize', () => {

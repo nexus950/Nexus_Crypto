@@ -34,34 +34,48 @@ public class TradeServiceImpl implements TradeService {
             throw new BadRequestException("Invalid trading pair. Format: BASE/QUOTE (e.g. BTC/USDT)");
         }
 
-        String[] parts     = request.getPair().split("/");
-        String baseCoin    = parts[0];   // e.g. BTC
-        String quoteCoin   = parts[1];   // e.g. USDT
+        String[] parts   = request.getPair().trim().split("/");
+        String baseCoin  = parts[0].trim().toUpperCase();
+        String quoteCoin = parts[1].trim().toUpperCase();
+
+        if (baseCoin.isEmpty() || quoteCoin.isEmpty()) {
+            throw new BadRequestException("Invalid trading pair");
+        }
+
+        if (request.getAmount() == null || request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BadRequestException("Amount must be greater than zero");
+        }
+        if (request.getSide() == null || request.getOrderType() == null) {
+            throw new BadRequestException("Side and order type are required");
+        }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        if (request.getOrderType() == OrderType.LIMIT && request.getPrice() == null) {
-            throw new BadRequestException("Price is required for LIMIT orders");
+        if (request.getOrderType() == OrderType.LIMIT) {
+            if (request.getPrice() == null || request.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new BadRequestException("Price is required for LIMIT orders");
+            }
+        } else if (request.getOrderType() == OrderType.MARKET) {
+            if (request.getPrice() == null || request.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new BadRequestException("Reference price is required for MARKET orders (instant settlement)");
+            }
         }
+
+        BigDecimal executionPrice = request.getPrice();
+        BigDecimal quoteNotional = request.getAmount().multiply(executionPrice);
 
         // Deduct balance from the spending wallet
         if (request.getSide() == OrderSide.BUY) {
-            // Buyer spends quote coin (USDT)
-            BigDecimal cost = request.getOrderType() == OrderType.MARKET
-                    ? request.getAmount().multiply(BigDecimal.valueOf(1)) // market uses actual price — simplified
-                    : request.getAmount().multiply(request.getPrice());
-
             Wallet quoteWallet = walletRepository.findByUserIdAndCoinSymbol(userId, quoteCoin)
                     .orElseThrow(() -> new InsufficientBalanceException("No " + quoteCoin + " wallet found"));
 
-            if (quoteWallet.getBalance().compareTo(cost) < 0) {
+            if (quoteWallet.getBalance().compareTo(quoteNotional) < 0) {
                 throw new InsufficientBalanceException("Insufficient " + quoteCoin + " balance");
             }
-            quoteWallet.setBalance(quoteWallet.getBalance().subtract(cost));
+            quoteWallet.setBalance(quoteWallet.getBalance().subtract(quoteNotional));
             walletRepository.save(quoteWallet);
 
-            // Credit base coin
             Wallet baseWallet = walletRepository.findByUserIdAndCoinSymbol(userId, baseCoin)
                     .orElseGet(() -> {
                         Wallet w = Wallet.builder().user(user).coinSymbol(baseCoin).build();
@@ -71,7 +85,6 @@ public class TradeServiceImpl implements TradeService {
             walletRepository.save(baseWallet);
 
         } else {
-            // Seller spends base coin
             Wallet baseWallet = walletRepository.findByUserIdAndCoinSymbol(userId, baseCoin)
                     .orElseThrow(() -> new InsufficientBalanceException("No " + baseCoin + " wallet found"));
 
@@ -81,28 +94,27 @@ public class TradeServiceImpl implements TradeService {
             baseWallet.setBalance(baseWallet.getBalance().subtract(request.getAmount()));
             walletRepository.save(baseWallet);
 
-            // Credit quote coin
-            BigDecimal proceeds = request.getOrderType() == OrderType.MARKET
-                    ? request.getAmount()
-                    : request.getAmount().multiply(request.getPrice());
-
             Wallet quoteWallet = walletRepository.findByUserIdAndCoinSymbol(userId, quoteCoin)
                     .orElseGet(() -> {
                         Wallet w = Wallet.builder().user(user).coinSymbol(quoteCoin).build();
                         return walletRepository.save(w);
                     });
-            quoteWallet.setBalance(quoteWallet.getBalance().add(proceeds));
+            quoteWallet.setBalance(quoteWallet.getBalance().add(quoteNotional));
             walletRepository.save(quoteWallet);
         }
 
+        walletRepository.flush();
+
+        BigDecimal storedLimitPrice = request.getOrderType() == OrderType.LIMIT ? request.getPrice() : null;
+
         TradeOrder order = TradeOrder.builder()
                 .user(user)
-                .pair(request.getPair())
+                .pair(baseCoin + "/" + quoteCoin)
                 .side(request.getSide())
                 .orderType(request.getOrderType())
                 .amount(request.getAmount())
-                .price(request.getPrice())
-                .executedPrice(request.getOrderType() == OrderType.MARKET ? request.getAmount() : request.getPrice())
+                .price(storedLimitPrice)
+                .executedPrice(executionPrice)
                 .status(OrderStatus.FILLED)
                 .executedAt(LocalDateTime.now())
                 .build();

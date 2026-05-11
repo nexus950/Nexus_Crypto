@@ -2,6 +2,8 @@ package com.crypto.crypto_wallet.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,6 +49,14 @@ public class User {
 
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    /** Tracks how much has been withdrawn today for limit enforcement */
+    @Builder.Default
+    @Column(nullable = false, precision = 30, scale = 10)
+    private BigDecimal dailyWithdrawalUsed = BigDecimal.ZERO;
+
+    /** Date when dailyWithdrawalUsed was last reset */
+    private LocalDate withdrawalLimitResetDate;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Wallet> wallets;

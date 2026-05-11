@@ -24,8 +24,7 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public List<WalletResponse> getUserWallets(Long userId) {
-        return walletRepository.findByUserId(userId)
-                .stream()
+        return walletRepository.findByUserId(userId).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
@@ -33,15 +32,16 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public WalletResponse getOrCreateWallet(Long userId, String coinSymbol) {
-        return walletRepository.findByUserIdAndCoinSymbol(userId, coinSymbol)
+        String sym = coinSymbol == null ? "" : coinSymbol.trim().toUpperCase();
+        return walletRepository.findByUserIdAndCoinSymbol(userId, sym)
                 .map(this::toResponse)
                 .orElseGet(() -> {
                     User user = userRepository.findById(userId)
                             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                     Wallet wallet = Wallet.builder()
                             .user(user)
-                            .coinSymbol(coinSymbol.toUpperCase())
-                            .depositAddress(generateDepositAddress(coinSymbol))
+                            .coinSymbol(sym)
+                            .depositAddress(generateDepositAddress(sym))
                             .build();
                     walletRepository.save(wallet);
                     return toResponse(wallet);

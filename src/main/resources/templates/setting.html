@@ -712,176 +712,85 @@
 
         <!-- KYC Verification Tab -->
         <div class="tab-content" id="tab-kyc">
-          <!-- KYC Overview Stats -->
-          <div class="kyc-overview">
-            <div class="kyc-stat-card">
-              <div class="kyc-stat-icon" style="background:rgba(34,211,238,.1);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              </div>
-              <div class="kyc-stat-label">Verification Level</div>
-              <div class="kyc-stat-value" style="color:var(--cyan);">Level 2</div>
-            </div>
-            <div class="kyc-stat-card">
-              <div class="kyc-stat-icon" style="background:rgba(52,211,153,.1);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-              </div>
-              <div class="kyc-stat-label">Completed Steps</div>
-              <div class="kyc-stat-value" style="color:var(--emerald);">3/4</div>
-            </div>
-            <div class="kyc-stat-card">
-              <div class="kyc-stat-icon" style="background:rgba(167,139,250,.1);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </div>
-              <div class="kyc-stat-label">Daily Limit</div>
-              <div class="kyc-stat-value" style="color:var(--purple);">$50,000</div>
-            </div>
-            <div class="kyc-stat-card">
-              <div class="kyc-stat-icon" style="background:rgba(251,191,36,.1);">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-              </div>
-              <div class="kyc-stat-label">Monthly Limit</div>
-              <div class="kyc-stat-value" style="color:var(--yellow);">$500,000</div>
-            </div>
+          <div id="kycStatusContainer">
+            <!-- Rendered by JS -->
+            <div style="text-align:center; padding:40px; color:var(--muted);">Loading KYC status...</div>
           </div>
-
-          <!-- Current Level Card -->
-          <div class="kyc-level-card">
-            <div class="kyc-level-header">
-              <div>
-                <div class="kyc-level-title">Verification Progress</div>
-                <div style="font-size:13px;color:var(--muted);margin-top:4px;">Complete all steps to unlock full trading limits</div>
-              </div>
-              <span class="kyc-level-badge badge-verified">Level 2</span>
-            </div>
-            <div class="kyc-progress-wrap">
-              <div class="kyc-progress-bar">
-                <div class="kyc-progress-fill" style="width:75%;"></div>
-              </div>
-              <div class="kyc-progress-text">
-                <span>Level 1</span>
-                <span>Level 2</span>
-                <span>Level 3</span>
-                <span>Level 4</span>
-              </div>
-            </div>
-            <div class="kyc-requirements">
-              <div class="kyc-req-item">
-                <div class="kyc-req-icon" style="background:rgba(52,211,153,.1);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          
+          <!-- Submit KYC Form (shown when UNVERIFIED or REJECTED) -->
+          <div class="settings-card" id="kycFormCard" style="display:none; margin-top:20px;">
+            <div class="card-title">Submit Identity Verification</div>
+            <form id="kycForm" onsubmit="submitKyc(event)">
+              <div class="settings-grid">
+                <div class="input-group">
+                  <div class="input-label">First Name</div>
+                  <div class="input-field"><input type="text" id="kycFname" required></div>
                 </div>
-                <div class="kyc-req-info">
-                  <div class="kyc-req-title">Email Verification</div>
-                  <div class="kyc-req-status" style="color:var(--emerald);">✓ Completed</div>
+                <div class="input-group">
+                  <div class="input-label">Last Name</div>
+                  <div class="input-field"><input type="text" id="kycLname" required></div>
+                </div>
+                <div class="input-group">
+                  <div class="input-label">Date of Birth</div>
+                  <div class="input-field"><input type="date" id="kycDob" required></div>
+                </div>
+                <div class="input-group">
+                  <div class="input-label">Country</div>
+                  <div class="input-field"><input type="text" id="kycCountry" required></div>
                 </div>
               </div>
-              <div class="kyc-req-item">
-                <div class="kyc-req-icon" style="background:rgba(52,211,153,.1);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                </div>
-                <div class="kyc-req-info">
-                  <div class="kyc-req-title">Identity Verification</div>
-                  <div class="kyc-req-status" style="color:var(--emerald);">✓ Verified</div>
-                </div>
+              <div class="input-group">
+                <div class="input-label">Full Address</div>
+                <div class="input-field"><input type="text" id="kycAddress" required></div>
               </div>
-              <div class="kyc-req-item">
-                <div class="kyc-req-icon" style="background:rgba(52,211,153,.1);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              
+              <div class="settings-grid" style="margin-top:16px;">
+                <div class="input-group">
+                  <div class="input-label">Document Type</div>
+                  <div class="input-field">
+                    <select id="kycDocType" required>
+                      <option value="PASSPORT">Passport</option>
+                      <option value="DRIVERS_LICENSE">Driver's License</option>
+                      <option value="ID_CARD">National ID</option>
+                    </select>
+                  </div>
                 </div>
-                <div class="kyc-req-info">
-                  <div class="kyc-req-title">Address Verification</div>
-                  <div class="kyc-req-status" style="color:var(--emerald);">✓ Verified</div>
-                </div>
-              </div>
-              <div class="kyc-req-item">
-                <div class="kyc-req-icon" style="background:rgba(251,191,36,.1);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                </div>
-                <div class="kyc-req-info">
-                  <div class="kyc-req-title">Enhanced Due Diligence</div>
-                  <div class="kyc-req-status" style="color:var(--yellow);">⏳ Pending Review</div>
+                <div class="input-group">
+                  <div class="input-label">Document Number</div>
+                  <div class="input-field"><input type="text" id="kycDocNumber" required></div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <!-- Upload Documents Section -->
-          <div class="settings-card">
-            <div class="card-title">Upload Documents <span style="font-size:12px;color:var(--muted);font-weight:400;">for Enhanced Due Diligence</span></div>
-            
-            <div class="input-group">
-              <div class="input-label">Document Type</div>
-              <div class="input-field">
-                <select id="docTypeSelect">
-                  <option value="">Select document type...</option>
-                  <option value="passport">Passport</option>
-                  <option value="drivers_license">Driver's License</option>
-                  <option value="national_id">National ID Card</option>
-                  <option value="bank_statement">Bank Statement (Proof of Funds)</option>
-                  <option value="tax_return">Tax Return</option>
-                  <option value="utility_bill">Utility Bill</option>
-                </select>
+              
+              <div style="margin-top:24px; font-weight:700; font-size:14px; margin-bottom:12px;">Document Upload</div>
+              <div class="settings-grid">
+                <div class="input-group">
+                  <div class="input-label">Document Front</div>
+                  <div class="file-upload-zone" onclick="document.getElementById('kycFrontImg').click()">
+                    <div class="upload-text" id="kycFrontText" style="font-size:12px;">Click to select</div>
+                    <input type="file" id="kycFrontImg" style="display:none;" accept="image/*" required onchange="updateKycFileName(this, 'kycFrontText')">
+                  </div>
+                </div>
+                <div class="input-group">
+                  <div class="input-label">Document Back</div>
+                  <div class="file-upload-zone" onclick="document.getElementById('kycBackImg').click()">
+                    <div class="upload-text" id="kycBackText" style="font-size:12px;">Click to select</div>
+                    <input type="file" id="kycBackImg" style="display:none;" accept="image/*" required onchange="updateKycFileName(this, 'kycBackText')">
+                  </div>
+                </div>
+                <div class="input-group">
+                  <div class="input-label">Selfie with Document</div>
+                  <div class="file-upload-zone" onclick="document.getElementById('kycSelfieImg').click()">
+                    <div class="upload-text" id="kycSelfieText" style="font-size:12px;">Click to select</div>
+                    <input type="file" id="kycSelfieImg" style="display:none;" accept="image/*" required onchange="updateKycFileName(this, 'kycSelfieText')">
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div class="input-group">
-              <div class="input-label">Document Number (Optional)</div>
-              <div class="input-field">
-                <input type="text" placeholder="Enter document number" id="docNumberInput">
-              </div>
-            </div>
-
-            <div class="file-upload-zone" id="fileUploadZone" onclick="document.getElementById('fileInput').click()">
-              <div class="upload-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              </div>
-              <div class="upload-text">Click to upload or drag and drop</div>
-              <div class="upload-hint" id="uploadHint">Supported: JPG, PNG, PDF (Max 10MB)</div>
-              <input type="file" id="fileInput" style="display:none;" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFileSelect(event)">
-            </div>
-
-            <div style="margin-top:16px;">
-              <button class="btn btn-primary btn-full" onclick="submitDocument()">
+              
+              <button type="submit" class="btn btn-primary btn-full" id="submitKycBtn" style="margin-top:20px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                Upload Document
+                Submit KYC Application
               </button>
-            </div>
-          </div>
-
-          <!-- Uploaded Documents History -->
-          <div class="settings-card" style="margin-top:20px;">
-            <div class="card-title">Uploaded Documents</div>
-            <div class="documents-list" id="documentsList">
-              <div class="document-item">
-                <div class="doc-icon" style="background:rgba(34,211,238,.1);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
-                <div class="doc-info">
-                  <div class="doc-name">Passport.pdf</div>
-                  <div class="doc-meta">Uploaded Jan 15, 2024 • 2.4 MB</div>
-                </div>
-                <span class="doc-status status-active">Verified</span>
-              </div>
-              <div class="document-item">
-                <div class="doc-icon" style="background:rgba(167,139,250,.1);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
-                <div class="doc-info">
-                  <div class="doc-name">Utility_Bill.jpg</div>
-                  <div class="doc-meta">Uploaded Feb 3, 2024 • 1.8 MB</div>
-                </div>
-                <span class="doc-status status-active">Verified</span>
-              </div>
-              <div class="document-item">
-                <div class="doc-icon" style="background:rgba(251,191,36,.1);">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
-                <div class="doc-info">
-                  <div class="doc-name">Bank_Statement_2024.pdf</div>
-                  <div class="doc-meta">Uploaded Mar 20, 2024 • 3.1 MB</div>
-                </div>
-                <span class="doc-status" style="background:rgba(251,191,36,.12);color:var(--yellow);">Pending</span>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
 
@@ -1071,84 +980,137 @@
     }, 2000);
   }
 
-  // KYC Document Upload
-  let selectedFile = null;
-
-  function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (file) {
-      selectedFile = file;
-      const zone = document.getElementById('fileUploadZone');
-      const hint = document.getElementById('uploadHint');
-      zone.classList.add('has-file');
-      hint.textContent = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
-    }
+  // KYC Verification Logic
+  function loadKycStatus() {
+    fetch('/api/kyc/status', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          renderKycStatus(data.data);
+        } else {
+          renderKycStatus(null);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load KYC status', err);
+        document.getElementById('kycStatusContainer').innerHTML = '<div style="padding:20px; color:var(--red);">Failed to load status</div>';
+      });
   }
 
-  function submitDocument() {
-    const docType = document.getElementById('docTypeSelect').value;
-    const docNumber = document.getElementById('docNumberInput').value;
+  function renderKycStatus(kyc) {
+    const container = document.getElementById('kycStatusContainer');
+    const formCard = document.getElementById('kycFormCard');
     
-    if (!docType) {
-      showToast('Please select a document type');
-      return;
-    }
-    if (!selectedFile) {
-      showToast('Please select a file to upload');
-      return;
-    }
-    
-    // Simulate upload
-    showToast('Uploading document...');
-    
-    setTimeout(() => {
-      // Add to documents list
-      const docList = document.getElementById('documentsList');
-      const newDoc = document.createElement('div');
-      newDoc.className = 'document-item';
-      newDoc.innerHTML = `
-        <div class="doc-icon" style="background:rgba(251,191,36,.1);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    if (!kyc || kyc.status === 'UNVERIFIED' || kyc.status === 'REJECTED') {
+      let html = `<div class="danger-zone" style="margin-bottom:20px; background:rgba(251,191,36,.05); border-color:rgba(251,191,36,.2);">
+        <div class="danger-title" style="color:var(--yellow);">Identity Unverified</div>
+        <div class="danger-desc" style="color:var(--muted);">You need to complete identity verification to unlock trading and withdrawals.</div>`;
+      if (kyc && kyc.status === 'REJECTED') {
+        html = `<div class="danger-zone" style="margin-bottom:20px;">
+          <div class="danger-title">Verification Rejected</div>
+          <div class="danger-desc">Reason: ${kyc.rejectionReason || 'Unknown'}</div>`;
+      }
+      html += `</div>`;
+      container.innerHTML = html;
+      formCard.style.display = 'block';
+    } else {
+      formCard.style.display = 'none';
+      const isVerified = kyc.status === 'VERIFIED';
+      const color = isVerified ? 'var(--emerald)' : 'var(--cyan)';
+      const bg = isVerified ? 'rgba(52,211,153,.1)' : 'rgba(34,211,238,.1)';
+      const icon = isVerified ? '<polyline points="20 6 9 17 4 12"/>' : '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>';
+      const title = isVerified ? 'Identity Verified' : 'Verification Pending';
+      const desc = isVerified ? 'Your account is fully verified. All features are unlocked.' : 'Your documents are being reviewed. This usually takes 24 hours.';
+      
+      container.innerHTML = `
+        <div class="kyc-level-card">
+          <div class="kyc-level-header">
+            <div>
+              <div class="kyc-level-title">${title}</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:4px;">${desc}</div>
+            </div>
+            <span class="kyc-level-badge" style="background:${bg}; color:${color};">${kyc.status}</span>
+          </div>
+          <div class="setting-row" style="margin-top:16px;">
+            <div>
+              <div class="setting-label">Name</div>
+              <div class="setting-desc">${kyc.firstName} ${kyc.lastName}</div>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Document</div>
+              <div class="setting-desc">${kyc.documentType}</div>
+            </div>
+          </div>
         </div>
-        <div class="doc-info">
-          <div class="doc-name">${selectedFile.name}</div>
-          <div class="doc-meta">Uploaded just now • ${(selectedFile.size / 1024 / 1024).toFixed(1)} MB</div>
-        </div>
-        <span class="doc-status" style="background:rgba(251,191,36,.12);color:var(--yellow);">Pending</span>
       `;
-      docList.insertBefore(newDoc, docList.firstChild);
-      
-      // Reset form
-      document.getElementById('docTypeSelect').value = '';
-      document.getElementById('docNumberInput').value = '';
-      document.getElementById('fileInput').value = '';
-      selectedFile = null;
-      const zone = document.getElementById('fileUploadZone');
-      zone.classList.remove('has-file');
-      document.getElementById('uploadHint').textContent = 'Supported: JPG, PNG, PDF (Max 10MB)';
-      
-      showToast('Document uploaded successfully! Pending verification.');
-    }, 1500);
+    }
   }
 
-  // Drag and drop support
-  const uploadZone = document.getElementById('fileUploadZone');
-  uploadZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadZone.style.borderColor = 'rgba(34,211,238,.5)';
-  });
-  uploadZone.addEventListener('dragleave', () => {
-    uploadZone.style.borderColor = '';
-  });
-  uploadZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadZone.style.borderColor = '';
-    const file = e.dataTransfer.files[0];
+  function updateKycFileName(input, textId) {
+    const file = input.files[0];
+    const el = document.getElementById(textId);
     if (file) {
-      document.getElementById('fileInput').files = e.dataTransfer.files;
-      handleFileSelect({ target: { files: [file] } });
+      el.textContent = file.name;
+      el.style.color = 'var(--emerald)';
+      el.parentElement.style.borderColor = 'var(--emerald)';
+    } else {
+      el.textContent = 'Click to select';
+      el.style.color = '';
+      el.parentElement.style.borderColor = '';
     }
-  });
+  }
+
+  function submitKyc(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitKycBtn');
+    
+    const formData = new FormData();
+    formData.append('firstName', document.getElementById('kycFname').value);
+    formData.append('lastName', document.getElementById('kycLname').value);
+    formData.append('dateOfBirth', document.getElementById('kycDob').value);
+    formData.append('country', document.getElementById('kycCountry').value);
+    formData.append('address', document.getElementById('kycAddress').value);
+    formData.append('documentType', document.getElementById('kycDocType').value);
+    formData.append('documentNumber', document.getElementById('kycDocNumber').value);
+    
+    const front = document.getElementById('kycFrontImg').files[0];
+    const back = document.getElementById('kycBackImg').files[0];
+    const selfie = document.getElementById('kycSelfieImg').files[0];
+    
+    if (front) formData.append('frontImage', front);
+    if (back) formData.append('backImage', back);
+    if (selfie) formData.append('selfieImage', selfie);
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    fetch('/api/kyc', {
+      method: 'POST',
+      body: formData,
+      credentials: 'include'
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showToast('KYC Submitted Successfully!');
+        loadKycStatus();
+      } else {
+        showToast(data.message || 'Submission failed');
+        btn.disabled = false;
+        btn.textContent = 'Submit KYC Application';
+      }
+    })
+    .catch(err => {
+      showToast('Error connecting to server');
+      btn.disabled = false;
+      btn.textContent = 'Submit KYC Application';
+    });
+  }
+
+  // Load KYC on page start
+  loadKycStatus();
 
   // API Key Functions
   function generateApiKey() {

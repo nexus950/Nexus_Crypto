@@ -706,74 +706,107 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+
 <script>
 (function() {
 
-  const REFERRALS = [
-    { name: "Sarah K.",   initials: "SK", color: "#627eea", joined: "Apr 28, 2025", volume: "$18,420",  earned: "$46.05",  status: "active" },
-    { name: "Marcus T.",  initials: "MT", color: "#9945ff", joined: "Apr 22, 2025", volume: "$32,110",  earned: "$80.28",  status: "active" },
-    { name: "Priya M.",   initials: "PM", color: "#34d399", joined: "Apr 10, 2025", volume: "$9,850",   earned: "$24.63",  status: "active" },
-    { name: "James L.",   initials: "JL", color: "#f7931a", joined: "Mar 30, 2025", volume: "$5,200",   earned: "$13.00",  status: "pending" },
-    { name: "Elena V.",   initials: "EV", color: "#f87171", joined: "Mar 18, 2025", volume: "$41,700",  earned: "$104.25", status: "active" },
-    { name: "Chen W.",    initials: "CW", color: "#fbbf24", joined: "Mar 5, 2025",  volume: "$0",       earned: "$0.00",   status: "inactive" },
-    { name: "Omar H.",    initials: "OH", color: "#22d3ee", joined: "Feb 20, 2025", volume: "$27,900",  earned: "$69.75",  status: "active" },
-    { name: "Aisha R.",   initials: "AR", color: "#a78bfa", joined: "Feb 14, 2025", volume: "$14,350",  earned: "$35.88",  status: "active" },
-  ];
-
   const MONTHLY = [
-    { month: "Oct", val: 68 }, { month: "Nov", val: 95 }, { month: "Dec", val: 82 },
-    { month: "Jan", val: 110 }, { month: "Feb", val: 140 }, { month: "Mar", val: 175 },
-    { month: "Apr", val: 210 }, { month: "May", val: 248 },
+    { month: "Oct", val: 40 }, { month: "Nov", val: 65 }, { month: "Dec", val: 55 },
+    { month: "Jan", val: 80 }, { month: "Feb", val: 95 }, { month: "Mar", val: 120 },
+    { month: "Apr", val: 148 }, { month: "May", val: 0 },
   ];
 
-  function renderTable() {
+  const COLORS = ['#627eea','#9945ff','#34d399','#f7931a','#f87171','#fbbf24','#22d3ee','#a78bfa'];
+
+  function renderReferredUsers(users, rewardAmount, rewardCoin) {
     const tbody = document.getElementById('refTableBody');
     const mobile = document.getElementById('refMobile');
 
+    if (!users || users.length === 0) {
+      const empty = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px;">No referrals yet — share your code!</td></tr>`;
+      if (tbody) tbody.innerHTML = empty;
+      if (mobile) mobile.innerHTML = `<div style="text-align:center;color:var(--muted);padding:32px 16px;">No referrals yet — share your code!</div>`;
+      return;
+    }
+
+    const rewardLabel = rewardAmount > 0 ? `${rewardAmount} ${rewardCoin}` : '—';
+
     if (tbody) {
-      tbody.innerHTML = REFERRALS.map(r => {
-        const pillClass = r.status === 'active' ? 'pill-active' : r.status === 'pending' ? 'pill-pending' : 'pill-inactive';
-        const pillLabel = r.status.charAt(0).toUpperCase() + r.status.slice(1);
+      tbody.innerHTML = users.map((u, i) => {
+        const initials = (u.fullName || u.email || '?').substring(0, 2).toUpperCase();
+        const color = COLORS[i % COLORS.length];
+        const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'}) : '—';
+        const kycStatus = u.kycStatus || 'PENDING';
+        const pillClass = kycStatus === 'VERIFIED' ? 'pill-active' : kycStatus === 'SUBMITTED' ? 'pill-pending' : 'pill-inactive';
         return `<tr>
           <td>
             <div class="user-cell">
-              <div class="user-avatar" style="background:${r.color}30;color:${r.color}">${r.initials}</div>
-              <div style="font-weight:700">${r.name}</div>
+              <div class="user-avatar" style="background:${color}30;color:${color}">${initials}</div>
+              <div>
+                <div style="font-weight:700">${u.fullName || 'Unknown'}</div>
+                <div style="font-size:11px;color:var(--muted)">${u.email}</div>
+              </div>
             </div>
           </td>
-          <td class="text-small">${r.joined}</td>
-          <td style="font-weight:700">${r.volume}</td>
-          <td class="positive" style="font-weight:700">${r.earned}</td>
-          <td><span class="status-pill ${pillClass}">${pillLabel}</span></td>
+          <td class="text-small">${joined}</td>
+          <td style="font-weight:700;color:var(--emerald)">${rewardLabel}</td>
+          <td><span class="status-pill ${pillClass}">${kycStatus}</span></td>
+          <td style="font-size:11px;color:var(--muted)">${u.referralCode || '—'}</td>
         </tr>`;
       }).join('');
     }
 
     if (mobile) {
-      mobile.innerHTML = REFERRALS.map(r => {
-        const pillClass = r.status === 'active' ? 'pill-active' : r.status === 'pending' ? 'pill-pending' : 'pill-inactive';
-        const pillLabel = r.status.charAt(0).toUpperCase() + r.status.slice(1);
+      mobile.innerHTML = users.map((u, i) => {
+        const initials = (u.fullName || u.email || '?').substring(0, 2).toUpperCase();
+        const color = COLORS[i % COLORS.length];
+        const joined = u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—';
+        const kycStatus = u.kycStatus || 'PENDING';
+        const pillClass = kycStatus === 'VERIFIED' ? 'pill-active' : kycStatus === 'SUBMITTED' ? 'pill-pending' : 'pill-inactive';
         return `<div class="ref-mobile-row">
           <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:40px;height:40px;border-radius:50%;background:${r.color}30;color:${r.color};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">${r.initials}</div>
+            <div style="width:40px;height:40px;border-radius:50%;background:${color}30;color:${color};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">${initials}</div>
             <div>
-              <div style="font-weight:700;font-size:14px">${r.name}</div>
-              <div class="text-small">${r.joined}</div>
+              <div style="font-weight:700;font-size:14px">${u.fullName || 'Unknown'}</div>
+              <div class="text-small">${joined}</div>
             </div>
           </div>
           <div style="text-align:right">
-            <div style="font-weight:700;font-size:14px" class="positive">${r.earned}</div>
-            <span class="status-pill ${pillClass}" style="display:inline-block;margin-top:4px">${pillLabel}</span>
+            <div style="font-weight:700;font-size:14px;color:var(--emerald)">${rewardLabel}</div>
+            <span class="status-pill ${pillClass}" style="display:inline-block;margin-top:4px">${kycStatus}</span>
           </div>
         </div>`;
       }).join('');
     }
   }
 
+  function updateHeader(data, settings) {
+    // Referral code
+    if (data.referralCode) {
+      const el = document.getElementById('refCode');
+      if (el) el.textContent = data.referralCode;
+    }
+    // Stats
+    const totalEl = document.querySelector('.stats-grid .stat-card:nth-child(1) .stat-value');
+    if (totalEl) totalEl.textContent = data.totalReferrals || 0;
+
+    // Reward info in hero subtitle
+    if (settings && settings.rewardAmount > 0) {
+      const sub = document.querySelector('.hero-sub');
+      if (sub) sub.textContent = `Invite friends to Nexus Crypto and earn ${settings.rewardAmount} ${settings.rewardCoinSymbol} when each referred friend makes their first deposit — credited automatically!`;
+    }
+
+    // "How it Works" step 3 text
+    const step3 = document.querySelector('.how-card:nth-child(3) .how-desc');
+    if (step3 && settings && settings.rewardAmount > 0) {
+      step3.textContent = `When your referred friend makes their first deposit, you automatically receive ${settings.rewardAmount} ${settings.rewardCoinSymbol} as a referral bonus, credited to your wallet.`;
+    }
+  }
+
   function renderChart() {
     const chart = document.getElementById('miniChart');
     if (!chart) return;
-    const max = Math.max(...MONTHLY.map(m => m.val));
+    const max = Math.max(...MONTHLY.map(m => m.val), 1);
     chart.innerHTML = MONTHLY.map((m, i) => {
       const h = Math.round((m.val / max) * 52);
       const isLast = i === MONTHLY.length - 1;
@@ -784,15 +817,35 @@
     }).join('');
   }
 
+  async function loadReferralData() {
+    try {
+      const [statsRes, settingsRes] = await Promise.all([
+        fetch('/api/referral/stats', { credentials: 'include' }),
+        fetch('/api/referral/settings', { credentials: 'include' })
+      ]);
+      const statsJson = await statsRes.json();
+      const settingsJson = await settingsRes.json();
+
+      const stats = statsJson.success ? statsJson.data : {};
+      const settings = settingsJson.success ? settingsJson.data : {};
+
+      updateHeader(stats, settings);
+      renderReferredUsers(stats.referredUsers || [], settings.rewardAmount || 0, settings.rewardCoinSymbol || 'USDT');
+    } catch (e) {
+      console.error('Failed to load referral data:', e);
+    }
+  }
+
   window.copyCode = function() {
     const code = document.getElementById('refCode').textContent;
     navigator.clipboard.writeText(code).then(() => showToast('✓ Code copied!'));
   };
 
   window.shareLink = function(type) {
-    const link = 'https://nexuscrypto.io/join?ref=NEXUS-AJ7X2';
+    const code = document.getElementById('refCode').textContent;
+    const link = `${window.location.origin}/home/signup?ref=${code}`;
     if (type === 'twitter') {
-      window.open(`https://twitter.com/intent/tweet?text=Join+Nexus+Crypto+and+get+a+bonus!+Use+my+referral+link:+${encodeURIComponent(link)}`, '_blank');
+      window.open(`https://twitter.com/intent/tweet?text=Join+Nexus+Crypto+and+get+a+bonus!+Use+my+referral:+${encodeURIComponent(link)}`, '_blank');
     } else {
       navigator.clipboard.writeText(link).then(() => showToast('✓ Link copied!'));
     }
@@ -806,8 +859,12 @@
     setTimeout(() => t.classList.remove('show'), 2200);
   }
 
-  renderTable();
+  // Update table headers to match new columns
+  const thead = document.querySelector('.ref-table thead tr');
+  if (thead) thead.innerHTML = '<th>User</th><th>Joined</th><th>Reward Earned</th><th>KYC Status</th><th>Ref Code</th>';
+
   renderChart();
+  loadReferralData();
 
 })();
 </script>

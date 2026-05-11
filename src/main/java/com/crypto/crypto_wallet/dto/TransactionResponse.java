@@ -11,11 +11,15 @@ import java.time.LocalDateTime;
 @Builder
 public class TransactionResponse {
     private Long id;
+    private Long userId;
+    private String userEmail;
+    private String userFullName;
     private TransactionType type;
     private String coinSymbol;
     private BigDecimal amount;
     private String txHash;
     private String toAddress;
     private TransactionStatus status;
+    private String rejectionReason;
     private LocalDateTime createdAt;
 }

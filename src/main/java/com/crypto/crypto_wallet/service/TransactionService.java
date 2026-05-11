@@ -9,7 +9,18 @@ public interface TransactionService {
     TransactionResponse deposit(Long userId, DepositRequest request);
     TransactionResponse withdraw(Long userId, WithdrawRequest request);
     List<TransactionResponse> getTransactions(Long userId);
-    TransactionResponse approveDeposit(Long txId);   // admin use
+
+    // Admin: deposits
+    TransactionResponse approveDeposit(Long txId);
     List<TransactionResponse> getPendingDeposits();
-    TransactionResponse rejectDeposit(Long txId);
+    TransactionResponse rejectDeposit(Long txId, String reason);
+
+    // Admin: withdrawals
+    List<TransactionResponse> getPendingWithdrawals();
+    TransactionResponse approveWithdrawal(Long txId);
+    TransactionResponse rejectWithdrawal(Long txId, String reason);
+
+    // Withdrawal limit
+    java.math.BigDecimal getDailyWithdrawalLimit(Long userId);
+    java.math.BigDecimal getDailyWithdrawalRemaining(Long userId);
 }

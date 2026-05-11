@@ -1081,7 +1081,7 @@
   </nav>
   <div class="sidebar-footer">
     <a href="/home/profile" class="user-card">
-      <div class="user-avatar" th:text="${user != null ? user.fullName.substring(0,1) : 'U'}">U</div>
+      <div class="user-avatar" th:text="${user != null and user.fullName != null and !#strings.isEmpty(user.fullName) ? #strings.substring(user.fullName, 0, 1) : 'U'}">U</div>
       <div class="user-info">
         <div class="user-name" th:text="${user != null ? user.fullName : 'User'}">User</div>
         <div class="user-role">Account</div>
@@ -1102,7 +1102,7 @@
         </svg>
         <span class="badge-dot"></span>
       </a>
-      <a href="/home/profile" class="avatar-btn" th:text="${user != null ? user.fullName.substring(0,1) : 'U'}">U</a>
+      <a href="/home/profile" class="avatar-btn" th:text="${user != null and user.fullName != null and !#strings.isEmpty(user.fullName) ? #strings.substring(user.fullName, 0, 1) : 'U'}">U</a>
     </div>
   </header>
 

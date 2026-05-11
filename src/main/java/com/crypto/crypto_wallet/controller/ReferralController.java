@@ -41,8 +41,14 @@ public class ReferralController {
         Long userId = userService.getByEmail(userDetails.getUsername()).getId();
         Map<String, Object> stats = Map.of(
                 "referralCode", referralService.getReferralCode(userId),
-                "totalReferrals", referralService.getReferralCount(userId)
+                "totalReferrals", referralService.getReferralCount(userId),
+                "referredUsers", referralService.getReferredUsers(userId)
         );
         return ResponseEntity.ok(ApiResponse.ok(stats));
+    }
+
+    @GetMapping("/settings")
+    public ResponseEntity<ApiResponse<com.crypto.crypto_wallet.dto.ReferralSettingsResponse>> getRewardSettings() {
+        return ResponseEntity.ok(ApiResponse.ok(referralService.getSettings()));
     }
 }

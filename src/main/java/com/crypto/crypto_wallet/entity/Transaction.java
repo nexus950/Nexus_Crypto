@@ -35,6 +35,8 @@ public class Transaction {
 
     private String toAddress;       // for withdrawals
 
+    private String rejectionReason; // set by admin on FAILED
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private TransactionStatus status = TransactionStatus.PENDING;

@@ -495,7 +495,7 @@
   <div class="sidebar-bottom">
     <div class="sidebar-profile">
       <div class="s-avatar">
-        <a href="/home/profile" class="avatar-btn" th:text="${user != null ? user.fullName.substring(0,1) : 'U'}">U</a>
+        <a href="/home/profile" class="avatar-btn" th:text="${user != null and user.fullName != null and !#strings.isEmpty(user.fullName) ? #strings.substring(user.fullName, 0, 1) : 'U'}">U</a>
       </div>
       <div>
         <div class="s-name" th:text="${user != null ? user.fullName : 'User'}">User</div>
@@ -521,7 +521,7 @@
     <button class="icon-btn notif-dot">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </button>
-    <a href="/home/profile" class="avatar-btn" th:text="${user != null ? user.fullName.substring(0,1) : 'U'}">U</a>
+    <a href="/home/profile" class="avatar-btn" th:text="${user != null and user.fullName != null and !#strings.isEmpty(user.fullName) ? #strings.substring(user.fullName, 0, 1) : 'U'}">U</a>
   </div>
 </header>
 
