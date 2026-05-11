@@ -1,0 +1,59 @@
+package com.crypto.crypto_wallet.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Entity
+@Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
+    private String fullName;
+
+    @Column(unique = true)
+    private String referralCode;
+
+    private String referredBy;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private UserRole role = UserRole.USER;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private KycStatus kycStatus = KycStatus.PENDING;
+
+    @Builder.Default
+    private String vipLevel = "VIP Level 1";
+
+    @Builder.Default
+    private boolean enabled = true;
+
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Wallet> wallets;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TradeOrder> tradeOrders;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Stake> stakes;
+}
