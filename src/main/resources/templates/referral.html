@@ -527,8 +527,8 @@
         </div>
         <div>
           <div class="stat-label">Total Earned</div>
-          <div class="stat-value positive">$1,284.50</div>
-          <div class="stat-sub">+$72.40 this week</div>
+          <div class="stat-value positive" id="statTotalEarned">$0.00</div>
+          <div class="stat-sub" style="display:none">+$0.00 this week</div>
         </div>
       </div>
       <div class="stat-card">
@@ -537,8 +537,8 @@
         </div>
         <div>
           <div class="stat-label">Current Tier</div>
-          <div class="stat-value" style="color:var(--purple)">Gold</div>
-          <div class="stat-sub">25% commission</div>
+          <div class="stat-value" style="color:var(--purple)" id="statCurrentTier">Bronze</div>
+          <div class="stat-sub" id="statTierComm">10% commission</div>
         </div>
       </div>
       <div class="stat-card">
@@ -547,8 +547,8 @@
         </div>
         <div>
           <div class="stat-label">Active Referrals</div>
-          <div class="stat-value">31</div>
-          <div class="stat-sub">of 47 total</div>
+          <div class="stat-value" id="statActiveRefs">0</div>
+          <div class="stat-sub" id="statTotalRefsSub">of 0 total</div>
         </div>
       </div>
     </div>
@@ -557,11 +557,11 @@
     <div class="tier-card">
       <div class="tier-header">
         <div class="tier-title">Commission Tier</div>
-        <div class="tier-badge">⭐ Gold — 25%</div>
+        <div class="tier-badge" id="tierBadge">⭐ Bronze — 10%</div>
       </div>
       <div class="tier-track">
         <div class="tier-bar-bg">
-          <div class="tier-bar-fill" style="width:62%"></div>
+          <div class="tier-bar-fill" id="tierBarFill" style="width:0%"></div>
         </div>
         <div class="tier-dots">
           <div class="tier-dot-wrap">
@@ -582,8 +582,8 @@
           </div>
         </div>
       </div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">
-        You need <strong style="color:var(--text)">28 more active referrals</strong> to reach <strong style="color:var(--purple)">Platinum (30%)</strong>.
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px" id="tierTargetText">
+        You need <strong style="color:var(--text)">10 more active referrals</strong> to reach <strong style="color:var(--purple)">Silver (20%)</strong>.
       </div>
       <div class="tier-perks">
         <div class="tier-perk">
@@ -627,23 +627,23 @@
         <div class="earnings-card-title">Earnings by Source</div>
         <div class="earnings-row">
           <span class="earnings-label">Spot Trading Fees</span>
-          <span class="earnings-val positive">$842.10</span>
+          <span class="earnings-val positive" id="valSpotFees">$0.00</span>
         </div>
         <div class="earnings-row">
           <span class="earnings-label">Futures Fees</span>
-          <span class="earnings-val positive">$312.50</span>
+          <span class="earnings-val positive" id="valFuturesFees">$0.00</span>
         </div>
         <div class="earnings-row">
           <span class="earnings-label">Staking Referral Bonus</span>
-          <span class="earnings-val positive">$94.30</span>
+          <span class="earnings-val positive" id="valStakingBonus">$0.00</span>
         </div>
         <div class="earnings-row">
           <span class="earnings-label">Conversion Bonus</span>
-          <span class="earnings-val positive">$35.60</span>
+          <span class="earnings-val positive" id="valConversionBonus">$0.00</span>
         </div>
         <div class="earnings-row" style="margin-top:4px">
           <span style="font-weight:700">Total</span>
-          <span class="earnings-val positive" style="font-size:16px">$1,284.50</span>
+          <span class="earnings-val positive" style="font-size:16px" id="valTotalEarnings">$0.00</span>
         </div>
       </div>
     </div>
@@ -791,16 +791,84 @@
     if (totalEl) totalEl.textContent = data.totalReferrals || 0;
 
     // Reward info in hero subtitle
-    if (settings && settings.rewardAmount > 0) {
+    if (settings) {
       const sub = document.querySelector('.hero-sub');
-      if (sub) sub.textContent = `Invite friends to Nexus Crypto and earn ${settings.rewardAmount} ${settings.rewardCoinSymbol} when each referred friend makes their first deposit — credited automatically!`;
+      if (sub) sub.textContent = `Invite friends to Nexus Crypto and earn 10% of their first deposit — credited automatically!`;
     }
 
     // "How it Works" step 3 text
     const step3 = document.querySelector('.how-card:nth-child(3) .how-desc');
-    if (step3 && settings && settings.rewardAmount > 0) {
-      step3.textContent = `When your referred friend makes their first deposit, you automatically receive ${settings.rewardAmount} ${settings.rewardCoinSymbol} as a referral bonus, credited to your wallet.`;
+    if (step3 && settings) {
+      step3.textContent = `When your referred friend passes KYC and makes their first deposit, you automatically receive 10% of their deposit as a referral bonus, credited to your wallet!`;
     }
+
+    // Dynamic Stats
+    const formatCurrency = (val) => '$' + Number(val || 0).toLocaleString('en-US', {minimumFractionDigits: 2});
+    
+    if (document.getElementById('statTotalEarned')) document.getElementById('statTotalEarned').textContent = formatCurrency(data.totalEarned);
+    if (document.getElementById('statCurrentTier')) document.getElementById('statCurrentTier').textContent = data.currentTier || 'Bronze';
+    if (document.getElementById('statTierComm')) document.getElementById('statTierComm').textContent = (data.commissionRate || 10) + '% commission';
+    if (document.getElementById('statActiveRefs')) document.getElementById('statActiveRefs').textContent = data.activeReferrals || 0;
+    if (document.getElementById('statTotalRefsSub')) document.getElementById('statTotalRefsSub').textContent = `of ${data.totalReferrals || 0} total`;
+    
+    // Tier Badge & Progress
+    const tierIcon = data.currentTier === 'Platinum' ? '💎' : data.currentTier === 'Gold' ? '🥇' : data.currentTier === 'Silver' ? '🥈' : '🥉';
+    if (document.getElementById('tierBadge')) document.getElementById('tierBadge').textContent = `${tierIcon} ${data.currentTier || 'Bronze'} — ${data.commissionRate || 10}%`;
+    
+    if (document.getElementById('tierTargetText')) {
+      if (data.nextTierReq > 0) {
+        const remaining = data.nextTierReq - (data.activeReferrals || 0);
+        const nextRate = data.currentTier === 'Bronze' ? 20 : data.currentTier === 'Silver' ? 25 : 30;
+        document.getElementById('tierTargetText').innerHTML = `You need <strong style="color:var(--text)">${remaining} more active referrals</strong> to reach <strong style="color:var(--purple)">${data.nextTierName} (${nextRate}%)</strong>.`;
+      } else {
+        document.getElementById('tierTargetText').innerHTML = `<strong style="color:var(--purple)">You have reached the maximum Platinum Tier!</strong>`;
+      }
+    }
+    
+    if (document.getElementById('tierBarFill')) {
+      let pct = 100;
+      if (data.nextTierReq > 0) {
+        const prevTarget = data.currentTier === 'Bronze' ? 0 : data.currentTier === 'Silver' ? 10 : 30;
+        pct = ((data.activeReferrals - prevTarget) / (data.nextTierReq - prevTarget)) * 100;
+        if (pct > 100) pct = 100;
+        if (pct < 0) pct = 0;
+        if (data.currentTier === 'Bronze') pct = pct * 0.33;
+        else if (data.currentTier === 'Silver') pct = 33.33 + (pct * 0.33);
+        else if (data.currentTier === 'Gold') pct = 66.66 + (pct * 0.33);
+      }
+      document.getElementById('tierBarFill').style.width = pct + '%';
+    }
+    
+    // Dynamic tier dots and active styles
+    const tiers = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+    const currentTierIdx = tiers.indexOf(data.currentTier || 'Bronze');
+    
+    const dots = document.querySelectorAll('.tier-dot');
+    const labels = document.querySelectorAll('.tier-dot-label');
+    const perks = document.querySelectorAll('.tier-perk');
+    
+    dots.forEach((dot, idx) => {
+        dot.className = 'tier-dot';
+        if (idx < currentTierIdx) dot.classList.add('reached');
+        else if (idx === currentTierIdx) dot.classList.add('current');
+    });
+    
+    labels.forEach((label, idx) => {
+        if (idx === currentTierIdx) label.classList.add('active');
+        else label.classList.remove('active');
+    });
+    
+    perks.forEach((perk, idx) => {
+        if (idx === currentTierIdx) perk.classList.add('active-tier');
+        else perk.classList.remove('active-tier');
+    });
+    
+    // Earnings Breakdown
+    if (document.getElementById('valSpotFees')) document.getElementById('valSpotFees').textContent = formatCurrency(data.spotFees);
+    if (document.getElementById('valFuturesFees')) document.getElementById('valFuturesFees').textContent = formatCurrency(data.futuresFees);
+    if (document.getElementById('valStakingBonus')) document.getElementById('valStakingBonus').textContent = formatCurrency(data.stakingBonus);
+    if (document.getElementById('valConversionBonus')) document.getElementById('valConversionBonus').textContent = formatCurrency(data.conversionBonus);
+    if (document.getElementById('valTotalEarnings')) document.getElementById('valTotalEarnings').textContent = formatCurrency(data.totalEarned);
   }
 
   function renderChart() {

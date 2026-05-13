@@ -621,7 +621,7 @@
       </div>
       <div class="price-ticker-bar">
         <div>
-          <div class="ptb-price" id="livePrice">$68,520.00</div>
+          <div class="ptb-price" id="livePrice">—</div>
           <div class="ptb-change" id="liveChange" style="color:var(--emerald);">+5.42%</div>
         </div>
         <div class="divider-v"></div>
@@ -684,7 +684,7 @@
           </div>
           <div class="ob-scroll" id="asksContainer"></div>
           <div class="ob-spread">
-            <div class="ob-spread-price" id="obMidPrice">$68,520.00</div>
+            <div class="ob-spread-price" id="obMidPrice">—</div>
             <div class="ob-spread-badge" id="obSpread">Spread 0.01%</div>
             <div class="ob-spread-lbl">Mid Price</div>
           </div>
@@ -706,7 +706,7 @@
             <div>
               <div class="field-lbl">Price (USDT)</div>
               <div class="input-wrap">
-                <input type="number" id="priceInput" value="68520.00" step="0.01" oninput="updateTotal()">
+                <input type="number" id="priceInput" value="" step="0.01" oninput="updateTotal()">
                 <span class="input-unit">USDT</span>
               </div>
             </div>
@@ -789,16 +789,44 @@
 <script th:inline="javascript">
 /*<![CDATA[*/
 
-const COINS = [
-  { id: 'bitcoin', sym: 'BTC', name: 'Bitcoin', icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', price: 68520 },
-  { id: 'ethereum', sym: 'ETH', name: 'Ethereum', icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', price: 3450 },
-  { id: 'solana', sym: 'SOL', name: 'Solana', icon: 'https://cryptologos.cc/logos/solana-sol-logo.png', price: 145 },
-  { id: 'binancecoin', sym: 'BNB', name: 'Binance Coin', icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png', price: 580 },
-  { id: 'ripple', sym: 'XRP', name: 'XRP', icon: 'https://cryptologos.cc/logos/xrp-xrp-logo.png', price: 0.62 },
-  { id: 'cardano', sym: 'ADA', name: 'Cardano', icon: 'https://cryptologos.cc/logos/cardano-ada-logo.png', price: 0.45 },
-  { id: 'avalanche-2', sym: 'AVAX', name: 'Avalanche', icon: 'https://cryptologos.cc/logos/avalanche-avax-logo.png', price: 35 },
-  { id: 'dogecoin', sym: 'DOGE', name: 'Dogecoin', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png', price: 0.16 }
-];
+let COINS = [];
+
+async function loadDynamicCoins() {
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=12&page=1&sparkline=false');
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    if (data && data.length) {
+      COINS = data.map(c => ({
+        id: c.id,
+        sym: c.symbol.toUpperCase(),
+        name: c.name,
+        icon: c.image,
+        price: c.current_price
+      }));
+      // Filter out stablecoins if desired, but for now we take the top.
+      COINS = COINS.filter(c => c.sym !== 'USDT' && c.sym !== 'USDC');
+      
+      // Update active coin if not initialized or update its price
+      if (activeCoinSym === 'BTC' && COINS.length > 0) {
+          const btc = COINS.find(c => c.sym === 'BTC');
+          if (btc) price = btc.price;
+      }
+    }
+  } catch (e) {
+    // Fallback on rate limit
+    COINS = [
+      { id: 'bitcoin', sym: 'BTC', name: 'Bitcoin', icon: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png', price: 68520 },
+      { id: 'ethereum', sym: 'ETH', name: 'Ethereum', icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png', price: 3450 },
+      { id: 'solana', sym: 'SOL', name: 'Solana', icon: 'https://cryptologos.cc/logos/solana-sol-logo.png', price: 145 },
+      { id: 'binancecoin', sym: 'BNB', name: 'Binance Coin', icon: 'https://cryptologos.cc/logos/bnb-bnb-logo.png', price: 580 },
+      { id: 'ripple', sym: 'XRP', name: 'XRP', icon: 'https://cryptologos.cc/logos/xrp-xrp-logo.png', price: 0.62 },
+      { id: 'cardano', sym: 'ADA', name: 'Cardano', icon: 'https://cryptologos.cc/logos/cardano-ada-logo.png', price: 0.45 },
+      { id: 'avalanche-2', sym: 'AVAX', name: 'Avalanche', icon: 'https://cryptologos.cc/logos/avalanche-avax-logo.png', price: 35 },
+      { id: 'dogecoin', sym: 'DOGE', name: 'Dogecoin', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.png', price: 0.16 }
+    ];
+  }
+}
 
 /* ─── STATE ─── */
 let activeCoinId = 'bitcoin';
@@ -871,15 +899,19 @@ if (DASH_WALLETS && DASH_WALLETS.length > 0) {
 /* ─── MODAL & PAIR LOGIC ─── */
 function openPairModal() {
   const list = document.getElementById('coinList');
-  list.innerHTML = COINS.map(c => `
-    <button type="button" class="coin-sel-btn ${c.sym === activeCoinSym ? 'active' : ''}" onclick='selectCoin(${JSON.stringify(c.id)}, ${JSON.stringify(c.sym)}, ${JSON.stringify(c.name)}, ${JSON.stringify(c.icon)}, ${c.price})'>
-      <img class="cs-icon" src="${esc(c.icon)}" alt="${esc(c.sym)}">
-      <div class="cs-info">
-        <div class="cs-sym">${esc(c.sym)}</div>
-        <div class="cs-name">${esc(c.name)}</div>
-      </div>
-    </button>
-  `).join('');
+  if (!COINS.length) {
+    list.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);font-size:13px;">Loading market data...</div>';
+  } else {
+    list.innerHTML = COINS.map(c => `
+      <button type="button" class="coin-sel-btn ${c.sym === activeCoinSym ? 'active' : ''}" onclick='selectCoin(${JSON.stringify(c.id)}, ${JSON.stringify(c.sym)}, ${JSON.stringify(c.name)}, ${JSON.stringify(c.icon)}, ${c.price})'>
+        <img class="cs-icon" src="${esc(c.icon)}" alt="${esc(c.sym)}">
+        <div class="cs-info">
+          <div class="cs-sym">${esc(c.sym)}</div>
+          <div class="cs-name">${esc(c.name)}</div>
+        </div>
+      </button>
+    `).join('');
+  }
   document.getElementById('pairModal').classList.add('open');
 }
 
@@ -895,6 +927,8 @@ function selectCoin(id, sym, name, icon, fallbackPrice) {
     price = fallbackPrice;
     const pEl = document.getElementById('livePrice');
     if (pEl) pEl.textContent = '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    const pIn = document.getElementById('priceInput');
+    if (pIn) pIn.value = price.toFixed(2);
   }
   
   // Update header UI
@@ -968,17 +1002,30 @@ function renderTradingView(sym) {
 }
 
 // Initial render
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadDynamicCoins();
   const urlParams = new URLSearchParams(window.location.search);
   const coinParam = urlParams.get('coin');
-  if (coinParam) {
+  if (coinParam && COINS.length > 0) {
     const coinMatch = COINS.find(c => c.sym.toUpperCase() === coinParam.toUpperCase());
     if (coinMatch) {
       selectCoin(coinMatch.id, coinMatch.sym, coinMatch.name, coinMatch.icon, coinMatch.price);
       return;
     }
+  } else if (COINS.length > 0) {
+    const first = COINS[0];
+    // If no coin param but we have coins, setup active pair correctly (usually BTC is first anyway)
+    if(activeCoinSym !== first.sym) {
+        selectCoin(first.id, first.sym, first.name, first.icon, first.price);
+        return;
+    }
   }
+  // Force price input update from current price state
+  const pIn = document.getElementById('priceInput');
+  if (pIn) pIn.value = price.toFixed(2);
+  
   renderTradingView(activeCoinSym);
+  renderBook();
 });
 
 window.addEventListener('pageshow', function(ev) {
@@ -999,50 +1046,54 @@ window.addEventListener('resize', applyResponsive);
 // GenCandles removed since we use TradingView
 
 /* ─── ORDER BOOK ─── */
-function genBook() {
-  const asks = [];
-  const bids = [];
-  for (let i = 0; i < 12; i++) {
-    const askP = price + (i + 1) * 1.5 + Math.random() * 3;
-    const bidP = price - (i + 1) * 1.5 - Math.random() * 3;
-    const qty = +(0.01 + Math.random() * 2.5).toFixed(4);
-    asks.push({ p: Math.round(askP / precision) * precision, q: qty });
-    bids.push({ p: Math.round(bidP / precision) * precision, q: qty });
+async function fetchBinanceBook() {
+  try {
+    const sym = activeCoinSym.toUpperCase();
+    const res = await fetch(`https://api.binance.com/api/v3/depth?symbol=${sym}USDT&limit=12`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    
+    const processRows = (arr, isAsk) => {
+      const map = new Map();
+      arr.forEach(row => {
+        const pStr = parseFloat(row[0]);
+        const q = parseFloat(row[1]);
+        const pRound = isAsk ? Math.ceil(pStr / precision) * precision : Math.floor(pStr / precision) * precision;
+        const key = pRound.toFixed(Math.max(0, -Math.floor(Math.log10(precision))));
+        map.set(key, (map.get(key) || 0) + q);
+      });
+      const resArr = Array.from(map.entries()).map(([pStr, q]) => ({ p: parseFloat(pStr), q }));
+      return isAsk ? resArr.sort((a,b)=>a.p - b.p).slice(0, 12) : resArr.sort((a,b)=>b.p - a.p).slice(0, 12);
+    };
+
+    const asks = processRows(data.asks, true);
+    const bids = processRows(data.bids, false);
+    return { asks, bids };
+  } catch (e) {
+    console.error('Orderbook fetch failed:', e);
+    return { asks: [], bids: [] };
   }
-  asks.sort((a, b) => a.p - b.p);
-  bids.sort((a, b) => b.p - a.p);
-  // Remove duplicates
-  const uniqueAsks = [];
-  const uniqueBids = [];
-  const seenA = new Set();
-  const seenB = new Set();
-  for (const a of asks) {
-    const key = a.p.toFixed(4);
-    if (!seenA.has(key)) { seenA.add(key); uniqueAsks.push(a); }
-  }
-  for (const b of bids) {
-    const key = b.p.toFixed(4);
-    if (!seenB.has(key)) { seenB.add(key); uniqueBids.push(b); }
-  }
-  return { asks: uniqueAsks.slice(0, 10), bids: uniqueBids.slice(0, 10) };
 }
 
-function renderBook() {
-  const { asks, bids } = genBook();
+async function renderBook() {
+  const { asks, bids } = await fetchBinanceBook();
+  
   const allQs = [...asks.map(r => r.q), ...bids.map(r => r.q)];
-  const maxQ = Math.max(...allQs, 0.1);
+  const maxQ = Math.max(...allQs, 0.0001);
 
   const asksEl = document.getElementById('asksContainer');
   const bidsEl = document.getElementById('bidsContainer');
+  if (!asksEl || !bidsEl) return;
 
   let cumA = 0;
   const asksReversed = [...asks].reverse();
   asksEl.innerHTML = asksReversed.map(r => {
     cumA += r.q;
     const pct = (r.q / maxQ * 100).toFixed(1);
+    const pStr = r.p >= 1000 ? r.p.toFixed(2) : r.p >= 1 ? r.p.toFixed(4) : r.p.toFixed(6);
     return `<div class="ob-row">
       <div class="ob-row-bg" style="width:${pct}%; background:rgba(248,113,113,.06);"></div>
-      <div class="ob-price" style="color:var(--red);">$${r.p.toFixed(2)}</div>
+      <div class="ob-price" style="color:var(--red);">$${pStr}</div>
       <div class="ob-qty">${r.q.toFixed(4)}</div>
       <div class="ob-total">${cumA.toFixed(4)}</div>
     </div>`;
@@ -1052,19 +1103,24 @@ function renderBook() {
   bidsEl.innerHTML = bids.map(r => {
     cumB += r.q;
     const pct = (r.q / maxQ * 100).toFixed(1);
+    const pStr = r.p >= 1000 ? r.p.toFixed(2) : r.p >= 1 ? r.p.toFixed(4) : r.p.toFixed(6);
     return `<div class="ob-row">
       <div class="ob-row-bg" style="width:${pct}%; background:rgba(52,211,153,.06);"></div>
-      <div class="ob-price" style="color:var(--emerald);">$${r.p.toFixed(2)}</div>
+      <div class="ob-price" style="color:var(--emerald);">$${pStr}</div>
       <div class="ob-qty">${r.q.toFixed(4)}</div>
       <div class="ob-total">${cumB.toFixed(4)}</div>
     </div>`;
   }).join('');
 
-  document.getElementById('obMidPrice').textContent = '$' + price.toFixed(2);
+  const pStrMid = price >= 1000 ? price.toFixed(2) : price >= 1 ? price.toFixed(4) : price.toFixed(6);
+  const midEl = document.getElementById('obMidPrice');
+  if (midEl) midEl.textContent = '$' + pStrMid;
+  
   if (asks.length > 0 && bids.length > 0) {
     const spread = asks[0].p - bids[0].p;
-    const spreadPct = ((spread / price) * 100).toFixed(2);
-    document.getElementById('obSpread').textContent = `Spread ${spreadPct}%`;
+    const spreadPct = ((spread / price) * 100).toFixed(3);
+    const spreadEl = document.getElementById('obSpread');
+    if (spreadEl) spreadEl.textContent = `Spread ${spreadPct}%`;
   }
 }
 renderBook();
@@ -1458,7 +1514,7 @@ async function fetchLivePrice() {
       }
 
       const priceInput = document.getElementById('priceInput');
-      if (priceInput && document.activeElement !== priceInput && orderType === 'market') {
+      if (priceInput && document.activeElement !== priceInput) {
         priceInput.value = price.toFixed(2);
       }
       
@@ -1477,7 +1533,8 @@ async function pollTradeUi() {
   try { await fetchLiveTrades(); } catch (e) { /* ignore */ }
 }
 pollTradeUi();
-setInterval(pollTradeUi, 28000);
+setInterval(pollTradeUi, 25000);
+setInterval(renderBook, 12000); // More frequent orderbook updates
 
 // Init
 updateSliderBg(0);

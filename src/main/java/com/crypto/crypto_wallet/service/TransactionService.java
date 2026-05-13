@@ -23,4 +23,7 @@ public interface TransactionService {
     // Withdrawal limit
     java.math.BigDecimal getDailyWithdrawalLimit(Long userId);
     java.math.BigDecimal getDailyWithdrawalRemaining(Long userId);
+
+    // Referral Bonus
+    java.math.BigDecimal getTotalReferralBonus(Long userId);
 }

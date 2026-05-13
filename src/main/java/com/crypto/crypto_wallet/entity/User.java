@@ -35,10 +35,12 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
+    @Column(nullable = false, length = 20)
     private UserRole role = UserRole.USER;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
+    @Column(nullable = false, length = 20)
     private KycStatus kycStatus = KycStatus.PENDING;
 
     @Builder.Default

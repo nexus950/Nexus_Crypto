@@ -85,7 +85,7 @@ public class TransactionServiceImpl implements TransactionService {
         transactionRepository.save(tx);
 
         // ── Referral reward: credit referrer on the referred user's FIRST completed deposit ──
-        creditReferralRewardIfApplicable(user);
+        creditReferralRewardIfApplicable(user, tx);
 
         return toResponse(tx);
     }
@@ -259,6 +259,16 @@ public class TransactionServiceImpl implements TransactionService {
         return remaining.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : remaining;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getTotalReferralBonus(Long userId) {
+        return transactionRepository.findByUserIdAndTypeOrderByCreatedAtDesc(userId, TransactionType.REFERRAL_BONUS)
+                .stream()
+                .filter(t -> t.getStatus() == TransactionStatus.COMPLETED)
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     // ═══════════════════════════════════════════════════════════════
     //  HELPERS
     // ═══════════════════════════════════════════════════════════════
@@ -280,37 +290,47 @@ public class TransactionServiceImpl implements TransactionService {
      * If this is the user's first completed DEPOSIT and they were referred,
      * credit the referrer with the configured reward.
      */
-    private void creditReferralRewardIfApplicable(User user) {
+    private void creditReferralRewardIfApplicable(User user, Transaction depositTx) {
         if (user.getReferredBy() == null || user.getReferredBy().isBlank()) return;
+
+        // Check if user passed KYC
+        if (user.getKycStatus() != KycStatus.VERIFIED) return;
 
         // Only fire on the very first completed deposit
         long completedDeposits = transactionRepository
                 .findByUserIdAndTypeOrderByCreatedAtDesc(user.getId(), TransactionType.DEPOSIT)
                 .stream().filter(t -> t.getStatus() == TransactionStatus.COMPLETED).count();
-        if (completedDeposits != 1) return; // already had prior deposits
-
-        // Look up referral settings
-        ReferralSettings settings = referralSettingsRepository.findAll()
-                .stream().findFirst().orElse(null);
-        if (settings == null || !settings.isEnabled()) return;
-        if (settings.getRewardAmount().compareTo(BigDecimal.ZERO) <= 0) return;
+        if (completedDeposits != 1) return; // already had prior deposits (this one is the first)
 
         // Find the referrer by referral code
         userRepository.findAll().stream()
                 .filter(u -> user.getReferredBy().equals(u.getReferralCode()))
                 .findFirst()
                 .ifPresent(referrer -> {
+                    // Calculate 10% of the deposit amount
+                    BigDecimal reward = depositTx.getAmount().multiply(new BigDecimal("0.10"));
+                    
                     Wallet rWallet = walletRepository
-                            .findByUserIdAndCoinSymbol(referrer.getId(), settings.getRewardCoinSymbol())
+                            .findByUserIdAndCoinSymbol(referrer.getId(), depositTx.getCoinSymbol())
                             .orElseGet(() -> {
                                 Wallet w = Wallet.builder()
                                         .user(referrer)
-                                        .coinSymbol(settings.getRewardCoinSymbol())
+                                        .coinSymbol(depositTx.getCoinSymbol())
                                         .build();
                                 return walletRepository.save(w);
                             });
-                    rWallet.setBalance(rWallet.getBalance().add(settings.getRewardAmount()));
+                    rWallet.setBalance(rWallet.getBalance().add(reward));
                     walletRepository.save(rWallet);
+                    
+                    // Create transaction record for referrer
+                    Transaction bonusTx = Transaction.builder()
+                            .user(referrer)
+                            .type(TransactionType.REFERRAL_BONUS)
+                            .coinSymbol(depositTx.getCoinSymbol())
+                            .amount(reward)
+                            .status(TransactionStatus.COMPLETED)
+                            .build();
+                    transactionRepository.save(bonusTx);
                 });
     }
 

@@ -22,8 +22,8 @@ public class Transaction {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TransactionType type;   // DEPOSIT / WITHDRAWAL
+    @Column(nullable = false, length = 50)
+    private TransactionType type;   // DEPOSIT / WITHDRAWAL / REFERRAL_BONUS
 
     @Column(nullable = false)
     private String coinSymbol;
@@ -39,6 +39,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
+    @Column(nullable = false, length = 20)
     private TransactionStatus status = TransactionStatus.PENDING;
 
     @Builder.Default
