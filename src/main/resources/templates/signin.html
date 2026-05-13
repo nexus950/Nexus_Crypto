@@ -22,6 +22,7 @@
     .back-link  { display:flex; align-items:center; justify-content:center; gap:6px; margin-top:28px; color:var(--muted); font-size:13px; text-decoration:none; }
     .back-link:hover { color:var(--text); }
     .err-box { background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.25); border-radius:12px; padding:12px 16px; color:var(--red); font-size:13px; margin-bottom:18px; display:none; }
+    .success-box { background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.25); border-radius:12px; padding:12px 16px; color:var(--emerald); font-size:13px; margin-bottom:18px; display:none; }
   </style>
 </head>
 <body>
@@ -39,6 +40,7 @@
 
     <div class="auth-card">
         <div class="err-box" id="errBox"></div>
+        <div class="success-box" id="successBox"></div>
         <form id="signinForm">
             <div class="field">
                 <label>Email Address</label>
@@ -67,6 +69,15 @@
 
 <script th:src="@{/js/nexus-app.js}"></script>
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('registered')) {
+    const sBox = document.getElementById('successBox');
+    sBox.textContent = 'Registration successful! Please sign in to continue.';
+    sBox.style.display = 'block';
+  }
+});
+
 document.getElementById('signinForm').addEventListener('submit', async e => {
   e.preventDefault();
   const btn = document.getElementById('submitBtn');

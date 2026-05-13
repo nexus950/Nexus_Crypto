@@ -91,11 +91,8 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
       document.getElementById('password').value,
       document.getElementById('refCode').value
     );
-    if (user.role === 'ADMIN') {
-        window.location.href = '/home/admin';
-    } else {
-        window.location.href = '/home/dashboard';
-    }
+    // Registration successful: Redirect to sign-in page with a success message
+    window.location.href = '/home/signin?registered=true';
   } catch(ex) {
     err.textContent = ex.message; err.style.display='block';
     btn.textContent = 'Create Account'; btn.disabled = false;
