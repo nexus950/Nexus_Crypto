@@ -1301,6 +1301,7 @@
       const response = await fetch('/api/users/password', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ currentPassword, newPassword })
       });
       const result = await response.json();
