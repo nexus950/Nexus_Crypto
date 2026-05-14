@@ -321,15 +321,14 @@ body::before {
     </a>
   </nav>
   <div class="sidebar-bottom">
-    <div class="sidebar-profile">
-      <div class="s-avatar">
-        <a href="/home/profile" class="avatar-btn">
-        A
-      </a>
+      <div class="sidebar-profile">
+        <div class="s-avatar" id="sidebarUserInitial">?</div>
+        <div>
+          <div class="s-name" id="sidebarUserName">Loading...</div>
+          <div class="s-role" id="sidebarUserRole">...</div>
+        </div>
       </div>
-      <div><div class="s-name">Alex Johnson</div><div class="s-role">Pro Account</div></div>
     </div>
-  </div>
 </aside>
 
 <!-- HEADER -->
@@ -594,6 +593,43 @@ async function fetchGlobal(){
 
   } catch(e){ /* silent */ }
 }
+
+ function loadProfileData() {
+      fetch('/api/users/profile', { credentials: 'include' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.data) {
+            const p = data.data;
+            const fullName = p.fullName || 'User';
+            const initial = fullName.charAt(0).toUpperCase();
+
+            const pName = document.getElementById('profileFullName');
+            if (pName) pName.textContent = fullName;
+
+            const pEmail = document.getElementById('profileEmail');
+            if (pEmail) pEmail.textContent = p.email || '';
+
+            const pStatus = document.getElementById('profileEmailStatus');
+            if (pStatus) pStatus.textContent = 'Verified';
+
+            const sName = document.getElementById('sidebarUserName');
+            if (sName) sName.textContent = fullName;
+
+            const sRole = document.getElementById('sidebarUserRole');
+            if (sRole) sRole.textContent = p.role === 'ADMIN' ? 'Admin Account' : 'Pro Account';
+
+            const sInit = document.getElementById('sidebarUserInitial');
+            if (sInit) sInit.textContent = initial;
+
+            const hInit = document.getElementById('headerUserInitial');
+            if (hInit) hInit.textContent = initial;
+          }
+        })
+        .catch(err => console.error('Error loading profile', err));
+    }
+
+    loadProfileData();
+
 
 /* ── TAB SWITCH ── */
 function setTab(tab, btn){

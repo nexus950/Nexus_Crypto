@@ -573,8 +573,8 @@ a.sidebar-profile { -webkit-tap-highlight-color: transparent; }
     <a href="/home/profile" class="sidebar-profile" th:attr="aria-label=${'Open profile' + (user.fullName != null ? ' for ' + user.fullName : '')}">
       <div class="s-avatar" th:text="${user.fullName != null and !#strings.isEmpty(user.fullName) ? #strings.substring(user.fullName, 0, 1) : '?'}">A</div>
       <div>
-        <div class="s-name" th:text="${user.fullName != null ? user.fullName : 'Account'}">Alex Johnson</div>
-        <div class="s-role" th:text="${user.vipLevel != null ? user.vipLevel : 'Pro Account'}">Pro Account</div>
+        <div class="s-name" th:text="${user.fullName != null ? user.fullName : 'Account'}"></div>
+        <div class="s-role">Pro Account</div>
       </div>
     </a>
   </div>

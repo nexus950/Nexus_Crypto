@@ -361,7 +361,7 @@
       <div class="s-avatar">
         <a href="/home/profile" class="avatar-btn" th:text="${user.fullName != null and !#strings.isEmpty(user.fullName) ? #strings.substring(user.fullName, 0, 1) : '?'}">U</a>
       </div>
-      <div><div class="s-name" th:text="${user.fullName}">User</div><div class="s-role" th:text="${user.vipLevel != null ? user.vipLevel : 'Standard'}">Standard</div></div>
+      <div><div class="s-name" th:text="${user.fullName}">User</div><div class="s-role">Pro Account</div></div>
     </div>
   </div>
 </aside>
@@ -451,7 +451,7 @@
         </div>
         <div class="info-row">
           <span class="info-label">Account Level</span>
-          <span class="info-value" th:text="${user.vipLevel != null ? user.vipLevel : 'Standard'}">Standard</span>
+          <span class="info-value">Standard</span>
         </div>
         <div class="info-row">
           <span class="info-label">Wallets Active</span>
