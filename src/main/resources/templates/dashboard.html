@@ -1017,15 +1017,18 @@ function approveTx(id) {
 buildTxList(TXS);
 
 /* ════════════════════════════════
-   COINGECKO LIVE PRICES (polled every 30s below)
+   LIVE PRICES – served via backend proxy (server caches CoinGecko for 5 min)
+   Frontend NEVER calls CoinGecko directly → no more 429 rate-limit errors.
 ════════════════════════════════ */
-const CG_DASH_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano,avalanche-2,dogecoin,tether&order=market_cap_desc&per_page=12&page=1&price_change_percentage=24h&sparkline=true';
+const PRICE_API_URL = '/api/crypto/prices';
 
 async function fetchLivePrices() {
   try {
-    const res  = await fetch(CG_DASH_URL);
+    const res  = await fetch(PRICE_API_URL, { credentials: 'same-origin' });
     if (!res.ok) return;
-    const data = await res.json();
+    const json = await res.json();
+    if (!json || !json.success || !json.data) return;
+    const data = json.data;
     // Patch COINS array with real prices
     data.forEach(d => {
       const coin = COINS.find(c => c.sym === d.symbol.toUpperCase());
@@ -1114,7 +1117,8 @@ async function fetchLivePrices() {
 })();
 
 fetchLivePrices();
-setInterval(fetchLivePrices, 30000); // CoinGecko (~30s; respect rate limits)
+// Server-side cache refreshes every 5 min; polling faster is pointless.
+setInterval(fetchLivePrices, 300000);
 
 /* ════════════════════════════════
    DEPOSIT MODAL – AJAX

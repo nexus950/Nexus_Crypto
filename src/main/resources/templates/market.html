@@ -436,14 +436,13 @@ body::before {
 
 <script>
 /* ═══════════════════════════════════════
-   MARKET PAGE – CoinGecko Free API
-   Endpoint: /api/v3/coins/markets
-   Refresh : every 5 seconds
+   MARKET PAGE – via backend proxy (no direct CoinGecko calls)
+   Endpoints: /api/crypto/prices  and  /api/crypto/global
+   Refresh : every 5 minutes (matches server-side cache TTL)
 ═══════════════════════════════════════ */
 
-const CG_API = 'https://api.coingecko.com/api/v3';
-const COINS_URL = `${CG_API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&price_change_percentage=24h`;
-const GLOBAL_URL = `${CG_API}/global`;
+const PRICES_API = '/api/crypto/prices';
+const GLOBAL_API = '/api/crypto/global';
 
 let ALL_COINS = [];        // live data from API
 let currentTab = 'top';
@@ -528,9 +527,11 @@ function renderTable(){
 /* ── FETCH COINS ── */
 async function fetchCoins(){
   try{
-    const res  = await fetch(COINS_URL);
+    const res  = await fetch(PRICES_API, { credentials: 'same-origin' });
     if(!res.ok) throw new Error('HTTP '+res.status);
-    const data = await res.json();
+    const json = await res.json();
+    if (!json || !json.success || !json.data) throw new Error('No data');
+    const data = json.data;
 
     ALL_COINS = data.map(d=>{
       const prev = _prevPrices[d.symbol.toUpperCase()];
@@ -568,15 +569,19 @@ async function fetchCoins(){
 /* ── FETCH GLOBAL STATS ── */
 async function fetchGlobal(){
   try{
-    const res  = await fetch(GLOBAL_URL);
+    const res  = await fetch(GLOBAL_API, { credentials: 'same-origin' });
     if(!res.ok) return;
-    const { data } = await res.json();
+    const json = await res.json();
+    if (!json || !json.success || !json.data) return;
+    // CoinGecko /global returns { data: {...} }; our ApiResponse wraps that,
+    // so json.data is { data: {...} } and json.data.data is the actual stats.
+    const cgData = json.data.data || json.data;
 
-    const cap    = data.total_market_cap?.usd||0;
-    const vol    = data.total_volume?.usd||0;
-    const capChg = data.market_cap_change_percentage_24h_usd||0;
-    const btcDom = data.market_cap_percentage?.btc||0;
-    const active = data.active_cryptocurrencies||0;
+    const cap    = cgData.total_market_cap?.usd||0;
+    const vol    = cgData.total_volume?.usd||0;
+    const capChg = cgData.market_cap_change_percentage_24h_usd||0;
+    const btcDom = cgData.market_cap_percentage?.btc||0;
+    const active = cgData.active_cryptocurrencies||0;
 
     document.getElementById('statCap').textContent    = fmtCap(cap);
     document.getElementById('statVol').textContent    = fmtCap(vol);
@@ -643,8 +648,9 @@ function setTab(tab, btn){
 fetchCoins();
 fetchGlobal();
 
-setInterval(fetchCoins, 30000); // 30s for prices
-setInterval(fetchGlobal, 60000); // 60s for global stats
+// Server-side cache refreshes every 5 min; polling faster wastes requests.
+setInterval(fetchCoins,  300000);
+setInterval(fetchGlobal, 300000);
 
 /* Refresh on tab focus */
 document.addEventListener('visibilitychange', ()=>{

@@ -2060,9 +2060,11 @@
 
     async function loadDynamicCoins() {
       try {
-        const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=12&page=1&sparkline=false');
+        const res = await fetch('/api/crypto/prices', { credentials: 'same-origin' });
         if (!res.ok) throw new Error('API error');
-        const data = await res.json();
+        const json = await res.json();
+        if (!json || !json.success || !json.data) throw new Error('No data');
+        const data = json.data;
         if (data && data.length) {
           COINS = data.map(c => ({
             id: c.id,
@@ -2752,19 +2754,20 @@
         .catch(() => { });
     }
 
-    /* ─── LIVE PRICE COINGECKO ─── */
+    /* ─── LIVE PRICE – via backend proxy (no direct CoinGecko calls) ─── */
     let basePrice = 65000;
 
     async function fetchLivePrice() {
-      const CG_URL = `https://api.coingecko.com/api/v3/simple/price?ids=${activeCoinId}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
       try {
-        const res = await fetch(CG_URL);
+        const res = await fetch('/api/crypto/prices', { credentials: 'same-origin' });
         if (!res.ok) return;
-        const data = await res.json();
-        if (data[activeCoinId] && data[activeCoinId].usd) {
+        const json = await res.json();
+        if (!json || !json.success || !json.data) return;
+        const coinData = json.data.find(d => d.id === activeCoinId || d.symbol.toUpperCase() === activeCoinSym);
+        if (coinData && coinData.current_price) {
           const prev = price;
-          price = data[activeCoinId].usd;
-          const changePct = data[activeCoinId].usd_24h_change || 0;
+          price = coinData.current_price;
+          const changePct = coinData.price_change_percentage_24h || 0;
 
           const up = price >= prev;
           const pEl = document.getElementById('livePrice');
@@ -2800,8 +2803,9 @@
       try { await fetchLiveTrades(); } catch (e) { /* ignore */ }
     }
     pollTradeUi();
-    setInterval(pollTradeUi, 25000);
-    setInterval(renderBook, 12000); // More frequent orderbook updates
+    // Backend proxy caches for 5 min; no point polling faster.
+    setInterval(pollTradeUi, 300000);
+    setInterval(renderBook, 12000); // More frequent orderbook updates (Binance API is not rate-limited)
 
     // Init
     updateSliderBg(0);

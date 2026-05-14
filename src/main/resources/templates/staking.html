@@ -718,11 +718,15 @@
   // MY_STAKES loaded from backend
   let MY_STAKES = [];
 
-  // Fetch live prices
+  // Fetch live prices via backend proxy (no direct CoinGecko calls)
   async function fetchLivePrices() {
     try {
-      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano,avalanche-2,dogecoin&vs_currencies=usd');
-      const d = await res.json();
+      const res = await fetch('/api/crypto/prices', { credentials: 'same-origin' });
+      if (!res.ok) return;
+      const json = await res.json();
+      if (!json || !json.success || !json.data) return;
+      const d = {};
+      json.data.forEach(c => { d[c.id] = { usd: c.current_price }; });
       if (d.bitcoin) PRICES.BTC = d.bitcoin.usd;
       if (d.ethereum) PRICES.ETH = d.ethereum.usd;
       if (d.solana) PRICES.SOL = d.solana.usd;
@@ -1079,7 +1083,8 @@
   // ─── INIT ────────────────────────────────────────────────
   renderPools();
   fetchLivePrices().then(() => loadMyStakes());
-  setInterval(fetchLivePrices, 30000);
+  // Server-side cache refreshes every 5 min.
+  setInterval(fetchLivePrices, 300000);
 
 })();
 </script>

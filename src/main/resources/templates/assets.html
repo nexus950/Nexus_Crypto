@@ -631,14 +631,14 @@
     if (searchInput) searchInput.addEventListener('input', filterAndSort);
     if (sortSelect) sortSelect.addEventListener('change', filterAndSort);
 
-    // ----- LIVE POLLING -----
-    const CG_URL = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano,avalanche-2,dogecoin,tether&order=market_cap_desc&per_page=12&page=1&price_change_percentage=24h';
-
+    // ----- LIVE POLLING (via backend proxy – no direct CoinGecko calls) -----
     async function fetchLivePrices() {
       try {
-        const res = await fetch(CG_URL);
+        const res = await fetch('/api/crypto/prices', { credentials: 'same-origin' });
         if (!res.ok) return;
-        const data = await res.json();
+        const json = await res.json();
+        if (!json || !json.success || !json.data) return;
+        const data = json.data;
         data.forEach(d => {
           const coin = COINS.find(c => c.sym === d.symbol.toUpperCase());
           if (coin) {
@@ -684,7 +684,8 @@
     }
 
     fetchLivePrices();
-    setInterval(fetchLivePrices, 30000);
+    // Server-side cache refreshes every 5 min.
+    setInterval(fetchLivePrices, 300000);
     setInterval(refreshAssets, 30000);
     refreshAssets();
     window.addEventListener('pageshow', function(ev) {
