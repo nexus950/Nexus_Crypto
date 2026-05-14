@@ -148,7 +148,7 @@ body::before {
   width: 100%; padding: 16px 18px 16px 48px;
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 16px; color: var(--text);
-  font-size: 14px; font-family: 'Space Grotesk', sans-serif;
+  font-size: max(16px, 14px); font-family: 'Space Grotesk', sans-serif;
   outline: none; transition: border-color .2s;
 }
 .search-input::placeholder { color: var(--dim); }
@@ -252,6 +252,17 @@ body::before {
   .main-content { padding:28px 32px 32px; }
 }
 @media(min-width:1280px){ .main-content { padding:30px 40px 30px; } }
+
+/* ── MOBILE TABLE COLUMN HIDING (< 480px) ── */
+@media (max-width: 480px) {
+  .tbl-head { grid-template-columns: 2fr 1fr 1fr; padding: 12px 14px; }
+  .asset-row { grid-template-columns: 2fr 1fr 1fr; padding: 0 14px; }
+  .tbl-head span:last-child,
+  .asset-row .cap-col { display: none; }
+  .chg-badge { padding: 4px 8px; font-size: 12px; }
+  .main-content { padding: 16px 12px 88px; }
+  .stat-card { padding: 14px 14px; }
+}
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);} }

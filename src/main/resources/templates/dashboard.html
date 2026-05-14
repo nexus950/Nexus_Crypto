@@ -24,6 +24,7 @@
   --header-h: 60px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { overflow-x: hidden; }
 html, body { height: 100%; }
 body {
   background: var(--bg);
@@ -172,13 +173,13 @@ a.sidebar-profile { -webkit-tap-highlight-color: transparent; }
   pointer-events: none;
 }
 .portfolio-label { color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 10px; }
-.portfolio-amount { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 10px; }
+.portfolio-amount { font-family: 'Syne', sans-serif; font-size: clamp(28px, 8vw, 40px); font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 10px; word-break: break-word; }
 .portfolio-change {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 13px; font-weight: 700; color: var(--emerald);
   background: rgba(52,211,153,.10); padding: 5px 13px; border-radius: 100px;
 }
-.portfolio-actions { display: flex; gap: 10px; justify-content: center; margin-top: 22px; }
+.portfolio-actions { display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }
 .btn-primary {
   padding: 10px 30px; border-radius: 13px;
   background: var(--cyan); color: #080c14;
@@ -377,6 +378,17 @@ a.sidebar-profile { -webkit-tap-highlight-color: transparent; }
   .chart-bar-wrap { height: 112px; }
 }
 
+/* ── EXTRA SMALL PHONES (< 380px) ── */
+@media (max-width: 380px) {
+  .main-content { padding: 14px 12px 88px; }
+  .portfolio-card { padding: 22px 16px; }
+  .portfolio-amount { font-size: clamp(24px, 7vw, 32px); }
+  .btn-primary, .btn-secondary { padding: 10px 20px; font-size: 13px; }
+  .quick-actions { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .qa-btn { padding: 12px 4px; }
+  .qa-label { font-size: 10px; }
+}
+
 /* ── LIVE PULSE ── */
 .live-badge {
   display: inline-flex; align-items: center; gap: 5px;
@@ -421,10 +433,16 @@ a.sidebar-profile { -webkit-tap-highlight-color: transparent; }
   border-radius: 28px;
   padding: 32px 28px 28px;
   width: 100%; max-width: 440px;
+  max-height: 92vh;
+  overflow-y: auto;
   position: relative;
   box-shadow: 0 32px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(34,211,238,.06) inset;
   transform: translateY(22px) scale(.97);
   transition: transform .28s cubic-bezier(.34,1.56,.64,1);
+}
+@media (max-width: 480px) {
+  .modal-box { padding: 24px 18px 20px; border-radius: 20px; }
+  .modal-overlay { padding: 12px; }
 }
 .modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
 .modal-close {

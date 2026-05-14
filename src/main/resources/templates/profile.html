@@ -30,6 +30,7 @@
       color: var(--text);
       font-family: 'Space Grotesk', sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     body::before {
       content: '';
@@ -174,6 +175,7 @@
     }
     .profile-name {
       font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800;
+      word-break: break-word;
     }
     .profile-email {
       color: var(--muted); font-size: 14px; margin-top: 4px;
@@ -215,7 +217,7 @@
     }
     .info-row:last-child { border-bottom: none; }
     .info-label { color: var(--muted); font-size: 13px; font-weight: 500; }
-    .info-value { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .info-value { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; word-break: break-word; max-width: 55%; text-align: right; }
 
     .toggle-switch {
       width: 44px; height: 24px; background: #2a3444;
@@ -305,6 +307,15 @@
       }
       .profile-header { flex-direction: row; align-items: flex-end; }
       .cover-gradient { height: 160px; }
+    }
+    /* ── OVERRIDE INLINE SPAN-2 ON MOBILE (single-column layout safety) ── */
+    @media (max-width: 639px) {
+      /* Cards with inline style="grid-column: span 2" must not overflow single-col grid */
+      .profile-grid > [style*='grid-column'] { grid-column: 1 / -1 !important; }
+      .main-content { padding: 14px 12px 100px; }
+      .profile-name { font-size: 22px; }
+      .avatar-section { margin-top: -38px; }
+      .profile-avatar { width: 76px; height: 76px; font-size: 30px; }
     }
   </style>
 </head>

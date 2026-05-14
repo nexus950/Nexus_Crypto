@@ -30,6 +30,7 @@ body {
   color: var(--text);
   font-family: 'Space Grotesk', sans-serif;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 body::before {
   content: '';
@@ -191,7 +192,16 @@ body::before {
 .main-content { padding: 18px 16px 88px; }
 
 /* ── TABS ── */
-.tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+.tabs {
+  display: flex; gap: 10px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--border); padding-bottom: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex-wrap: nowrap;
+  padding-right: 4px;
+}
+.tabs::-webkit-scrollbar { display: none; }
 .tab-btn {
   background: transparent; border: none; color: var(--muted);
   font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;
@@ -257,6 +267,19 @@ body::before {
   .layout { margin-left: var(--sidebar-w); }
   .main-content { padding: 26px 30px 30px; }
   .admin-mobile-bar { display: none; }
+}
+/* ── TABLET (640px – 1023px) ── */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .main-content { padding: 20px 20px 88px; }
+  .tab-btn { font-size: 14px; padding: 8px 14px; }
+}
+/* ── SMALL PHONES (< 480px) ── */
+@media (max-width: 480px) {
+  .main-content { padding: 14px 12px 88px; }
+  .tab-btn { font-size: 12px; padding: 7px 10px; }
+  .card { padding: 14px 12px; }
+  .modal-box { padding: 20px 16px; }
+  .modal-overlay { padding: 12px; }
 }
 </style>
 </head>

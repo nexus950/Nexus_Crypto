@@ -353,7 +353,11 @@
       padding: 10px 18px;
       flex: 1;
       min-width: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .price-ticker-bar::-webkit-scrollbar { display: none; }
 
     .ptb-price {
       font-family: 'Syne', sans-serif;
@@ -1484,6 +1488,20 @@
       .chart-area {
         height: 300px;
       }
+    }
+
+    /* ── SMALL PHONES (< 480px) ── */
+    @media (max-width: 480px) {
+      .main-content { padding: 14px 10px 88px; }
+      .pair-bar { gap: 8px; }
+      .pair-select { padding: 8px 12px; }
+      .pair-label { font-size: 14px; }
+      .chart-area { height: 220px; }
+      .form-body { padding: 12px 14px 16px; }
+      .ptb-stat { display: none; }
+      .ptb-stat:first-of-type { display: flex; }
+      .ptb-stat:nth-of-type(2) { display: flex; }
+      .divider-v { display: none; }
     }
 
     @media (min-width: 1024px) {
