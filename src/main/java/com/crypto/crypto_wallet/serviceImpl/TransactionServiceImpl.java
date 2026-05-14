@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -349,5 +350,18 @@ public class TransactionServiceImpl implements TransactionService {
                 .rejectionReason(tx.getRejectionReason())
                 .createdAt(tx.getCreatedAt())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, BigDecimal> getBonusByCoin(Long userId) {
+        List<Object[]> rows = transactionRepository.findBonusByCoinForUser(userId);
+        Map<String, BigDecimal> result = new java.util.LinkedHashMap<>();
+        for (Object[] row : rows) {
+            String coin = (String) row[0];
+            BigDecimal total = (BigDecimal) row[1];
+            result.put(coin, total);
+        }
+        return result;
     }
 }
