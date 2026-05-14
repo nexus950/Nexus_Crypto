@@ -17,6 +17,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserResponse>> getProfile(
@@ -33,5 +34,20 @@ public class UserController {
         String fullName = body.get("fullName");
         return ResponseEntity.ok(ApiResponse.ok("Profile updated",
                 userService.updateProfile(userId, fullName)));
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<ApiResponse<String>> changePassword(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody com.crypto.crypto_wallet.dto.ChangePasswordRequest request) {
+        try {
+            Long userId = userService.getByEmail(userDetails.getUsername()).getId();
+            userService.changePassword(userId, request, passwordEncoder);
+            return ResponseEntity.ok(ApiResponse.ok("Password changed successfully", null));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(ApiResponse.error("Failed to change password"));
+        }
     }
 }

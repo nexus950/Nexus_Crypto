@@ -12,4 +12,5 @@ public interface UserService {
     UserResponse createUser(com.crypto.crypto_wallet.dto.CreateUserRequest request, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder);
     UserResponse updateUser(Long id, com.crypto.crypto_wallet.dto.UpdateUserRequest request);
     UserResponse toggleUserStatus(Long id);
+    void changePassword(Long id, com.crypto.crypto_wallet.dto.ChangePasswordRequest request, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder);
 }

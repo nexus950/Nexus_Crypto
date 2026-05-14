@@ -81,6 +81,17 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(!user.isEnabled());
         return toResponse(userRepository.save(user));
     }
+    @Override
+    @Transactional
+    public void changePassword(Long id, com.crypto.crypto_wallet.dto.ChangePasswordRequest request, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Incorrect current password");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
 
     @Override
     public UserResponse toResponse(User user) {
