@@ -71,10 +71,27 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
+
   if (params.has('registered')) {
     const sBox = document.getElementById('successBox');
     sBox.textContent = 'Registration successful! Please sign in to continue.';
     sBox.style.display = 'block';
+  }
+
+  if (params.has('expired')) {
+    const eBox = document.getElementById('errBox');
+    eBox.innerHTML = '⏱ Your session has expired. Please sign in again to continue.';
+    eBox.style.display = 'block';
+    // Style as a warning (amber) instead of red
+    eBox.style.background = 'rgba(251,191,36,.1)';
+    eBox.style.borderColor = 'rgba(251,191,36,.3)';
+    eBox.style.color = '#fbbf24';
+  }
+
+  if (params.has('forbidden')) {
+    const eBox = document.getElementById('errBox');
+    eBox.innerHTML = '🔒 Access denied. Please sign in with an authorised account.';
+    eBox.style.display = 'block';
   }
 });
 

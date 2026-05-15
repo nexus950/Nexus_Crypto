@@ -64,7 +64,8 @@ public class SecurityConfig {
                         .sessionFixation().migrateSession()
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false)
-                        .expiredUrl("/api/login?expired")
+                        // Redirect to sign-in when a session expires (e.g. concurrent login or timeout)
+                        .expiredUrl("/home/signin?expired")
                 )
 
                 .securityContext(ctx -> ctx
@@ -114,16 +115,36 @@ public class SecurityConfig {
 
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                            objectMapper.writeValue(response.getWriter(),
-                                    ApiResponse.error("Unauthorized - please login"));
+                            String accept = request.getHeader("Accept");
+                            String xRequested = request.getHeader("X-Requested-With");
+                            boolean isAjax = (xRequested != null && xRequested.equalsIgnoreCase("XMLHttpRequest"))
+                                    || (accept != null && accept.contains("application/json") && !accept.contains("text/html"));
+
+                            if (isAjax) {
+                                // API / fetch() call → return JSON 401 so JS can handle it
+                                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                                objectMapper.writeValue(response.getWriter(),
+                                        ApiResponse.error("Session expired – please sign in"));
+                            } else {
+                                // Browser page navigation → redirect to sign-in
+                                response.sendRedirect("/home/signin?expired");
+                            }
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setStatus(HttpStatus.FORBIDDEN.value());
-                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                            objectMapper.writeValue(response.getWriter(),
-                                    ApiResponse.error("Access denied"));
+                            String accept = request.getHeader("Accept");
+                            String xRequested = request.getHeader("X-Requested-With");
+                            boolean isAjax = (xRequested != null && xRequested.equalsIgnoreCase("XMLHttpRequest"))
+                                    || (accept != null && accept.contains("application/json") && !accept.contains("text/html"));
+
+                            if (isAjax) {
+                                response.setStatus(HttpStatus.FORBIDDEN.value());
+                                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                                objectMapper.writeValue(response.getWriter(),
+                                        ApiResponse.error("Access denied"));
+                            } else {
+                                response.sendRedirect("/home/signin?forbidden");
+                            }
                         })
                 );
 

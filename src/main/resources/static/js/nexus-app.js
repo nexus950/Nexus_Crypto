@@ -2,6 +2,39 @@
    nexus-app.js  –  shared utilities
 ═══════════════════════════════════════ */
 
+/* ── Global session-expiry guard ──────────────────────────────────────────
+   Intercepts every fetch() call platform-wide. If the server returns HTTP 401
+   (session expired / not authenticated) we redirect to the sign-in page once.
+   The debounce flag prevents a cascade of redirects from concurrent requests.
+   Pages that intentionally handle 401 themselves (e.g. login flow) won't be
+   affected because they check res.ok / res.status before the interceptor can
+   redirect (the actual redirect is a micro-task, not synchronous).
+──────────────────────────────────────────────────────────────────────────── */
+(function () {
+  const SIGN_IN_URL   = '/home/signin?expired';
+  const PUBLIC_PATHS  = ['/home/signin', '/home/signup', '/home/landing_page', '/api/auth/login', '/api/auth/register'];
+  let   _redirecting  = false;
+
+  const _nativeFetch = window.fetch.bind(window);
+
+  window.fetch = async function (input, init) {
+    const url = (typeof input === 'string') ? input : (input instanceof Request ? input.url : String(input));
+
+    // Never intercept auth / public endpoints to avoid redirect loops
+    const isPublic = PUBLIC_PATHS.some(p => url.includes(p));
+
+    const response = await _nativeFetch(input, init);
+
+    if (!isPublic && response.status === 401 && !_redirecting) {
+      _redirecting = true;
+      // Small delay so any in-flight .json() calls on the same response don't crash
+      setTimeout(() => { window.location.href = SIGN_IN_URL; }, 100);
+    }
+
+    return response;
+  };
+})();
+
 /* ── API base ── */
 const API = {
   base: '/api',
