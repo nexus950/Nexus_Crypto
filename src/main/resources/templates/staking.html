@@ -1026,9 +1026,9 @@
 
   window.confirmStake = async function() {
     const amt = parseFloat(document.getElementById('stakeAmount').value);
-    if (!amt || amt <= 0) { alert('Please enter a valid amount.'); return; }
+    if (!amt || amt <= 0) { showToast('Please enter a valid amount.', 'error'); return; }
     if (!currentPool) return;
-    if (amt < currentPool.minStake) { alert(`Minimum stake is ${currentPool.minStake} ${currentPool.sym}.`); return; }
+    if (amt < currentPool.minStake) { showToast(`Minimum stake is ${currentPool.minStake} ${currentPool.sym}.`, 'error'); return; }
     const apy = currentPool.apy[selectedDuration] || 0;
     const btn = document.querySelector('#stakeModal .btn-primary');
     btn.textContent = 'Processing...';
@@ -1047,9 +1047,9 @@
         switchTab('mystakes', document.querySelector('.tab-btn:nth-child(2)'));
         showToast('✅ Staked ' + amt + ' ' + currentPool.sym + ' successfully!');
       } else {
-        alert(json.message || 'Staking failed');
+        showToast(json.message || 'Staking failed', 'error');
       }
-    } catch(e) { alert('Network error. Please try again.'); }
+    } catch(e) { showToast('Network error. Please try again.', 'error'); }
     btn.textContent = 'Confirm Stake';
     btn.disabled = false;
   };
@@ -1062,15 +1062,16 @@
       const res = await fetch('/api/staking/' + id, { method: 'DELETE', credentials: 'same-origin' });
       if (res.status === 401) { window.location.href = '/home/signin'; return; }
       const json = await res.json();
-      if (json.success) { await loadMyStakes(); showToast('Stake cancelled. Funds returned.'); }
-      else { alert(json.message || 'Cancel failed'); btn.textContent = 'Cancel'; btn.disabled = false; }
-    } catch(e) { alert('Network error'); btn.textContent = 'Cancel'; btn.disabled = false; }
+      if (json.success) { await loadMyStakes(); showToast('Stake cancelled. Funds returned.', 'success'); }
+      else { showToast(json.message || 'Cancel failed', 'error'); btn.textContent = 'Cancel'; btn.disabled = false; }
+    } catch(e) { showToast('Network error', 'error'); btn.textContent = 'Cancel'; btn.disabled = false; }
   };
 
-  function showToast(msg) {
+  function showToast(msg, type = 'info') {
     const t = document.createElement('div');
     t.textContent = msg;
-    Object.assign(t.style, { position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)', background:'var(--emerald)', color:'#000', padding:'12px 22px', borderRadius:'14px', fontWeight:'700', zIndex:'9999', fontSize:'13px', boxShadow:'0 4px 20px rgba(0,0,0,.4)' });
+    const bg = type === 'error' ? '#F87171' : (type === 'success' ? '#34D399' : '#22D3EE');
+    Object.assign(t.style, { position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)', background:bg, color:'#000', padding:'12px 22px', borderRadius:'14px', fontWeight:'700', zIndex:'9999', fontSize:'13px', boxShadow:'0 4px 20px rgba(0,0,0,.4)' });
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3000);
   }

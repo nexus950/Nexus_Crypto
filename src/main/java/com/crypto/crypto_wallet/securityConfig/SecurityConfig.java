@@ -79,6 +79,7 @@ public class SecurityConfig {
                                 "/api/auth/register",
                                 "/api/auth/login",
                                 "/api/auth/logout",
+                                "/api/crypto/**",
                                 "/home/landing_page",
                                 "/home/signin",
                                 "/home/signup",

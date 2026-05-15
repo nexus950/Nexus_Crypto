@@ -817,8 +817,8 @@ body::before {
       if(data.success) {
         closeModal('userModal');
         loadUsers();
-        alert('User created successfully');
-      } else { alert(data.message); }
+        showToast('User created successfully', 'success');
+      } else { showToast(data.message, 'error'); }
     } catch(e) { console.error(e); }
   }
 
@@ -870,8 +870,8 @@ body::before {
     try {
       const res = await fetch(`/api/admin/deposits/${id}/approve`, { method: 'POST' });
       const data = await res.json();
-      if(data.success) { alert('Deposit Approved'); loadDeposits(); }
-      else alert(data.message);
+      if(data.success) { showToast('Deposit Approved', 'success'); loadDeposits(); }
+      else showToast(data.message, 'error');
     } catch(e) { console.error(e); }
   }
 
@@ -886,8 +886,8 @@ body::before {
         body: JSON.stringify({ reason: reason })
       });
       const data = await res.json();
-      if(data.success) { alert('Deposit Rejected'); loadDeposits(); }
-      else alert(data.message);
+      if(data.success) { showToast('Deposit Rejected', 'success'); loadDeposits(); }
+      else showToast(data.message, 'error');
     } catch(e) { console.error(e); }
   }
 
@@ -928,8 +928,8 @@ body::before {
     try {
       const res = await fetch(`/api/admin/withdrawals/${id}/approve`, { method: 'POST' });
       const data = await res.json();
-      if(data.success) { alert('Withdrawal Approved'); loadWithdrawals(); }
-      else alert(data.message);
+      if(data.success) { showToast('Withdrawal Approved', 'success'); loadWithdrawals(); }
+      else showToast(data.message, 'error');
     } catch(e) { console.error(e); }
   }
 
@@ -938,7 +938,7 @@ body::before {
     if(reason === null) return; // User cancelled
     
     if(!reason.trim()) {
-      alert("A rejection reason is required for withdrawals.");
+      showToast("A rejection reason is required for withdrawals.", 'error');
       return;
     }
 
@@ -949,8 +949,8 @@ body::before {
         body: JSON.stringify({ reason: reason })
       });
       const data = await res.json();
-      if(data.success) { alert('Withdrawal Rejected (Amount Refunded)'); loadWithdrawals(); }
-      else alert(data.message);
+      if(data.success) { showToast('Withdrawal Rejected (Amount Refunded)', 'success'); loadWithdrawals(); }
+      else showToast(data.message, 'error');
     } catch(e) { console.error(e); }
   }
 
@@ -1012,8 +1012,8 @@ body::before {
     try {
       const res = await fetch(`/api/admin/kyc/${currentKycId}/approve`, { method: 'POST' });
       const data = await res.json();
-      if(data.success) { alert('KYC Approved'); closeModal('kycModal'); loadKyc(); }
-      else alert(data.message);
+      if(data.success) { showToast('KYC Approved', 'success'); closeModal('kycModal'); loadKyc(); }
+      else showToast(data.message, 'error');
     } catch(e) { console.error(e); }
   }
 
@@ -1027,8 +1027,8 @@ body::before {
         body: JSON.stringify({ reason: reason })
       });
       const data = await res.json();
-      if(data.success) { alert('KYC Rejected'); closeModal('kycModal'); loadKyc(); }
-      else alert(data.message);
+      if(data.success) { showToast('KYC Rejected', 'success'); closeModal('kycModal'); loadKyc(); }
+      else showToast(data.message, 'error');
     } catch(e) { console.error(e); }
   }
 
@@ -1036,6 +1036,20 @@ body::before {
   document.addEventListener('DOMContentLoaded', () => {
     loadUsers(); // load users initially since it's the active tab
   });
+
+  function showToast(msg, type = 'info') {
+    let t = document.getElementById('__toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = '__toast';
+      document.body.appendChild(t);
+    }
+    const bg = type === 'error' ? '#F87171' : (type === 'success' ? '#34D399' : '#22D3EE');
+    Object.assign(t.style, { position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)', background:bg, color:'#000', padding:'12px 22px', borderRadius:'14px', fontWeight:'700', zIndex:'9999', fontSize:'13px', boxShadow:'0 4px 20px rgba(0,0,0,.4)', opacity: '1', transition: 'opacity 0.3s' });
+    t.textContent = msg;
+    clearTimeout(t.__timer);
+    t.__timer = setTimeout(() => t.style.opacity = '0', 3000);
+  }
 
 </script>
 </body>

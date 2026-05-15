@@ -736,49 +736,46 @@ window.addEventListener('scroll', () => {
 });
 
 /* ── Ticker ── */
-const COINS = [
-  { sym:'BTC',  price:'$68,520', change:'+2.77%', up:true,  icon:'https://cryptologos.cc/logos/bitcoin-btc-logo.png' },
-  { sym:'ETH',  price:'$2,131',  change:'+1.12%', up:true,  icon:'https://cryptologos.cc/logos/ethereum-eth-logo.png' },
-  { sym:'SOL',  price:'$145.67', change:'+5.12%', up:true,  icon:'https://cryptologos.cc/logos/solana-sol-logo.png' },
-  { sym:'BNB',  price:'$580.45', change:'-0.45%', up:false, icon:'https://cryptologos.cc/logos/bnb-bnb-logo.png' },
-  { sym:'XRP',  price:'$0.620',  change:'+1.20%', up:true,  icon:'https://cryptologos.cc/logos/xrp-xrp-logo.png' },
-  { sym:'ADA',  price:'$0.452',  change:'+0.85%', up:true,  icon:'https://cryptologos.cc/logos/cardano-ada-logo.png' },
-  { sym:'DOGE', price:'$0.165',  change:'+12.4%', up:true,  icon:'https://cryptologos.cc/logos/dogecoin-doge-logo.png' },
-  { sym:'AVAX', price:'$35.21',  change:'-2.10%', up:false, icon:'https://cryptologos.cc/logos/avalanche-avax-logo.png' },
-];
+let COINS = [];
+
+const fallbackIcon = sym => `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'><rect width='48' height='48' rx='24' fill='%231a2236'/><text x='24' y='31' text-anchor='middle' fill='%2322d3ee' font-size='16' font-family='sans-serif' font-weight='bold'>${sym[0]}</text></svg>`;
 
 function buildTicker() {
   const track = document.getElementById('tickerTrack');
+  if (!COINS.length) return;
   const items = [...COINS, ...COINS]; // duplicate for seamless loop
   track.innerHTML = items.map(c => `
     <div class="ticker-item">
-      <img src="${c.icon}" referrerpolicy="no-referrer" alt="${c.sym}">
+      <img src="${c.icon}" referrerpolicy="no-referrer" alt="${c.sym}" onerror="this.src='${fallbackIcon(c.sym)}'">
       <span class="ticker-sym">${c.sym}/USDT</span>
       <span class="ticker-price" id="tp-${c.sym}">${c.price}</span>
       <span class="ticker-change ${c.up ? 'up' : 'down'}" id="tc-${c.sym}">${c.change}</span>
     </div>
   `).join('');
 }
-buildTicker();
 
-// Live-ish price jitter
-setInterval(() => {
-  COINS.forEach(c => {
-    const rawPrice = parseFloat(c.price.replace(/[$,]/g,''));
-    const delta = (Math.random() - 0.5) * rawPrice * 0.002;
-    const newPrice = Math.max(0.0001, rawPrice + delta);
-    c.price = '$' + newPrice.toLocaleString(undefined, { minimumFractionDigits:2, maximumFractionDigits:2 });
-    const changeVal = parseFloat(c.change.replace(/[+%]/g,'')) + (Math.random() - 0.5) * 0.08;
-    c.change = (changeVal >= 0 ? '+' : '') + changeVal.toFixed(2) + '%';
-    c.up = changeVal >= 0;
-    // update both copies
-    document.querySelectorAll(`[id="tp-${c.sym}"]`).forEach(el => el.textContent = c.price);
-    document.querySelectorAll(`[id="tc-${c.sym}"]`).forEach(el => {
-      el.textContent = c.change;
-      el.className = 'ticker-change ' + (c.up ? 'up' : 'down');
-    });
-  });
-}, 3000);
+async function fetchTickerPrices() {
+  try {
+    const res = await fetch('/api/crypto/prices', { credentials: 'same-origin' });
+    if (!res.ok) return;
+    const json = await res.json();
+    if (json && json.success && json.data) {
+      COINS = json.data.slice(0, 10).map(d => ({
+        sym: d.symbol.toUpperCase(),
+        price: '$' + (d.current_price < 1 ? (d.current_price || 0).toFixed(4) : (d.current_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })),
+        change: ((d.price_change_percentage_24h || 0) >= 0 ? '+' : '') + (d.price_change_percentage_24h || 0).toFixed(2) + '%',
+        up: (d.price_change_percentage_24h || 0) >= 0,
+        icon: d.image
+      }));
+      buildTicker();
+    }
+  } catch (e) {
+    console.error('Ticker fetch error:', e);
+  }
+}
+
+fetchTickerPrices();
+setInterval(fetchTickerPrices, 300000); // refresh every 5 min
 
 /* ── Scroll animations ── */
 const observer = new IntersectionObserver(entries => {

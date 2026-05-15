@@ -2413,7 +2413,7 @@
     function setMax() {
       if (side === 'buy') {
         const p = effectivePriceForSizing();
-        if (!Number.isFinite(p) || p <= 0) return alert('Price not available yet');
+        if (!Number.isFinite(p) || p <= 0) return showToast('Price not available yet', 'error');
         const maxAmt = AVAIL_USDT / p;
         document.getElementById('amtInput').value = maxAmt.toFixed(8);
       } else {
@@ -2540,20 +2540,20 @@
     function placeOrder() {
       const p = parseFloat(document.getElementById('priceInput').value);
       const a = parseFloat(document.getElementById('amtInput').value);
-      if (!Number.isFinite(a) || a <= 0) return alert('Enter a valid amount');
-      if (orderType === 'limit' && (!Number.isFinite(p) || p <= 0)) return alert('Enter a valid limit price');
+      if (!Number.isFinite(a) || a <= 0) return showToast('Enter a valid amount', 'error');
+      if (orderType === 'limit' && (!Number.isFinite(p) || p <= 0)) return showToast('Enter a valid limit price', 'error');
 
       const execPx = orderType === 'market' ? price : p;
       if (!Number.isFinite(execPx) || execPx <= 0) {
-        return alert('Live price not ready yet. Wait a moment and try again.');
+        return showToast('Live price not ready yet. Wait a moment and try again.', 'error');
       }
 
       const quoteNotional = execPx * a;
       if (side === 'buy' && quoteNotional > AVAIL_USDT + 1e-10) {
-        return alert('Insufficient USDT in your wallet for this order.');
+        return showToast('Insufficient USDT in your wallet for this order.', 'error');
       }
       if (side === 'sell' && a > AVAIL_BASE + 1e-12) {
-        return alert('Insufficient ' + activeCoinSym + ' in your wallet for this order.');
+        return showToast('Insufficient ' + activeCoinSym + ' in your wallet for this order.', 'error');
       }
 
       const btn = document.getElementById('submitBtn');
@@ -2587,7 +2587,7 @@
             return Promise.reject('Unauthorized');
           }
           if (!res.ok) {
-            alert(data.message || ('Could not place order (' + res.status + ')'));
+            showToast(data.message || ('Could not place order (' + res.status + ')'), 'error');
             btn.textContent = origText;
             btn.disabled = false;
             btn.style.opacity = '1';
@@ -2603,7 +2603,7 @@
             resyncBalancesFromApi();
             fetchLiveTrades();
           } else {
-            alert(data.message || 'Trade failed');
+            showToast(data.message || 'Trade failed', 'error');
             btn.textContent = origText;
             btn.disabled = false;
             btn.style.opacity = '1';
@@ -2611,7 +2611,7 @@
         })
         .catch(err => {
           if (err === 'Unauthorized') return;
-          alert('Network error placing trade');
+          showToast('Network error placing trade', 'error');
           btn.textContent = origText;
           btn.disabled = false;
           btn.style.opacity = '1';
@@ -2737,7 +2737,7 @@
             return Promise.reject('Unauthorized');
           }
           if (!res.ok) {
-            alert(data.message || ('Cancel failed (' + res.status + ')'));
+            showToast(data.message || ('Cancel failed (' + res.status + ')'), 'error');
             btn.textContent = 'Cancel';
             btn.disabled = false;
             return;
@@ -2746,7 +2746,7 @@
             btn.textContent = 'Canceled';
             fetchLiveTrades();
           } else {
-            alert(data.message || 'Failed to cancel');
+            showToast(data.message || 'Failed to cancel', 'error');
             btn.textContent = 'Cancel';
             btn.disabled = false;
           }
@@ -2810,6 +2810,20 @@
     // Init
     updateSliderBg(0);
     updateTotal();
+
+    function showToast(msg, type = 'info') {
+      let t = document.getElementById('__toast');
+      if (!t) {
+        t = document.createElement('div');
+        t.id = '__toast';
+        document.body.appendChild(t);
+      }
+      const bg = type === 'error' ? '#F87171' : (type === 'success' ? '#34D399' : '#22D3EE');
+      Object.assign(t.style, { position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)', background:bg, color:'#000', padding:'12px 22px', borderRadius:'14px', fontWeight:'700', zIndex:'9999', fontSize:'13px', boxShadow:'0 4px 20px rgba(0,0,0,.4)', opacity: '1', transition: 'opacity 0.3s' });
+      t.textContent = msg;
+      clearTimeout(t.__timer);
+      t.__timer = setTimeout(() => t.style.opacity = '0', 3000);
+    }
   </script>
 </body>
 
