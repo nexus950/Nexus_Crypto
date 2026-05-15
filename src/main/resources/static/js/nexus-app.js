@@ -30,7 +30,7 @@ const Auth = {
   },
   async logout() {
     await API.post('/auth/logout');
-    window.location.href = '/home/landing';
+    window.location.href = '/home/landing_page';
   },
   async me() {
     try { return await API.get('/auth/me'); }

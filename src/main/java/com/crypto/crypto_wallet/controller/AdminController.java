@@ -2,12 +2,16 @@ package com.crypto.crypto_wallet.controller;
 
 import com.crypto.crypto_wallet.dto.*;
 import com.crypto.crypto_wallet.entity.DepositAddress;
+import com.crypto.crypto_wallet.entity.Wallet;
 import com.crypto.crypto_wallet.exception.ResourceNotFoundException;
 import com.crypto.crypto_wallet.repository.DepositAddressRepository;
+import com.crypto.crypto_wallet.repository.WalletRepository;
+import com.crypto.crypto_wallet.service.CryptoPriceService;
 import com.crypto.crypto_wallet.service.KycService;
 import com.crypto.crypto_wallet.service.ReferralService;
 import com.crypto.crypto_wallet.service.TransactionService;
 import com.crypto.crypto_wallet.service.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,6 +38,8 @@ public class AdminController {
     private final PasswordEncoder passwordEncoder;
     private final ReferralService referralService;
     private final DepositAddressRepository depositAddressRepository;
+    private final WalletRepository walletRepository;
+    private final CryptoPriceService cryptoPriceService;
 
     // ─────────────────────────────────────────
     //  USER MANAGEMENT
@@ -50,6 +58,50 @@ public class AdminController {
     @PutMapping("/users/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(ApiResponse.ok("User updated successfully", userService.updateUser(id, request)));
+    }
+
+    /** Returns all wallets for a user with live USD values calculated from the server-side price cache. */
+    @GetMapping("/users/{id}/wallets")
+    public ResponseEntity<ApiResponse<List<Map<String, Object>>>> getUserWallets(@PathVariable Long id) {
+        List<Wallet> wallets = walletRepository.findByUserId(id);
+        JsonNode priceData = cryptoPriceService.getMarketData();
+
+        // Build a quick sym -> price lookup map from cached CoinGecko data
+        Map<String, Double> prices = new HashMap<>();
+        if (priceData != null && priceData.isArray()) {
+            priceData.forEach(coin -> {
+                String sym = coin.has("symbol") ? coin.get("symbol").asText("").toUpperCase() : "";
+                double price = coin.has("current_price") ? coin.get("current_price").asDouble(0) : 0;
+                if (!sym.isEmpty()) prices.put(sym, price);
+            });
+        }
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        double totalUsd = 0;
+        for (Wallet w : wallets) {
+            String sym = w.getCoinSymbol().trim().toUpperCase();
+            double balance = w.getBalance().doubleValue();
+            double priceUsd = prices.getOrDefault(sym, 0.0);
+            double usdValue = balance * priceUsd;
+            totalUsd += usdValue;
+
+            Map<String, Object> row = new HashMap<>();
+            row.put("coinSymbol", sym);
+            row.put("balance", w.getBalance());
+            row.put("priceUsd", priceUsd);
+            row.put("usdValue", usdValue);
+            result.add(row);
+        }
+
+        // Append a totals summary row
+        Map<String, Object> summary = new HashMap<>();
+        summary.put("coinSymbol", "TOTAL");
+        summary.put("balance", null);
+        summary.put("priceUsd", null);
+        summary.put("usdValue", totalUsd);
+        result.add(summary);
+
+        return ResponseEntity.ok(ApiResponse.ok("User wallets fetched", result));
     }
 
     @PutMapping("/users/{id}/toggle-status")
