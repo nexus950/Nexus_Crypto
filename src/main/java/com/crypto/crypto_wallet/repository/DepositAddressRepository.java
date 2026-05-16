@@ -9,4 +9,5 @@ import java.util.List;
 public interface DepositAddressRepository extends JpaRepository<DepositAddress, Long> {
     Optional<DepositAddress> findByCoinSymbolIgnoreCaseAndActiveTrue(String coinSymbol);
     List<DepositAddress> findAllByActiveTrueOrderByCoinSymbolAsc();
+    Optional<DepositAddress> findByCoinSymbolIgnoreCase(String coinSymbol);
 }

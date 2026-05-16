@@ -122,10 +122,7 @@ body::before {
   border: 1px solid var(--border); cursor: pointer;
   transition: background .17s, color .17s, border-color .17s;
 }
-.logout-btn:hover {
-  color: var(--red); border-color: rgba(248,113,113,.35);
-  background: rgba(248,113,113,.08);
-}
+.logout-btn:hover { color: var(--red); border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.08); }
 .logout-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .sidebar-logout {
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -135,20 +132,12 @@ body::before {
   border: 1px solid var(--border); cursor: pointer;
   transition: background .17s, color .17s, border-color .17s;
 }
-.sidebar-logout:hover {
-  color: var(--red); border-color: rgba(248,113,113,.35);
-  background: rgba(248,113,113,.08);
-}
+.sidebar-logout:hover { color: var(--red); border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.08); }
 .sidebar-logout:disabled { opacity: 0.55; cursor: not-allowed; }
 
-/* Mobile: fixed bar so logout is always reachable when sidebar is hidden */
 .admin-mobile-bar {
   display: flex;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 199;
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 199;
   padding: 10px 16px max(12px, env(safe-area-inset-bottom));
   background: rgba(8,12,20,.96);
   border-top: 1px solid var(--border);
@@ -156,30 +145,14 @@ body::before {
   justify-content: center;
 }
 .admin-mobile-logout {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  max-width: 420px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--muted);
-  background: transparent;
-  border: 1px solid var(--border);
-  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; max-width: 420px; padding: 12px 16px; border-radius: 12px;
+  font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700;
+  color: var(--muted); background: transparent; border: 1px solid var(--border); cursor: pointer;
   transition: background .17s, color .17s, border-color .17s;
 }
-.admin-mobile-logout:hover {
-  color: var(--red);
-  border-color: rgba(248,113,113,.35);
-  background: rgba(248,113,113,.08);
-}
+.admin-mobile-logout:hover { color: var(--red); border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.08); }
 .admin-mobile-logout:disabled { opacity: 0.55; cursor: not-allowed; }
-
 .avatar-btn {
   width: 36px; height: 36px; border-radius: 50%;
   background: linear-gradient(135deg, var(--cyan), var(--blue));
@@ -195,18 +168,15 @@ body::before {
 .tabs {
   display: flex; gap: 10px; margin-bottom: 20px;
   border-bottom: 1px solid var(--border); padding-bottom: 10px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  flex-wrap: nowrap;
-  padding-right: 4px;
+  overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  flex-wrap: nowrap; padding-right: 4px;
 }
 .tabs::-webkit-scrollbar { display: none; }
 .tab-btn {
   background: transparent; border: none; color: var(--muted);
   font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600;
-  cursor: pointer; padding: 8px 16px; border-radius: 8px;
-  transition: all 0.2s;
+  cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;
+  white-space: nowrap;
 }
 .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
 .tab-btn.active { color: var(--cyan); background: rgba(34,211,238,.1); }
@@ -231,22 +201,20 @@ body::before {
 .action-btn.approve:hover { background: rgba(52,211,153,.1); }
 .action-btn.reject { color: var(--red); border-color: rgba(248,113,113,.3); }
 .action-btn.reject:hover { background: rgba(248,113,113,.1); }
+.action-btn.edit { color: var(--cyan); border-color: rgba(34,211,238,.3); }
+.action-btn.edit:hover { background: rgba(34,211,238,.1); }
+.action-btn.delete { color: var(--red); border-color: rgba(248,113,113,.3); }
+.action-btn.delete:hover { background: rgba(248,113,113,.1); }
 
 /* ── ASSETS TAB ── */
-.assets-user-select {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 22px; flex-wrap: wrap;
-}
-.assets-select-label {
-  font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap;
-}
+.assets-user-select { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; flex-wrap: wrap; }
+.assets-select-label { font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
 .assets-select {
   flex: 1; min-width: 220px; max-width: 360px;
   background: rgba(255,255,255,.04); border: 1px solid var(--border);
   border-radius: 12px; padding: 10px 16px;
   color: var(--text); font-family: 'Space Grotesk', sans-serif;
-  font-size: 14px; outline: none; cursor: pointer;
-  transition: border-color .2s;
+  font-size: 14px; outline: none; cursor: pointer; transition: border-color .2s;
 }
 .assets-select:focus { border-color: rgba(34,211,238,.35); }
 .assets-select option { background: #0d1421; }
@@ -254,8 +222,7 @@ body::before {
   padding: 10px 18px; border-radius: 12px;
   background: rgba(34,211,238,.1); border: 1px solid rgba(34,211,238,.25);
   color: var(--cyan); font-family: 'Space Grotesk', sans-serif;
-  font-size: 13px; font-weight: 700; cursor: pointer;
-  transition: background .2s;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: background .2s;
   display: flex; align-items: center; gap: 7px;
 }
 .assets-refresh-btn:hover { background: rgba(34,211,238,.18); }
@@ -263,43 +230,76 @@ body::before {
   display: flex; align-items: center; justify-content: space-between;
   background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(59,130,246,.08));
   border: 1px solid rgba(34,211,238,.15); border-radius: 16px;
-  padding: 18px 22px; margin-bottom: 20px;
-  flex-wrap: wrap; gap: 12px;
+  padding: 18px 22px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
 }
 .portfolio-bar-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .portfolio-bar-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--cyan); }
 .portfolio-bar-user { font-size: 13px; color: var(--muted); font-weight: 600; }
 .assets-coin-table { width: 100%; border-collapse: collapse; min-width: 480px; }
-.assets-coin-table th {
-  text-align: left; padding: 12px 14px;
-  font-size: 11px; color: var(--muted); text-transform: uppercase;
-  letter-spacing: .06em; border-bottom: 1px solid var(--border);
-}
-.assets-coin-table td {
-  padding: 14px 14px; font-size: 14px;
-  border-bottom: 1px solid rgba(255,255,255,.03);
-  vertical-align: middle;
-}
+.assets-coin-table th { text-align: left; padding: 12px 14px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; border-bottom: 1px solid var(--border); }
+.assets-coin-table td { padding: 14px 14px; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,.03); vertical-align: middle; }
 .assets-coin-table tbody tr:hover td { background: rgba(255,255,255,.025); }
-.assets-coin-table .total-row td {
-  font-weight: 800; font-size: 15px;
+.assets-coin-table .total-row td { font-weight: 800; font-size: 15px; border-top: 1px solid var(--border); border-bottom: none; color: var(--cyan); background: rgba(34,211,238,.04); }
+.assets-empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 14px; }
+.assets-empty svg { margin-bottom: 12px; opacity: .35; }
+
+/* ── DEPOSIT ADDRESS TAB ── */
+.addr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin-top: 4px;
+}
+.addr-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  transition: border-color .2s, background .2s;
+  position: relative;
+}
+.addr-card:hover { border-color: rgba(34,211,238,.2); background: rgba(34,211,238,.02); }
+.addr-card.inactive { opacity: .5; }
+.addr-card-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+}
+.addr-coin-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.addr-coin-icon {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px; flex-shrink: 0;
+}
+.addr-coin-name { font-weight: 800; font-size: 15px; }
+.addr-coin-sym { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.addr-status-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.addr-status-dot.active-dot { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
+.addr-status-dot.inactive-dot { background: var(--muted); }
+.addr-field { margin-bottom: 10px; }
+.addr-field-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 700; margin-bottom: 3px; }
+.addr-field-value {
+  font-size: 13px; font-family: monospace; background: rgba(255,255,255,.04);
+  padding: 7px 10px; border-radius: 8px; word-break: break-all;
+  border: 1px solid var(--border); color: var(--text);
+}
+.addr-network-tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px; text-transform: uppercase;
+  background: rgba(167,139,250,.1); color: var(--purple);
+  border: 1px solid rgba(167,139,250,.2);
+}
+.addr-card-actions {
+  display: flex; gap: 8px; margin-top: 14px; padding-top: 14px;
   border-top: 1px solid var(--border);
-  border-bottom: none;
-  color: var(--cyan);
-  background: rgba(34,211,238,.04);
 }
-.coin-sym-badge {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(34,211,238,.1); color: var(--cyan);
-  font-weight: 800; font-size: 13px; margin-right: 10px;
-  vertical-align: middle; flex-shrink: 0;
-}
-.assets-empty {
+.addr-empty {
   text-align: center; padding: 60px 20px;
   color: var(--muted); font-size: 14px;
 }
-.assets-empty svg { margin-bottom: 12px; opacity: .35; }
+.addr-empty svg { margin-bottom: 12px; opacity: .35; }
 
 /* ── MODALS ── */
 .modal-overlay {
@@ -313,18 +313,36 @@ body::before {
   padding: 24px; width: 100%; max-width: 400px;
 }
 .modal-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; margin-bottom: 20px; color: var(--cyan); }
+.modal-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 700; margin-bottom: 5px; }
+.modal-field { margin-bottom: 14px; }
 .modal-input {
-  width: 100%; padding: 10px; background: rgba(255,255,255,.04); border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text); margin-bottom: 14px; font-family: 'Space Grotesk', sans-serif;
+  width: 100%; padding: 10px 12px; background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px;
+  outline: none; transition: border-color .2s;
 }
-.modal-select { width: 100%; padding: 10px; background: rgba(255,255,255,.04); border: 1px solid var(--border); border-radius: 10px; color: var(--text); margin-bottom: 14px; font-family: 'Space Grotesk', sans-serif; }
+.modal-input:focus { border-color: rgba(34,211,238,.35); }
+.modal-select {
+  width: 100%; padding: 10px 12px; background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px;
+  outline: none; cursor: pointer; transition: border-color .2s;
+}
+.modal-select:focus { border-color: rgba(34,211,238,.35); }
 .modal-select option { background: var(--bg); }
 .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
-.btn-primary { background: var(--cyan); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-.btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.btn-primary { background: var(--cyan); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; cursor: pointer; transition: opacity .2s; }
+.btn-primary:hover { opacity: .85; }
+.btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 10px 20px; border-radius: 8px; font-weight: 600; font-family: 'Space Grotesk', sans-serif; cursor: pointer; transition: background .2s; }
+.btn-secondary:hover { background: rgba(255,255,255,.05); }
+.btn-danger { background: rgba(248,113,113,.1); color: var(--red); border: 1px solid rgba(248,113,113,.3); padding: 10px 20px; border-radius: 8px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; cursor: pointer; transition: background .2s; }
+.btn-danger:hover { background: rgba(248,113,113,.2); }
 
-/* ── KYC Image Viewer ── */
+/* KYC */
 .kyc-img { max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; object-fit: contain; }
+
+/* Confirm modal */
+.confirm-modal-box { background: var(--card); border: 1px solid rgba(248,113,113,.25); border-radius: 20px; padding: 28px 24px; width: 100%; max-width: 360px; }
+.confirm-modal-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; color: var(--red); margin-bottom: 10px; }
+.confirm-modal-msg { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
 
 @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
 
@@ -337,18 +355,17 @@ body::before {
   .main-content { padding: 26px 30px 30px; }
   .admin-mobile-bar { display: none; }
 }
-/* ── TABLET (640px – 1023px) ── */
 @media (min-width: 640px) and (max-width: 1023px) {
   .main-content { padding: 20px 20px 88px; }
   .tab-btn { font-size: 14px; padding: 8px 14px; }
 }
-/* ── SMALL PHONES (< 480px) ── */
 @media (max-width: 480px) {
   .main-content { padding: 14px 12px 88px; }
   .tab-btn { font-size: 12px; padding: 7px 10px; }
   .card { padding: 14px 12px; }
   .modal-box { padding: 20px 16px; }
   .modal-overlay { padding: 12px; }
+  .addr-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -361,7 +378,6 @@ body::before {
     Nexus Crypto
   </div>
   <nav class="sidebar-nav">
-
     <a href="#" class="sidebar-item active">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
       Admin Panel
@@ -401,95 +417,68 @@ body::before {
 <div class="layout">
   <main class="main-content">
     <h2 style="font-family:'Syne',sans-serif; margin-bottom: 20px;">Platform Administration</h2>
-    
+
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('users')">Manage Users</button>
-      <button class="tab-btn" onclick="switchTab('deposits')">Pending Deposits</button>
-      <button class="tab-btn" onclick="switchTab('withdrawals')">Pending Withdrawals</button>
-      <button class="tab-btn" onclick="switchTab('kyc')">KYC Verifications</button>
-      <button class="tab-btn" onclick="switchTab('assets')">User Assets</button>
+      <button class="tab-btn active"  onclick="switchTab('users',this)">Manage Users</button>
+      <button class="tab-btn"         onclick="switchTab('deposits',this)">Pending Deposits</button>
+      <button class="tab-btn"         onclick="switchTab('withdrawals',this)">Pending Withdrawals</button>
+      <button class="tab-btn"         onclick="switchTab('kyc',this)">KYC Verifications</button>
+      <button class="tab-btn"         onclick="switchTab('assets',this)">User Assets</button>
+      <button class="tab-btn"         onclick="switchTab('addresses',this)">Deposit Addresses</button>
     </div>
 
-    <!-- USERS TAB -->
+    <!-- ─── USERS TAB ─── -->
     <div id="users-tab" class="tab-content active card">
       <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
         <h3 style="font-family:'Syne',sans-serif; font-size:16px;">All Users</h3>
         <button class="btn-primary" onclick="openCreateUserModal()">+ Create User</button>
       </div>
       <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>KYC</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="usersTableBody">
-          <tr><td colspan="7">Loading...</td></tr>
-        </tbody>
+        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>KYC</th><th>Actions</th></tr></thead>
+        <tbody id="usersTableBody"><tr><td colspan="7">Loading...</td></tr></tbody>
       </table>
     </div>
 
-    <!-- DEPOSITS TAB -->
+    <!-- ─── DEPOSITS TAB ─── -->
     <div id="deposits-tab" class="tab-content card">
       <h3 style="font-family:'Syne',sans-serif; font-size:16px; margin-bottom:15px;">Pending Deposits</h3>
       <table class="admin-table">
-        <thead>
-          <tr>
-            <th>TX ID</th><th>User</th><th>Date</th><th>Coin</th><th>Amount</th><th>Address / TX Hash</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="depositsTableBody">
-          <tr><td colspan="7">Loading...</td></tr>
-        </tbody>
+        <thead><tr><th>TX ID</th><th>User</th><th>Date</th><th>Coin</th><th>Amount</th><th>Address / TX Hash</th><th>Actions</th></tr></thead>
+        <tbody id="depositsTableBody"><tr><td colspan="7">Loading...</td></tr></tbody>
       </table>
     </div>
 
-    <!-- WITHDRAWALS TAB -->
+    <!-- ─── WITHDRAWALS TAB ─── -->
     <div id="withdrawals-tab" class="tab-content card">
       <h3 style="font-family:'Syne',sans-serif; font-size:16px; margin-bottom:15px;">Pending Withdrawals</h3>
       <table class="admin-table">
-        <thead>
-          <tr>
-            <th>TX ID</th><th>User</th><th>Date</th><th>Coin</th><th>Amount</th><th>To Address</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="withdrawalsTableBody">
-          <tr><td colspan="7">Loading...</td></tr>
-        </tbody>
+        <thead><tr><th>TX ID</th><th>User</th><th>Date</th><th>Coin</th><th>Amount</th><th>To Address</th><th>Actions</th></tr></thead>
+        <tbody id="withdrawalsTableBody"><tr><td colspan="7">Loading...</td></tr></tbody>
       </table>
     </div>
 
-    <!-- KYC TAB -->
+    <!-- ─── KYC TAB ─── -->
     <div id="kyc-tab" class="tab-content card">
       <h3 style="font-family:'Syne',sans-serif; font-size:16px; margin-bottom:15px;">Pending KYC Documents</h3>
       <table class="admin-table">
-        <thead>
-          <tr>
-            <th>ID</th><th>Date</th><th>Name</th><th>Country</th><th>Doc Type</th><th>Doc Number</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="kycTableBody">
-          <tr><td colspan="7">Loading...</td></tr>
-        </tbody>
+        <thead><tr><th>ID</th><th>Date</th><th>Name</th><th>Country</th><th>Doc Type</th><th>Doc Number</th><th>Actions</th></tr></thead>
+        <tbody id="kycTableBody"><tr><td colspan="7">Loading...</td></tr></tbody>
       </table>
     </div>
 
-    <!-- USER ASSETS TAB -->
+    <!-- ─── USER ASSETS TAB ─── -->
     <div id="assets-tab" class="tab-content card">
       <h3 style="font-family:'Syne',sans-serif; font-size:16px; margin-bottom:18px;">User Portfolio Overview</h3>
-
-      <!-- User Selector -->
       <div class="assets-user-select">
         <span class="assets-select-label">Select User:</span>
         <select class="assets-select" id="assetsUserSelect" onchange="loadUserAssets()">
           <option value="">— choose a user —</option>
         </select>
-        <button class="assets-refresh-btn" onclick="loadUserAssets()" id="assetsRefreshBtn">
+        <button class="assets-refresh-btn" onclick="loadUserAssets()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           Refresh
         </button>
       </div>
-
-      <!-- Portfolio Total Bar -->
       <div class="portfolio-bar" id="portfolioBar" style="display:none;">
         <div>
           <div class="portfolio-bar-label">Total Portfolio Value</div>
@@ -500,19 +489,9 @@ body::before {
           <div class="portfolio-bar-user" id="portfolioUserName">—</div>
         </div>
       </div>
-
-      <!-- Assets Table -->
       <div style="overflow-x:auto;">
         <table class="assets-coin-table" id="assetsTable" style="display:none;">
-          <thead>
-            <tr>
-              <th>Coin</th>
-              <th>Balance</th>
-              <th>Price (USD)</th>
-              <th>Value (USD)</th>
-              <th>% of Portfolio</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Coin</th><th>Balance</th><th>Price (USD)</th><th>Value (USD)</th><th>% of Portfolio</th></tr></thead>
           <tbody id="assetsTableBody"></tbody>
         </table>
         <div class="assets-empty" id="assetsEmpty">
@@ -522,9 +501,30 @@ body::before {
       </div>
     </div>
 
+    <!-- ─── DEPOSIT ADDRESSES TAB ─── -->
+    <div id="addresses-tab" class="tab-content card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+        <div>
+          <h3 style="font-family:'Syne',sans-serif; font-size:16px;">Deposit Addresses</h3>
+          <p style="font-size:13px; color:var(--muted); margin-top:4px;">Manage wallet addresses shown to users during deposit.</p>
+        </div>
+        <button class="btn-primary" onclick="openAddrModal()">+ Add Address</button>
+      </div>
+
+      <div id="addrLoading" style="text-align:center;padding:40px;color:var(--muted);font-size:14px;">Loading...</div>
+
+      <div class="addr-grid" id="addrGrid" style="display:none;"></div>
+
+      <div class="addr-empty" id="addrEmpty" style="display:none;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        <p>No deposit addresses configured yet. Add one to get started.</p>
+      </div>
+    </div>
+
   </main>
 </div>
 
+<!-- Mobile bottom bar -->
 <nav class="admin-mobile-bar" aria-label="Session">
   <button type="button" class="admin-mobile-logout" onclick="adminLogout(this)" title="Sign out">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -532,14 +532,16 @@ body::before {
   </button>
 </nav>
 
+<!-- ════════════════ MODALS ════════════════ -->
+
 <!-- Create User Modal -->
 <div class="modal-overlay" id="userModal">
   <div class="modal-box">
     <div class="modal-title">Create New User</div>
-    <input type="text" id="cuName" class="modal-input" placeholder="Full Name">
-    <input type="email" id="cuEmail" class="modal-input" placeholder="Email Address">
-    <input type="password" id="cuPass" class="modal-input" placeholder="Password">
-    <select id="cuRole" class="modal-select">
+    <input type="text" id="cuName" class="modal-input" placeholder="Full Name" style="margin-bottom:14px;">
+    <input type="email" id="cuEmail" class="modal-input" placeholder="Email Address" style="margin-bottom:14px;">
+    <input type="password" id="cuPass" class="modal-input" placeholder="Password" style="margin-bottom:14px;">
+    <select id="cuRole" class="modal-select" style="margin-bottom:14px;">
       <option value="USER">Standard User</option>
       <option value="ADMIN">Administrator</option>
     </select>
@@ -552,7 +554,7 @@ body::before {
 
 <!-- KYC View Modal -->
 <div class="modal-overlay" id="kycModal">
-  <div class="modal-box" style="max-width: 600px;">
+  <div class="modal-box" style="max-width:600px;">
     <div class="modal-title">Review KYC Submission</div>
     <div id="kycDetails" style="font-size:14px; margin-bottom:15px;"></div>
     <div style="display:flex; flex-direction:column; gap:10px; max-height:400px; overflow-y:auto; padding-right:5px;">
@@ -560,7 +562,7 @@ body::before {
       <div><span style="font-size:12px; color:var(--muted);">Back Image:</span><br><img id="kImgBack" class="kyc-img" src="" alt="Back Image"></div>
       <div><span style="font-size:12px; color:var(--muted);">Selfie:</span><br><img id="kImgSelfie" class="kyc-img" src="" alt="Selfie Image"></div>
     </div>
-    <input type="text" id="kRejectReason" class="modal-input" placeholder="Rejection Reason (Optional, if rejecting)" style="margin-top:15px;">
+    <input type="text" id="kRejectReason" class="modal-input" placeholder="Rejection Reason (if rejecting)" style="margin-top:15px;">
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('kycModal')">Close</button>
       <button class="action-btn reject" onclick="rejectSelectedKyc()">Reject</button>
@@ -569,488 +571,633 @@ body::before {
   </div>
 </div>
 
+<!-- ─── Deposit Address Create/Edit Modal ─── -->
+<div class="modal-overlay" id="addrModal">
+  <div class="modal-box" style="max-width:460px;">
+    <div class="modal-title" id="addrModalTitle">Add Deposit Address</div>
+    <input type="hidden" id="addrId">
+
+    <div class="modal-field">
+      <div class="modal-label">Coin Symbol <span style="color:var(--red);">*</span></div>
+      <input type="text" id="addrSymbol" class="modal-input" placeholder="e.g. BTC, ETH, USDT">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Coin Name <span style="color:var(--red);">*</span></div>
+      <input type="text" id="addrCoinName" class="modal-input" placeholder="e.g. Bitcoin, Ethereum">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Network / Chain <span style="color:var(--red);">*</span></div>
+      <input type="text" id="addrNetwork" class="modal-input" placeholder="e.g. ERC-20, TRC-20, BEP-20">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Wallet Address <span style="color:var(--red);">*</span></div>
+      <input type="text" id="addrAddress" class="modal-input" placeholder="0x...">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">Status</div>
+      <select id="addrActive" class="modal-select">
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('addrModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveAddress()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Confirm Delete Modal ─── -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="confirm-modal-box">
+    <div class="confirm-modal-title">Deactivate Address?</div>
+    <div class="confirm-modal-msg" id="confirmMsg">
+      This will deactivate the deposit address. It won't appear to users for new deposits. You can re-activate it anytime.
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('confirmModal')">Cancel</button>
+      <button class="btn-danger" id="confirmYesBtn">Deactivate</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ SCRIPTS ════════════════ -->
 <script>
-  async function adminLogout(btn) {
-    const buttons = document.querySelectorAll('.logout-btn, .sidebar-logout, .admin-mobile-logout');
-    const labels = document.querySelectorAll('.logout-label');
-    buttons.forEach(b => { b.disabled = true; });
-    labels.forEach(l => { l.textContent = 'Signing out…'; });
-    let abortTid = 0;
-    try {
-      const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      if (ctrl) abortTid = setTimeout(() => ctrl.abort(), 12000);
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        signal: ctrl ? ctrl.signal : undefined
-      });
-    } catch (e) { /* session may still clear; redirect regardless */ }
-    finally {
-      if (abortTid) clearTimeout(abortTid);
-    }
-    window.location.replace('/home/signin');
-  }
-
-  // Tab Switching
-  function switchTab(tabId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-    
-    event.target.classList.add('active');
-    document.getElementById(tabId + '-tab').classList.add('active');
-
-    if(tabId === 'users') loadUsers();
-    if(tabId === 'deposits') loadDeposits();
-    if(tabId === 'withdrawals') loadWithdrawals();
-    if(tabId === 'kyc') loadKyc();
-    if(tabId === 'assets') initAssetsTab();
-  }
-
-  // ──────────────────────────────────────────────────────────────
-  //  USER ASSETS TAB
-  // ──────────────────────────────────────────────────────────────
-
-  // Cache of all users for the dropdown (populated on first load)
-  let _allUsersCache = null;
-
-  async function initAssetsTab() {
-    if (!_allUsersCache) {
-      // Reuse the existing admin/users endpoint
-      try {
-        const res  = await fetch('/api/admin/users');
-        const json = await res.json();
-        if (json.success) _allUsersCache = json.data;
-      } catch (e) { _allUsersCache = []; }
-    }
-    populateAssetsUserSelect();
-  }
-
-  function populateAssetsUserSelect() {
-    const sel = document.getElementById('assetsUserSelect');
-    if (!sel) return;
-    // Keep the placeholder option; rebuild the rest
-    sel.innerHTML = '<option value="">— choose a user —</option>';
-    (_allUsersCache || []).forEach(u => {
-      const opt = document.createElement('option');
-      opt.value = u.id;
-      opt.textContent = `${u.fullName} (${u.email})`;
-      sel.appendChild(opt);
+// ─────────────────────────────────────────────────────────
+//  LOGOUT
+// ─────────────────────────────────────────────────────────
+async function adminLogout(btn) {
+  const buttons = document.querySelectorAll('.logout-btn, .sidebar-logout, .admin-mobile-logout');
+  const labels  = document.querySelectorAll('.logout-label');
+  buttons.forEach(b => { b.disabled = true; });
+  labels.forEach(l => { l.textContent = 'Signing out…'; });
+  try {
+    const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const tid  = ctrl ? setTimeout(() => ctrl.abort(), 12000) : 0;
+    await fetch('/api/auth/logout', {
+      method: 'POST', credentials: 'include',
+      headers: {'Content-Type':'application/json'},
+      signal: ctrl ? ctrl.signal : undefined
     });
-  }
+    if (tid) clearTimeout(tid);
+  } catch (_) {}
+  window.location.replace('/home/signin');
+}
 
-  async function loadUserAssets() {
-    const sel    = document.getElementById('assetsUserSelect');
-    const userId = sel ? sel.value : '';
-    if (!userId) {
-      document.getElementById('portfolioBar').style.display   = 'none';
-      document.getElementById('assetsTable').style.display    = 'none';
-      document.getElementById('assetsEmpty').style.display    = '';
-      document.getElementById('assetsEmpty').innerHTML = `
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-        <p>Select a user above to view their asset portfolio.</p>`;
-      return;
+// ─────────────────────────────────────────────────────────
+//  TAB SWITCHING
+// ─────────────────────────────────────────────────────────
+function switchTab(tabId, btnEl) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  (btnEl || event.target).classList.add('active');
+  document.getElementById(tabId + '-tab').classList.add('active');
+
+  if (tabId === 'users')     loadUsers();
+  if (tabId === 'deposits')  loadDeposits();
+  if (tabId === 'withdrawals') loadWithdrawals();
+  if (tabId === 'kyc')       loadKyc();
+  if (tabId === 'assets')    initAssetsTab();
+  if (tabId === 'addresses') loadAddresses();
+}
+
+// ─────────────────────────────────────────────────────────
+//  MODALS
+// ─────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ─────────────────────────────────────────────────────────
+//  USERS
+// ─────────────────────────────────────────────────────────
+function openCreateUserModal() { document.getElementById('userModal').classList.add('open'); }
+
+async function loadUsers() {
+  try {
+    const res = await fetch('/api/admin/users');
+    const data = await res.json();
+    if (data.success) {
+      const tbody = document.getElementById('usersTableBody');
+      tbody.innerHTML = '';
+      if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="7">No users found</td></tr>'; return; }
+      data.data.forEach(u => {
+        const sb = u.enabled ? `<span class="badge badge-green">Active</span>` : `<span class="badge badge-red">Disabled</span>`;
+        const kb = `<span class="badge badge-${u.kycStatus==='VERIFIED'?'green':u.kycStatus==='PENDING'?'yellow':'red'}">${u.kycStatus}</span>`;
+        tbody.innerHTML += `<tr>
+          <td>${u.id}</td><td>${u.fullName}</td><td>${u.email}</td>
+          <td><span class="badge">${u.role}</span></td>
+          <td>${sb}</td><td>${kb}</td>
+          <td><button class="action-btn" onclick="toggleUserStatus(${u.id})">${u.enabled ? 'Disable' : 'Enable'}</button></td>
+        </tr>`;
+      });
     }
+  } catch (e) { console.error(e); }
+}
 
-    // Find user name for the portfolio bar
-    const user = (_allUsersCache || []).find(u => String(u.id) === String(userId));
-    const userName = user ? `${user.fullName} · ${user.email}` : `User #${userId}`;
+async function createUser() {
+  const payload = {
+    fullName: document.getElementById('cuName').value,
+    email:    document.getElementById('cuEmail').value,
+    password: document.getElementById('cuPass').value,
+    role:     document.getElementById('cuRole').value
+  };
+  try {
+    const res  = await fetch('/api/admin/users', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    const data = await res.json();
+    if (data.success) { closeModal('userModal'); loadUsers(); showToast('User created successfully','success'); }
+    else showToast(data.message,'error');
+  } catch (e) { console.error(e); }
+}
 
-    // Show loading state
-    document.getElementById('assetsEmpty').style.display  = '';
-    document.getElementById('assetsEmpty').innerHTML      = '<p style="color:var(--muted)">Loading portfolio…</p>';
-    document.getElementById('assetsTable').style.display  = 'none';
-    document.getElementById('portfolioBar').style.display = 'none';
+async function toggleUserStatus(id) {
+  try {
+    const res  = await fetch(`/api/admin/users/${id}/toggle-status`, { method:'PUT' });
+    const data = await res.json();
+    if (data.success) loadUsers();
+  } catch (e) { console.error(e); }
+}
 
+// ─────────────────────────────────────────────────────────
+//  DEPOSITS
+// ─────────────────────────────────────────────────────────
+async function loadDeposits() {
+  try {
+    const res = await fetch('/api/admin/deposits');
+    const data = await res.json();
+    if (data.success) {
+      const tbody = document.getElementById('depositsTableBody');
+      tbody.innerHTML = '';
+      if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="7">No pending deposits</td></tr>'; return; }
+      data.data.forEach(d => {
+        tbody.innerHTML += `<tr>
+          <td>${d.id}</td>
+          <td><div style="font-weight:700;font-size:13px;">${d.userFullName||'Unknown'}</div><div style="font-size:11px;color:var(--muted);">${d.userEmail||''}</div></td>
+          <td>${new Date(d.createdAt).toLocaleString()}</td>
+          <td>${d.coinSymbol}</td>
+          <td style="font-weight:700;color:var(--cyan);">${d.amount}</td>
+          <td style="font-family:monospace;font-size:11px;">${d.toAddress?'To: '+d.toAddress+'<br>':''}Hash: ${d.txHash||'N/A'}</td>
+          <td>
+            <button class="action-btn approve" onclick="approveDeposit(${d.id})">Approve</button>
+            <button class="action-btn reject"  onclick="rejectDeposit(${d.id})">Reject</button>
+          </td>
+        </tr>`;
+      });
+    }
+  } catch (e) { console.error(e); }
+}
+
+async function approveDeposit(id) {
+  if (!confirm('Approve this deposit and credit the user?')) return;
+  const res = await fetch(`/api/admin/deposits/${id}/approve`, { method:'POST' });
+  const data = await res.json();
+  if (data.success) { showToast('Deposit Approved','success'); loadDeposits(); } else showToast(data.message,'error');
+}
+
+async function rejectDeposit(id) {
+  const reason = prompt('Reason for rejecting this deposit:');
+  if (reason === null) return;
+  const res  = await fetch(`/api/admin/deposits/${id}/reject`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({reason}) });
+  const data = await res.json();
+  if (data.success) { showToast('Deposit Rejected','success'); loadDeposits(); } else showToast(data.message,'error');
+}
+
+// ─────────────────────────────────────────────────────────
+//  WITHDRAWALS
+// ─────────────────────────────────────────────────────────
+async function loadWithdrawals() {
+  try {
+    const res = await fetch('/api/admin/withdrawals');
+    const data = await res.json();
+    if (data.success) {
+      const tbody = document.getElementById('withdrawalsTableBody');
+      tbody.innerHTML = '';
+      if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="7">No pending withdrawals</td></tr>'; return; }
+      data.data.forEach(w => {
+        tbody.innerHTML += `<tr>
+          <td>${w.id}</td>
+          <td><div style="font-weight:700;font-size:13px;">${w.userFullName||'Unknown'}</div><div style="font-size:11px;color:var(--muted);">${w.userEmail||''}</div></td>
+          <td>${new Date(w.createdAt).toLocaleString()}</td>
+          <td>${w.coinSymbol}</td>
+          <td style="font-weight:700;color:var(--cyan);">${w.amount}</td>
+          <td style="font-family:monospace;font-size:11px;">${w.toAddress||'N/A'}</td>
+          <td>
+            <button class="action-btn approve" onclick="approveWithdrawal(${w.id})">Approve</button>
+            <button class="action-btn reject"  onclick="rejectWithdrawal(${w.id})">Reject</button>
+          </td>
+        </tr>`;
+      });
+    }
+  } catch (e) { console.error(e); }
+}
+
+async function approveWithdrawal(id) {
+  if (!confirm('Approve this withdrawal?')) return;
+  const res  = await fetch(`/api/admin/withdrawals/${id}/approve`, { method:'POST' });
+  const data = await res.json();
+  if (data.success) { showToast('Withdrawal Approved','success'); loadWithdrawals(); } else showToast(data.message,'error');
+}
+
+async function rejectWithdrawal(id) {
+  const reason = prompt('Reason for rejecting this withdrawal:');
+  if (reason === null) return;
+  if (!reason.trim()) { showToast('Rejection reason is required','error'); return; }
+  const res  = await fetch(`/api/admin/withdrawals/${id}/reject`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({reason}) });
+  const data = await res.json();
+  if (data.success) { showToast('Withdrawal Rejected (Amount Refunded)','success'); loadWithdrawals(); } else showToast(data.message,'error');
+}
+
+// ─────────────────────────────────────────────────────────
+//  KYC
+// ─────────────────────────────────────────────────────────
+let currentKycId = null;
+
+async function loadKyc() {
+  try {
+    const res = await fetch('/api/admin/kyc');
+    const data = await res.json();
+    if (data.success) {
+      const tbody = document.getElementById('kycTableBody');
+      tbody.innerHTML = '';
+      window.kycDataMap = {};
+      if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="7">No pending KYC submissions</td></tr>'; return; }
+      data.data.forEach(k => {
+        window.kycDataMap[k.id] = k;
+        tbody.innerHTML += `<tr>
+          <td>${k.id}</td>
+          <td>${new Date(k.submittedAt).toLocaleDateString()}</td>
+          <td>${k.firstName} ${k.lastName}</td>
+          <td>${k.country}</td><td>${k.documentType}</td><td>${k.documentNumber}</td>
+          <td><button class="action-btn" onclick="reviewKyc(${k.id})">Review</button></td>
+        </tr>`;
+      });
+    }
+  } catch (e) { console.error(e); }
+}
+
+function reviewKyc(id) {
+  const k = window.kycDataMap[id];
+  currentKycId = id;
+  document.getElementById('kycDetails').innerHTML = `
+    <strong>Name:</strong> ${k.firstName} ${k.lastName}<br>
+    <strong>DOB:</strong> ${k.dateOfBirth}<br>
+    <strong>Address:</strong> ${k.address}, ${k.country}<br>
+    <strong>Doc Type:</strong> ${k.documentType}<br>
+    <strong>Doc Num:</strong> ${k.documentNumber}`;
+  document.getElementById('kImgFront').src  = '/' + k.frontImagePath.replace(/\\/g,'/');
+  document.getElementById('kImgBack').src   = '/' + k.backImagePath.replace(/\\/g,'/');
+  document.getElementById('kImgSelfie').src = '/' + k.selfieImagePath.replace(/\\/g,'/');
+  document.getElementById('kRejectReason').value = '';
+  document.getElementById('kycModal').classList.add('open');
+}
+
+async function approveSelectedKyc() {
+  if (!currentKycId) return;
+  const res  = await fetch(`/api/admin/kyc/${currentKycId}/approve`, { method:'POST' });
+  const data = await res.json();
+  if (data.success) { showToast('KYC Approved','success'); closeModal('kycModal'); loadKyc(); } else showToast(data.message,'error');
+}
+
+async function rejectSelectedKyc() {
+  if (!currentKycId) return;
+  const reason = document.getElementById('kRejectReason').value;
+  const res    = await fetch(`/api/admin/kyc/${currentKycId}/reject`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({reason}) });
+  const data   = await res.json();
+  if (data.success) { showToast('KYC Rejected','success'); closeModal('kycModal'); loadKyc(); } else showToast(data.message,'error');
+}
+
+// ─────────────────────────────────────────────────────────
+//  USER ASSETS
+// ─────────────────────────────────────────────────────────
+let _allUsersCache = null;
+
+async function initAssetsTab() {
+  if (!_allUsersCache) {
     try {
-      const res  = await fetch(`/api/admin/users/${userId}/wallets`);
+      const res  = await fetch('/api/admin/users');
       const json = await res.json();
-      if (!json.success) throw new Error(json.message || 'API error');
-      renderUserAssets(json.data, userName);
-    } catch (e) {
-      document.getElementById('assetsEmpty').innerHTML =
-        `<p style="color:var(--red)">Failed to load assets: ${e.message}</p>`;
-    }
+      if (json.success) _allUsersCache = json.data;
+    } catch (_) { _allUsersCache = []; }
   }
+  populateAssetsUserSelect();
+}
 
-  const COIN_COLORS = {
-    BTC: '#f7931a', ETH: '#627eea', SOL: '#9945ff', BNB: '#f0b90b',
-    XRP: '#23292f', ADA: '#0033ad', AVAX: '#e84142', DOGE: '#c2a633',
-    USDT: '#26a17b', USDC: '#2775ca'
+function populateAssetsUserSelect() {
+  const sel = document.getElementById('assetsUserSelect');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— choose a user —</option>';
+  (_allUsersCache || []).forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = u.id;
+    opt.textContent = `${u.fullName} (${u.email})`;
+    sel.appendChild(opt);
+  });
+}
+
+async function loadUserAssets() {
+  const sel    = document.getElementById('assetsUserSelect');
+  const userId = sel ? sel.value : '';
+  if (!userId) {
+    document.getElementById('portfolioBar').style.display  = 'none';
+    document.getElementById('assetsTable').style.display   = 'none';
+    document.getElementById('assetsEmpty').style.display   = '';
+    document.getElementById('assetsEmpty').innerHTML = `
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      <p>Select a user above to view their asset portfolio.</p>`;
+    return;
+  }
+  const user = (_allUsersCache || []).find(u => String(u.id) === String(userId));
+  const userName = user ? `${user.fullName} · ${user.email}` : `User #${userId}`;
+  document.getElementById('assetsEmpty').style.display  = '';
+  document.getElementById('assetsEmpty').innerHTML      = '<p style="color:var(--muted)">Loading portfolio…</p>';
+  document.getElementById('assetsTable').style.display  = 'none';
+  document.getElementById('portfolioBar').style.display = 'none';
+  try {
+    const res  = await fetch(`/api/admin/users/${userId}/wallets`);
+    const json = await res.json();
+    if (!json.success) throw new Error(json.message || 'API error');
+    renderUserAssets(json.data, userName);
+  } catch (e) {
+    document.getElementById('assetsEmpty').innerHTML = `<p style="color:var(--red)">Failed to load assets: ${e.message}</p>`;
+  }
+}
+
+const COIN_COLORS = { BTC:'#f7931a', ETH:'#627eea', SOL:'#9945ff', BNB:'#f0b90b', XRP:'#23292f', ADA:'#0033ad', AVAX:'#e84142', DOGE:'#c2a633', USDT:'#26a17b', USDC:'#2775ca' };
+
+function renderUserAssets(rows, userName) {
+  const totalRow = rows.find(r => r.coinSymbol === 'TOTAL');
+  const coinRows = rows.filter(r => r.coinSymbol !== 'TOTAL');
+  const total    = totalRow ? totalRow.usdValue : 0;
+  document.getElementById('portfolioTotal').textContent = fmtUsd(total);
+  document.getElementById('portfolioUserName').textContent = userName;
+  document.getElementById('portfolioBar').style.display = '';
+  if (coinRows.length === 0) {
+    document.getElementById('assetsTable').style.display = 'none';
+    document.getElementById('assetsEmpty').style.display = '';
+    document.getElementById('assetsEmpty').innerHTML = `<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg><p>This user has no wallets yet.</p>`;
+    return;
+  }
+  const sorted = [...coinRows].sort((a, b) => b.usdValue - a.usdValue);
+  const tbody  = document.getElementById('assetsTableBody');
+  tbody.innerHTML = sorted.map(r => {
+    const sym = r.coinSymbol; const bal = parseFloat(r.balance??0);
+    const price = parseFloat(r.priceUsd??0); const usd = parseFloat(r.usdValue??0);
+    const pct = total > 0 ? (usd/total*100) : 0; const color = COIN_COLORS[sym]||'var(--cyan)';
+    return `<tr style="${bal===0?'opacity:.45;':''}">
+      <td><div style="display:flex;align-items:center;gap:10px;"><div style="width:36px;height:36px;border-radius:50%;background:${color}20;color:${color};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">${sym.substring(0,3)}</div><span style="font-weight:700;">${sym}</span></div></td>
+      <td style="font-weight:700;font-family:monospace;font-size:13px;">${formatBalance(bal)}</td>
+      <td style="color:var(--muted);">${price>0?fmtUsd(price):'<span style="color:var(--muted);font-size:12px;">N/A</span>'}</td>
+      <td style="font-weight:700;color:${usd>0?'var(--emerald)':'var(--muted)'};">${fmtUsd(usd)}</td>
+      <td><div style="display:flex;align-items:center;gap:10px;"><div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.06);min-width:60px;"><div style="height:100%;border-radius:3px;background:${color};width:${Math.min(pct,100).toFixed(1)}%;transition:width .4s;"></div></div><span style="font-size:12px;font-weight:700;color:var(--muted);min-width:38px;text-align:right;">${pct.toFixed(1)}%</span></div></td>
+    </tr>`;
+  }).join('');
+  tbody.innerHTML += `<tr class="total-row"><td colspan="3" style="font-weight:800;padding-left:14px;">Total Portfolio</td><td style="font-weight:800;">${fmtUsd(total)}</td><td style="font-weight:800;">100%</td></tr>`;
+  document.getElementById('assetsTable').style.display = '';
+  document.getElementById('assetsEmpty').style.display = 'none';
+}
+
+function fmtUsd(n) {
+  if (n == null) return '$0.00';
+  if (n >= 1000) return '$' + Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if (n >= 1)   return '$' + Number(n).toFixed(4);
+  return '$' + Number(n).toFixed(6);
+}
+function formatBalance(n) {
+  if (n == null || n === '') return '0';
+  const v = parseFloat(n);
+  if (v === 0) return '0';
+  if (v >= 1000) return v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:4});
+  if (v >= 1)   return v.toFixed(4);
+  return v.toFixed(8);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  DEPOSIT ADDRESSES  —  CRUD
+// ═══════════════════════════════════════════════════════════
+
+const ADDR_COIN_COLORS = {
+  BTC:'#f7931a', ETH:'#627eea', SOL:'#9945ff', BNB:'#f0b90b',
+  XRP:'#23292f', ADA:'#0033ad', AVAX:'#e84142', DOGE:'#c2a633',
+  USDT:'#26a17b', USDC:'#2775ca', LTC:'#345d9d', TRX:'#ef0027',
+  MATIC:'#8247e5', DOT:'#e6007a', LINK:'#2a5ada'
+};
+
+async function loadAddresses() {
+  document.getElementById('addrLoading').style.display = '';
+  document.getElementById('addrGrid').style.display    = 'none';
+  document.getElementById('addrEmpty').style.display   = 'none';
+  try {
+    const res  = await fetch('/api/admin/deposit-addresses');
+    const json = await res.json();
+    if (!json.success) throw new Error(json.message);
+    renderAddressGrid(json.data);
+  } catch (e) {
+    document.getElementById('addrLoading').innerHTML =
+      `<p style="color:var(--red)">Failed to load: ${e.message}</p>`;
+  }
+}
+
+function renderAddressGrid(list) {
+  document.getElementById('addrLoading').style.display = 'none';
+  if (!list || list.length === 0) {
+    document.getElementById('addrEmpty').style.display = '';
+    return;
+  }
+  const grid = document.getElementById('addrGrid');
+  grid.innerHTML = '';
+  // Sort: active first, then by symbol
+  const sorted = [...list].sort((a,b) => {
+    if (a.active !== b.active) return a.active ? -1 : 1;
+    return a.coinSymbol.localeCompare(b.coinSymbol);
+  });
+  sorted.forEach(addr => {
+    const sym   = addr.coinSymbol.toUpperCase();
+    const color = ADDR_COIN_COLORS[sym] || 'var(--cyan)';
+    const card  = document.createElement('div');
+    card.className = `addr-card${addr.active ? '' : ' inactive'}`;
+    card.innerHTML = `
+      <div class="addr-card-header">
+        <div class="addr-coin-badge">
+          <div class="addr-coin-icon" style="background:${color}18;color:${color};">${sym.substring(0,3)}</div>
+          <div>
+            <div class="addr-coin-name">${addr.coinName || sym}</div>
+            <div class="addr-coin-sym">${sym}</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="addr-network-tag">${addr.network || '—'}</span>
+          <div class="addr-status-dot ${addr.active ? 'active-dot' : 'inactive-dot'}" title="${addr.active?'Active':'Inactive'}"></div>
+        </div>
+      </div>
+      <div class="addr-field">
+        <div class="addr-field-label">Wallet Address</div>
+        <div class="addr-field-value">${addr.address}</div>
+      </div>
+      <div class="addr-field">
+        <div class="addr-field-label">Status</div>
+        <span class="badge ${addr.active ? 'badge-green' : 'badge-red'}">${addr.active ? 'Active' : 'Inactive'}</span>
+      </div>
+      <div class="addr-card-actions">
+        <button class="action-btn edit" onclick="editAddress(${addr.id})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="action-btn ${addr.active ? 'delete' : 'approve'}" onclick="toggleAddressStatus(${addr.id}, ${addr.active})">
+          ${addr.active
+            ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Deactivate`
+            : `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg>Activate`
+          }
+        </button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  grid.style.display = '';
+}
+
+// Cache for edit
+let _addrCache = {};
+
+async function editAddress(id) {
+  // Fetch fresh list to get this record
+  try {
+    const res  = await fetch('/api/admin/deposit-addresses');
+    const json = await res.json();
+    if (json.success) {
+      const addr = json.data.find(a => a.id === id);
+      if (!addr) { showToast('Address not found','error'); return; }
+      _addrCache[id] = addr;
+      document.getElementById('addrModalTitle').textContent = 'Edit Deposit Address';
+      document.getElementById('addrId').value         = addr.id;
+      document.getElementById('addrSymbol').value     = addr.coinSymbol;
+      document.getElementById('addrCoinName').value   = addr.coinName || '';
+      document.getElementById('addrNetwork').value    = addr.network || '';
+      document.getElementById('addrAddress').value    = addr.address;
+      document.getElementById('addrActive').value     = String(addr.active);
+      // Lock symbol when editing (it's the unique key used for upsert)
+      document.getElementById('addrSymbol').readOnly  = true;
+      document.getElementById('addrSymbol').style.opacity = '.6';
+      document.getElementById('addrModal').classList.add('open');
+    }
+  } catch (e) { showToast('Failed to load address','error'); }
+}
+
+function openAddrModal() {
+  document.getElementById('addrModalTitle').textContent = 'Add Deposit Address';
+  document.getElementById('addrId').value         = '';
+  document.getElementById('addrSymbol').value     = '';
+  document.getElementById('addrCoinName').value   = '';
+  document.getElementById('addrNetwork').value    = '';
+  document.getElementById('addrAddress').value    = '';
+  document.getElementById('addrActive').value     = 'true';
+  document.getElementById('addrSymbol').readOnly  = false;
+  document.getElementById('addrSymbol').style.opacity = '1';
+  document.getElementById('addrModal').classList.add('open');
+}
+
+async function saveAddress() {
+  const id      = document.getElementById('addrId').value;
+  const payload = {
+    coinSymbol: document.getElementById('addrSymbol').value.trim().toUpperCase(),
+    coinName:   document.getElementById('addrCoinName').value.trim(),
+    network:    document.getElementById('addrNetwork').value.trim(),
+    address:    document.getElementById('addrAddress').value.trim(),
+    active:     document.getElementById('addrActive').value === 'true'
   };
 
-  function renderUserAssets(rows, userName) {
-    // The last row is the TOTAL summary
-    const totalRow = rows.find(r => r.coinSymbol === 'TOTAL');
-    const coinRows = rows.filter(r => r.coinSymbol !== 'TOTAL');
-    const total    = totalRow ? totalRow.usdValue : 0;
+  if (!payload.coinSymbol || !payload.coinName || !payload.network || !payload.address) {
+    showToast('All fields are required','error'); return;
+  }
 
-    // Update portfolio bar
-    const barEl = document.getElementById('portfolioBar');
-    document.getElementById('portfolioTotal').textContent = fmtUsd(total);
-    document.getElementById('portfolioUserName').textContent = userName;
-    barEl.style.display = '';
-
-    // Build table
-    const tbody = document.getElementById('assetsTableBody');
-    if (coinRows.length === 0) {
-      document.getElementById('assetsTable').style.display = 'none';
-      document.getElementById('assetsEmpty').style.display = '';
-      document.getElementById('assetsEmpty').innerHTML = `
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-        <p>This user has no wallets yet.</p>`;
-      return;
+  try {
+    let res;
+    if (id) {
+      // Update existing
+      res = await fetch(`/api/admin/deposit-addresses/${id}`, {
+        method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+      });
+    } else {
+      // Create / upsert
+      res = await fetch('/api/admin/deposit-addresses', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+      });
     }
+    const json = await res.json();
+    if (json.success) {
+      showToast(id ? 'Address updated' : 'Address created','success');
+      closeModal('addrModal');
+      loadAddresses();
+    } else { showToast(json.message || 'Save failed','error'); }
+  } catch (e) { showToast('Request failed','error'); console.error(e); }
+}
 
-    // Sort by USD value desc
-    const sorted = [...coinRows].sort((a, b) => b.usdValue - a.usdValue);
-
-    tbody.innerHTML = sorted.map(r => {
-      const sym   = r.coinSymbol;
-      const bal   = parseFloat(r.balance ?? 0);
-      const price = parseFloat(r.priceUsd ?? 0);
-      const usd   = parseFloat(r.usdValue ?? 0);
-      const pct   = total > 0 ? ((usd / total) * 100) : 0;
-      const color = COIN_COLORS[sym] || 'var(--cyan)';
-      const hasBalance = bal > 0;
-
-      return `<tr style="${!hasBalance ? 'opacity:.45;' : ''}">
-        <td>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;border-radius:50%;background:${color}20;color:${color};
-                        display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">
-              ${sym.substring(0,3)}
-            </div>
-            <span style="font-weight:700;">${sym}</span>
-          </div>
-        </td>
-        <td style="font-weight:700;font-family:monospace;font-size:13px;">${formatBalance(bal)}</td>
-        <td style="color:var(--muted);">${price > 0 ? fmtUsd(price) : '<span style="color:var(--muted);font-size:12px;">N/A</span>'}</td>
-        <td style="font-weight:700;color:${usd > 0 ? 'var(--emerald)' : 'var(--muted)'};">${fmtUsd(usd)}</td>
-        <td>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.06);min-width:60px;">
-              <div style="height:100%;border-radius:3px;background:${color};width:${Math.min(pct,100).toFixed(1)}%;transition:width .4s;"></div>
-            </div>
-            <span style="font-size:12px;font-weight:700;color:var(--muted);min-width:38px;text-align:right;">${pct.toFixed(1)}%</span>
-          </div>
-        </td>
-      </tr>`;
-    }).join('');
-
-    // Total row
-    tbody.innerHTML += `<tr class="total-row">
-      <td colspan="3" style="font-weight:800;padding-left:14px;">Total Portfolio</td>
-      <td style="font-weight:800;">${fmtUsd(total)}</td>
-      <td style="font-weight:800;">100%</td>
-    </tr>`;
-
-    document.getElementById('assetsTable').style.display = '';
-    document.getElementById('assetsEmpty').style.display = 'none';
-  }
-
-  function fmtUsd(n) {
-    if (n == null) return '$0.00';
-    if (n >= 1000) return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-    if (n >= 1)   return '$' + Number(n).toFixed(4);
-    return '$' + Number(n).toFixed(6);
-  }
-
-  function formatBalance(n) {
-    if (n == null || n === '') return '0';
-    const v = parseFloat(n);
-    if (v === 0) return '0';
-    if (v >= 1000) return v.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:4});
-    if (v >= 1)   return v.toFixed(4);
-    return v.toFixed(8);
-  }
-
-
-  // Modals
-  function openCreateUserModal() { document.getElementById('userModal').classList.add('open'); }
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-  // API Calls - Users
-  async function loadUsers() {
-    try {
-      const res = await fetch('/api/admin/users');
-      const data = await res.json();
-      if(data.success) {
-        const tbody = document.getElementById('usersTableBody');
-        tbody.innerHTML = '';
-        data.data.forEach(u => {
-          const statusBadge = u.enabled ? `<span class="badge badge-green">Active</span>` : `<span class="badge badge-red">Disabled</span>`;
-          const kycBadge = `<span class="badge badge-${u.kycStatus === 'VERIFIED'?'green':u.kycStatus === 'PENDING'?'yellow':'red'}">${u.kycStatus}</span>`;
-          tbody.innerHTML += `
-            <tr>
-              <td>${u.id}</td>
-              <td>${u.fullName}</td>
-              <td>${u.email}</td>
-              <td><span class="badge">${u.role}</span></td>
-              <td>${statusBadge}</td>
-              <td>${kycBadge}</td>
-              <td>
-                <button class="action-btn" onclick="toggleUserStatus(${u.id})">${u.enabled ? 'Disable' : 'Enable'}</button>
-              </td>
-            </tr>
-          `;
-        });
-        if(data.data.length === 0) tbody.innerHTML = '<tr><td colspan="7">No users found</td></tr>';
-      }
-    } catch(e) { console.error(e); }
-  }
-
-  async function createUser() {
-    const payload = {
-      fullName: document.getElementById('cuName').value,
-      email: document.getElementById('cuEmail').value,
-      password: document.getElementById('cuPass').value,
-      role: document.getElementById('cuRole').value
+function toggleAddressStatus(id, currentlyActive) {
+  if (currentlyActive) {
+    // Confirm deactivation
+    document.getElementById('confirmMsg').textContent =
+      `This will deactivate the deposit address (ID: ${id}). Users won't see it for new deposits. You can re-activate it anytime.`;
+    const yesBtn = document.getElementById('confirmYesBtn');
+    yesBtn.onclick = async () => {
+      await doDeactivate(id);
+      closeModal('confirmModal');
     };
-    try {
-      const res = await fetch('/api/admin/users', {
-        method: 'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if(data.success) {
-        closeModal('userModal');
-        loadUsers();
-        showToast('User created successfully', 'success');
-      } else { showToast(data.message, 'error'); }
-    } catch(e) { console.error(e); }
+    document.getElementById('confirmModal').classList.add('open');
+  } else {
+    // Activate directly (no confirmation needed)
+    doActivate(id);
   }
+}
 
-  async function toggleUserStatus(id) {
-    try {
-      const res = await fetch(`/api/admin/users/${id}/toggle-status`, { method: 'PUT' });
-      const data = await res.json();
-      if(data.success) loadUsers();
-    } catch(e) { console.error(e); }
-  }
+async function doDeactivate(id) {
+  try {
+    const res  = await fetch(`/api/admin/deposit-addresses/${id}`, { method:'DELETE' });
+    const json = await res.json();
+    if (json.success) { showToast('Address deactivated','success'); loadAddresses(); }
+    else showToast(json.message||'Failed','error');
+  } catch (e) { showToast('Request failed','error'); }
+}
 
-  // API Calls - Deposits
-  async function loadDeposits() {
-    try {
-      const res = await fetch('/api/admin/deposits');
-      const data = await res.json();
-      if(data.success) {
-        const tbody = document.getElementById('depositsTableBody');
-        tbody.innerHTML = '';
-        data.data.forEach(d => {
-          tbody.innerHTML += `
-            <tr>
-              <td>${d.id}</td>
-              <td>
-                <div style="font-weight:700; font-size:13px;">${d.userFullName || 'Unknown'}</div>
-                <div style="font-size:11px; color:var(--muted);">${d.userEmail || ''}</div>
-              </td>
-              <td>${new Date(d.createdAt).toLocaleString()}</td>
-              <td>${d.coinSymbol}</td>
-              <td style="font-weight:700; color:var(--cyan);">${d.amount}</td>
-              <td style="font-family:monospace; font-size:11px;">
-                ${d.toAddress ? 'To: ' + d.toAddress + '<br>' : ''}
-                Hash: ${d.txHash || 'N/A'}
-              </td>
-              <td>
-                <button class="action-btn approve" onclick="approveDeposit(${d.id})">Approve</button>
-                <button class="action-btn reject" onclick="rejectDeposit(${d.id})">Reject</button>
-              </td>
-            </tr>
-          `;
-        });
-        if(data.data.length === 0) tbody.innerHTML = '<tr><td colspan="7">No pending deposits</td></tr>';
-      }
-    } catch(e) { console.error(e); }
-  }
+async function doActivate(id) {
+  // Re-activate by fetching the address and PUT-ing with active=true
+  try {
+    const listRes  = await fetch('/api/admin/deposit-addresses');
+    const listJson = await listRes.json();
+    if (!listJson.success) throw new Error();
+    const addr = listJson.data.find(a => a.id === id);
+    if (!addr) { showToast('Address not found','error'); return; }
+    const res  = await fetch(`/api/admin/deposit-addresses/${id}`, {
+      method:'PUT', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ ...addr, active: true })
+    });
+    const json = await res.json();
+    if (json.success) { showToast('Address activated','success'); loadAddresses(); }
+    else showToast(json.message||'Failed','error');
+  } catch (e) { showToast('Request failed','error'); }
+}
 
-  async function approveDeposit(id) {
-    if(!confirm('Approve this deposit and credit the user?')) return;
-    try {
-      const res = await fetch(`/api/admin/deposits/${id}/approve`, { method: 'POST' });
-      const data = await res.json();
-      if(data.success) { showToast('Deposit Approved', 'success'); loadDeposits(); }
-      else showToast(data.message, 'error');
-    } catch(e) { console.error(e); }
-  }
-
-  async function rejectDeposit(id) {
-    const reason = prompt('Please enter a reason for rejecting this deposit:');
-    if(reason === null) return; // User cancelled the prompt
-    
-    try {
-      const res = await fetch(`/api/admin/deposits/${id}/reject`, { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reason: reason })
-      });
-      const data = await res.json();
-      if(data.success) { showToast('Deposit Rejected', 'success'); loadDeposits(); }
-      else showToast(data.message, 'error');
-    } catch(e) { console.error(e); }
-  }
-
-  // API Calls - Withdrawals
-  async function loadWithdrawals() {
-    try {
-      const res = await fetch('/api/admin/withdrawals');
-      const data = await res.json();
-      if(data.success) {
-        const tbody = document.getElementById('withdrawalsTableBody');
-        tbody.innerHTML = '';
-        data.data.forEach(w => {
-          tbody.innerHTML += `
-            <tr>
-              <td>${w.id}</td>
-              <td>
-                <div style="font-weight:700; font-size:13px;">${w.userFullName || 'Unknown'}</div>
-                <div style="font-size:11px; color:var(--muted);">${w.userEmail || ''}</div>
-              </td>
-              <td>${new Date(w.createdAt).toLocaleString()}</td>
-              <td>${w.coinSymbol}</td>
-              <td style="font-weight:700; color:var(--cyan);">${w.amount}</td>
-              <td style="font-family:monospace; font-size:11px;">${w.toAddress || 'N/A'}</td>
-              <td>
-                <button class="action-btn approve" onclick="approveWithdrawal(${w.id})">Approve</button>
-                <button class="action-btn reject" onclick="rejectWithdrawal(${w.id})">Reject</button>
-              </td>
-            </tr>
-          `;
-        });
-        if(data.data.length === 0) tbody.innerHTML = '<tr><td colspan="7">No pending withdrawals</td></tr>';
-      }
-    } catch(e) { console.error(e); }
-  }
-
-  async function approveWithdrawal(id) {
-    if(!confirm('Approve this withdrawal? The user will be notified.')) return;
-    try {
-      const res = await fetch(`/api/admin/withdrawals/${id}/approve`, { method: 'POST' });
-      const data = await res.json();
-      if(data.success) { showToast('Withdrawal Approved', 'success'); loadWithdrawals(); }
-      else showToast(data.message, 'error');
-    } catch(e) { console.error(e); }
-  }
-
-  async function rejectWithdrawal(id) {
-    const reason = prompt('Please enter a reason for rejecting this withdrawal:');
-    if(reason === null) return; // User cancelled
-    
-    if(!reason.trim()) {
-      showToast("A rejection reason is required for withdrawals.", 'error');
-      return;
-    }
-
-    try {
-      const res = await fetch(`/api/admin/withdrawals/${id}/reject`, { 
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reason: reason })
-      });
-      const data = await res.json();
-      if(data.success) { showToast('Withdrawal Rejected (Amount Refunded)', 'success'); loadWithdrawals(); }
-      else showToast(data.message, 'error');
-    } catch(e) { console.error(e); }
-  }
-
-  // API Calls - KYC
-  let currentKycId = null;
-
-  async function loadKyc() {
-    try {
-      const res = await fetch('/api/admin/kyc');
-      const data = await res.json();
-      if(data.success) {
-        const tbody = document.getElementById('kycTableBody');
-        tbody.innerHTML = '';
-        window.kycDataMap = {}; // store for modal
-        data.data.forEach(k => {
-          window.kycDataMap[k.id] = k;
-          tbody.innerHTML += `
-            <tr>
-              <td>${k.id}</td>
-              <td>${new Date(k.submittedAt).toLocaleDateString()}</td>
-              <td>${k.firstName} ${k.lastName}</td>
-              <td>${k.country}</td>
-              <td>${k.documentType}</td>
-              <td>${k.documentNumber}</td>
-              <td>
-                <button class="action-btn" onclick="reviewKyc(${k.id})">Review</button>
-              </td>
-            </tr>
-          `;
-        });
-        if(data.data.length === 0) tbody.innerHTML = '<tr><td colspan="7">No pending KYC submissions</td></tr>';
-      }
-    } catch(e) { console.error(e); }
-  }
-
-  function reviewKyc(id) {
-    const k = window.kycDataMap[id];
-    currentKycId = id;
-    document.getElementById('kycDetails').innerHTML = `
-      <strong>Name:</strong> ${k.firstName} ${k.lastName} <br>
-      <strong>DOB:</strong> ${k.dateOfBirth} <br>
-      <strong>Address:</strong> ${k.address}, ${k.country} <br>
-      <strong>Doc Type:</strong> ${k.documentType} <br>
-      <strong>Doc Num:</strong> ${k.documentNumber}
-    `;
-    // We assume backend serves these paths via some static config, or base64. 
-    // If not accessible directly via URL, backend needs to serve them.
-    // For now we set the src to the path directly (works if spring boot serves uploads)
-    document.getElementById('kImgFront').src = '/' + k.frontImagePath.replace(/\\/g, '/');
-    document.getElementById('kImgBack').src = '/' + k.backImagePath.replace(/\\/g, '/');
-    document.getElementById('kImgSelfie').src = '/' + k.selfieImagePath.replace(/\\/g, '/');
-    document.getElementById('kRejectReason').value = '';
-    
-    document.getElementById('kycModal').classList.add('open');
-  }
-
-  async function approveSelectedKyc() {
-    if(!currentKycId) return;
-    try {
-      const res = await fetch(`/api/admin/kyc/${currentKycId}/approve`, { method: 'POST' });
-      const data = await res.json();
-      if(data.success) { showToast('KYC Approved', 'success'); closeModal('kycModal'); loadKyc(); }
-      else showToast(data.message, 'error');
-    } catch(e) { console.error(e); }
-  }
-
-  async function rejectSelectedKyc() {
-    if(!currentKycId) return;
-    const reason = document.getElementById('kRejectReason').value;
-    try {
-      const res = await fetch(`/api/admin/kyc/${currentKycId}/reject`, { 
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ reason: reason })
-      });
-      const data = await res.json();
-      if(data.success) { showToast('KYC Rejected', 'success'); closeModal('kycModal'); loadKyc(); }
-      else showToast(data.message, 'error');
-    } catch(e) { console.error(e); }
-  }
-
-  // Initialization
-  document.addEventListener('DOMContentLoaded', () => {
-    loadUsers(); // load users initially since it's the active tab
+// ─────────────────────────────────────────────────────────
+//  TOAST
+// ─────────────────────────────────────────────────────────
+function showToast(msg, type = 'info') {
+  let t = document.getElementById('__toast');
+  if (!t) { t = document.createElement('div'); t.id = '__toast'; document.body.appendChild(t); }
+  const bg = type === 'error' ? '#F87171' : (type === 'success' ? '#34D399' : '#22D3EE');
+  Object.assign(t.style, {
+    position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)',
+    background:bg, color:'#000', padding:'12px 22px', borderRadius:'14px',
+    fontWeight:'700', zIndex:'9999', fontSize:'13px',
+    boxShadow:'0 4px 20px rgba(0,0,0,.4)', opacity:'1', transition:'opacity 0.3s',
+    whiteSpace:'nowrap'
   });
+  t.textContent = msg;
+  clearTimeout(t.__timer);
+  t.__timer = setTimeout(() => { t.style.opacity = '0'; }, 3000);
+}
 
-  function showToast(msg, type = 'info') {
-    let t = document.getElementById('__toast');
-    if (!t) {
-      t = document.createElement('div');
-      t.id = '__toast';
-      document.body.appendChild(t);
-    }
-    const bg = type === 'error' ? '#F87171' : (type === 'success' ? '#34D399' : '#22D3EE');
-    Object.assign(t.style, { position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)', background:bg, color:'#000', padding:'12px 22px', borderRadius:'14px', fontWeight:'700', zIndex:'9999', fontSize:'13px', boxShadow:'0 4px 20px rgba(0,0,0,.4)', opacity: '1', transition: 'opacity 0.3s' });
-    t.textContent = msg;
-    clearTimeout(t.__timer);
-    t.__timer = setTimeout(() => t.style.opacity = '0', 3000);
-  }
-
+// ─────────────────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadUsers();
+});
 </script>
 </body>
 </html>
