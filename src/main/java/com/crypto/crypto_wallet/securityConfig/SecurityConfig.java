@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -64,7 +65,6 @@ public class SecurityConfig {
                         .sessionFixation().migrateSession()
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false)
-                        // Redirect to sign-in when a session expires (e.g. concurrent login or timeout)
                         .expiredUrl("/home/signin?expired")
                 )
 
@@ -75,6 +75,8 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
 
                 .authorizeHttpRequests(auth -> auth
+                        // FIX 1: Allow all CORS preflight OPTIONS requests through
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login",
@@ -94,7 +96,7 @@ public class SecurityConfig {
                 )
 
                 .formLogin(form -> form
-                        .loginPage("/auth/login")
+                        .loginPage("/home/signin") // FIX 2: Match the permitted URL above
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
                 )
@@ -104,7 +106,7 @@ public class SecurityConfig {
                         .logoutSuccessHandler((request, response, authentication) -> {
                             response.setStatus(HttpStatus.OK.value());
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                            response.setHeader("Location", "/home/signin");  // Optional: tell frontend where to go
+                            response.setHeader("Location", "/home/signin");
                             objectMapper.writeValue(response.getWriter(),
                                     ApiResponse.ok("Logged out successfully", null));
                         })
@@ -122,13 +124,11 @@ public class SecurityConfig {
                                     || (accept != null && accept.contains("application/json") && !accept.contains("text/html"));
 
                             if (isAjax) {
-                                // API / fetch() call → return JSON 401 so JS can handle it
                                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                                 objectMapper.writeValue(response.getWriter(),
                                         ApiResponse.error("Session expired – please sign in"));
                             } else {
-                                // Browser page navigation → redirect to sign-in
                                 response.sendRedirect("/home/signin?expired");
                             }
                         })
@@ -155,14 +155,21 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("http://localhost:*", "http://127.0.0.1:*"));
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:*",
+                "http://127.0.0.1:*",
+                // FIX 3: Removed trailing /* — origins must not include a path
+                "https://spectrum-outsource-heat.ngrok-free.dev"
+        ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", config);
+        // FIX 4: Apply CORS config to all paths, not just /api/**
+        // Without this, Spring Security rejects preflight requests before they reach the app
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 }
