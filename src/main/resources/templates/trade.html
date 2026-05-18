@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1683,6 +1683,91 @@
       letter-spacing: .08em;
     }
   </style>
+
+  <!-- BINARY OPTIONS STYLES -->
+  <style>
+    .mode-toggle-bar{display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:5px;margin-bottom:18px;width:fit-content;}
+    .mode-btn{padding:8px 22px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'Space Grotesk',sans-serif;transition:all .2s;}
+    .mode-btn.active{background:linear-gradient(135deg,#1e3a5f,#0f2744);color:var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.15);}
+    .mode-btn.bo-mode.active{background:linear-gradient(135deg,#1a1060,#2d0d50);color:#c084fc;box-shadow:0 0 16px rgba(192,132,252,.2);}
+    .bo-panel{display:none;} .bo-panel.visible{display:block;} .spot-panel.hidden{display:none;}
+    .bo-grid{display:flex;flex-direction:column;gap:16px;}
+    @media(min-width:1024px){.bo-grid{display:grid;grid-template-columns:1fr 340px;gap:16px;}.bo-chart-col{grid-column:1/2;grid-row:1/3;}.bo-form-col{grid-column:2/3;grid-row:1/3;display:flex;flex-direction:column;gap:16px;}}
+    .bo-active-banner{display:none;background:linear-gradient(135deg,rgba(30,16,80,.95),rgba(13,20,33,.95));border:1px solid rgba(192,132,252,.3);border-radius:16px;padding:14px 18px;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px;box-shadow:0 0 30px rgba(192,132,252,.1);}
+    .bo-active-banner.show{display:flex;}
+    .bo-banner-dir{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;padding:5px 14px;border-radius:9px;}
+    .bo-banner-dir.call{background:rgba(52,211,153,.15);color:var(--emerald);border:1px solid rgba(52,211,153,.3);}
+    .bo-banner-dir.put{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+    .bo-banner-stat{display:flex;flex-direction:column;gap:2px;}
+    .bo-banner-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+    .bo-banner-val{font-size:13px;font-weight:700;}
+    .bo-banner-sep{width:1px;height:30px;background:var(--border);}
+    .bo-timer-ring-wrap{position:relative;width:52px;height:52px;flex-shrink:0;margin-left:auto;}
+    .bo-timer-ring-wrap svg{transform:rotate(-90deg);}
+    .bo-timer-track{fill:none;stroke:rgba(255,255,255,.08);stroke-width:4;}
+    .bo-timer-arc{fill:none;stroke:#c084fc;stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .95s linear;}
+    .bo-timer-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:800;color:#c084fc;}
+    .bo-form-card{background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;}
+    .bo-form-header{padding:16px 20px 12px;border-bottom:1px solid var(--border);}
+    .bo-form-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#c084fc;margin-bottom:2px;}
+    .bo-form-subtitle{font-size:11px;color:var(--muted);}
+    .bo-form-body{padding:16px 18px 20px;display:flex;flex-direction:column;gap:16px;}
+    .bo-expiry-group{display:flex;gap:6px;flex-wrap:wrap;}
+    .bo-exp-btn{flex:1;min-width:44px;padding:8px 4px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .18s;text-align:center;}
+    .bo-exp-btn:hover{color:var(--text);border-color:rgba(192,132,252,.3);}
+    .bo-exp-btn.active{background:rgba(192,132,252,.12);border-color:rgba(192,132,252,.4);color:#c084fc;box-shadow:0 0 12px rgba(192,132,252,.15);}
+    .bo-stake-wrap{display:flex;align-items:center;background:var(--surface-h);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s;}
+    .bo-stake-wrap:focus-within{border-color:rgba(192,132,252,.4);}
+    .bo-stake-wrap input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:18px;font-weight:700;font-family:'Syne',sans-serif;padding:12px 14px;min-width:0;}
+    .bo-stake-unit{padding:0 14px;color:var(--muted);font-size:13px;font-weight:700;}
+    .bo-quick-btns{display:flex;gap:6px;}
+    .bo-quick-btn{flex:1;padding:7px 4px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .15s;text-align:center;}
+    .bo-quick-btn:hover{background:var(--surface-h);color:var(--text);border-color:rgba(255,255,255,.15);}
+    .bo-payout-box{background:linear-gradient(135deg,rgba(30,16,80,.6),rgba(13,20,33,.6));border:1px solid rgba(192,132,252,.2);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;}
+    .bo-payout-left{display:flex;flex-direction:column;gap:4px;}
+    .bo-payout-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+    .bo-payout-rate{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#4ade80;line-height:1;}
+    .bo-payout-right{text-align:right;display:flex;flex-direction:column;gap:6px;}
+    .bo-payout-item{display:flex;flex-direction:column;gap:2px;}
+    .bo-payout-item-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;}
+    .bo-payout-item-val{font-size:14px;font-weight:700;}
+    .bo-avail-row{display:flex;justify-content:space-between;font-size:12px;}
+    .bo-avail-lbl{color:var(--muted);} .bo-avail-val{font-weight:700;}
+    .bo-action-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .bo-call-btn,.bo-put-btn{padding:16px 10px;border-radius:14px;font-size:15px;font-weight:800;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:opacity .2s,transform .15s,box-shadow .2s;display:flex;flex-direction:column;align-items:center;gap:4px;letter-spacing:.02em;}
+    .bo-call-btn{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 0 28px rgba(34,197,94,.3);}
+    .bo-call-btn:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 0 40px rgba(34,197,94,.45);}
+    .bo-put-btn{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;box-shadow:0 0 28px rgba(239,68,68,.3);}
+    .bo-put-btn:hover{opacity:.88;transform:translateY(-2px);box-shadow:0 0 40px rgba(239,68,68,.45);}
+    .bo-call-btn:disabled,.bo-put-btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
+    .bo-btn-icon{font-size:22px;line-height:1;} .bo-btn-sub{font-size:10px;opacity:.8;font-weight:600;}
+    .bo-result-overlay{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;background:rgba(8,12,20,.75);backdrop-filter:blur(12px);}
+    .bo-result-overlay.show{display:flex;}
+    .bo-result-card{background:var(--surface);border-radius:28px;padding:40px 48px;text-align:center;max-width:380px;width:90%;animation:boResultPop .4s cubic-bezier(.34,1.56,.64,1) forwards;}
+    @keyframes boResultPop{from{opacity:0;transform:scale(.6);}to{opacity:1;transform:scale(1);}}
+    .bo-result-card.won{border:2px solid rgba(34,197,94,.5);box-shadow:0 0 60px rgba(34,197,94,.25);}
+    .bo-result-card.lost{border:2px solid rgba(239,68,68,.5);box-shadow:0 0 60px rgba(239,68,68,.2);}
+    .bo-result-emoji{font-size:64px;line-height:1;margin-bottom:16px;}
+    .bo-result-title{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;margin-bottom:10px;}
+    .bo-result-card.won .bo-result-title{color:#4ade80;} .bo-result-card.lost .bo-result-title{color:#f87171;}
+    .bo-result-amount{font-size:20px;font-weight:700;margin-bottom:8px;}
+    .bo-result-detail{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6;}
+    .bo-result-close{padding:12px 32px;border-radius:12px;border:none;background:var(--surface-h);color:var(--text);font-size:14px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background .2s;}
+    .bo-result-close:hover{background:rgba(255,255,255,.1);}
+    .bo-history-card{background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;}
+    .bo-history-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
+    .bo-history-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;}
+    .bo-history-scroll{overflow-x:auto;}
+    .bo-hist-row{display:grid;grid-template-columns:1.4fr 0.7fr 0.8fr 0.8fr 0.8fr 0.8fr;gap:4px;padding:11px 18px;border-bottom:1px solid var(--border);min-width:520px;transition:background .13s;}
+    .bo-hist-row:last-child{border-bottom:none;} .bo-hist-row:hover{background:rgba(255,255,255,.025);}
+    .bo-hist-head{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+    .bo-hist-head:not(:first-child){text-align:right;}
+    .bo-hist-cell{font-size:12px;font-weight:600;} .bo-hist-cell:not(:first-child){text-align:right;}
+    .bo-dir-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;}
+    .bo-dir-call{background:rgba(34,197,94,.12);color:#4ade80;} .bo-dir-put{background:rgba(239,68,68,.12);color:#f87171;}
+    .bo-status-won{color:#4ade80;font-weight:800;} .bo-status-lost{color:#f87171;font-weight:800;} .bo-status-pending{color:var(--yellow);font-weight:700;}
+    .bo-empty{padding:36px 20px;text-align:center;color:var(--dim);font-size:13px;}
+  </style>
 </head>
 
 <body>
@@ -1830,6 +1915,17 @@
   <!-- MAIN -->
   <div class="layout">
     <main class="main-content">
+
+
+      <!-- â•â• MODE TOGGLE â•â• -->
+      <div class="mode-toggle-bar fade-up d1">
+        <button type="button" class="mode-btn active" id="spotModeBtn" onclick="setMode('spot',this)">
+          &#9889; Spot Trading
+        </button>
+        <button type="button" class="mode-btn bo-mode" id="boModeBtn" onclick="setMode('binary',this)">
+          &#9654; Binary Options
+        </button>
+      </div>
 
       <!-- PAIR BAR -->
       <div class="pair-bar fade-up d1">
@@ -2008,7 +2104,189 @@
 
       </div><!-- /trade-grid -->
 
-    </main>
+    
+
+    <!-- â•â• BINARY OPTIONS PANEL â•â• -->
+    <div class="bo-panel" id="boPanel">
+
+      <!-- Active Trade Banner -->
+      <div class="bo-active-banner" id="boActiveBanner">
+        <div class="bo-banner-dir call" id="boBannerDir">CALL &#8593;</div>
+        <div class="bo-banner-sep"></div>
+        <div class="bo-banner-stat">
+          <div class="bo-banner-lbl">Asset</div>
+          <div class="bo-banner-val" id="boBannerPair">BTC/USDT</div>
+        </div>
+        <div class="bo-banner-sep"></div>
+        <div class="bo-banner-stat">
+          <div class="bo-banner-lbl">Entry Price</div>
+          <div class="bo-banner-val" id="boBannerEntry">.00</div>
+        </div>
+        <div class="bo-banner-sep"></div>
+        <div class="bo-banner-stat">
+          <div class="bo-banner-lbl">Current</div>
+          <div class="bo-banner-val" id="boBannerCurrent">.00</div>
+        </div>
+        <div class="bo-banner-sep"></div>
+        <div class="bo-banner-stat">
+          <div class="bo-banner-lbl">Stake</div>
+          <div class="bo-banner-val" id="boBannerStake"></div>
+        </div>
+        <div class="bo-banner-sep"></div>
+        <div class="bo-banner-stat">
+          <div class="bo-banner-lbl">P&amp;L</div>
+          <div class="bo-banner-val" id="boBannerPnl" style="color:var(--emerald);">+</div>
+        </div>
+        <!-- Countdown ring -->
+        <div class="bo-timer-ring-wrap">
+          <svg width="52" height="52" viewBox="0 0 52 52">
+            <circle class="bo-timer-track" cx="26" cy="26" r="22"/>
+            <circle class="bo-timer-arc" id="boTimerArc" cx="26" cy="26" r="22"
+              stroke-dasharray="138.2" stroke-dashoffset="0"/>
+          </svg>
+          <div class="bo-timer-text" id="boTimerText">60</div>
+        </div>
+      </div>
+
+      <!-- BO Grid: chart + form -->
+      <div class="bo-grid">
+
+        <!-- Chart (reuse existing TradingView chart) -->
+        <div class="bo-chart-col">
+          <div class="chart-card" style="padding:0;overflow:hidden;border-radius:22px;border:1px solid var(--border);">
+            <div class="timeframe-bar" id="boTimeframeBar" style="padding:10px 16px 0;">
+              <span class="tf-label">Interval</span>
+              <button class="tf-btn active" data-interval="1" onclick="boSetTf(this)">1m</button>
+              <button class="tf-btn" data-interval="5" onclick="boSetTf(this)">5m</button>
+              <button class="tf-btn" data-interval="15" onclick="boSetTf(this)">15m</button>
+              <button class="tf-btn" data-interval="60" onclick="boSetTf(this)">1H</button>
+            </div>
+            <div style="height:380px;width:100%;" id="boTvChart"></div>
+          </div>
+        </div>
+
+        <!-- Right column: form + history -->
+        <div class="bo-form-col">
+
+          <!-- Trade Form -->
+          <div class="bo-form-card">
+            <div class="bo-form-header">
+              <div class="bo-form-title">&#9672; Binary Options</div>
+              <div class="bo-form-subtitle">Fixed-time â€¢ Instant settlement</div>
+            </div>
+            <div class="bo-form-body">
+
+              <!-- Expiry selector -->
+              <div>
+                <div class="field-lbl">Expiry Time</div>
+                <div class="bo-expiry-group" id="boExpiryGroup">
+                  <button class="bo-exp-btn" onclick="boSetExpiry(30,this)">30s</button>
+                  <button class="bo-exp-btn active" onclick="boSetExpiry(60,this)">1m</button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(120,this)">2m</button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(300,this)">5m</button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(900,this)">15m</button>
+                </div>
+              </div>
+
+              <!-- Stake amount -->
+              <div>
+                <div class="field-lbl">Investment Amount</div>
+                <div class="bo-stake-wrap">
+                  <input type="number" id="boStakeInput" value="50" min="1" step="1"
+                    oninput="boUpdatePayout()" placeholder="Enter stake">
+                  <span class="bo-stake-unit">USDT</span>
+                </div>
+                <div class="bo-quick-btns" style="margin-top:8px;">
+                  <button class="bo-quick-btn" onclick="boSetStake(10)"></button>
+                  <button class="bo-quick-btn" onclick="boSetStake(25)"></button>
+                  <button class="bo-quick-btn" onclick="boSetStake(50)"></button>
+                  <button class="bo-quick-btn" onclick="boSetStake(100)"></button>
+                  <button class="bo-quick-btn" onclick="boSetStake(250)"></button>
+                </div>
+              </div>
+
+              <!-- Payout info -->
+              <div class="bo-payout-box">
+                <div class="bo-payout-left">
+                  <div class="bo-payout-lbl">Payout Rate</div>
+                  <div class="bo-payout-rate" id="boPayoutPct">+85%</div>
+                  <div style="font-size:10px;color:var(--muted);margin-top:4px;">Profit on correct prediction</div>
+                </div>
+                <div class="bo-payout-right">
+                  <div class="bo-payout-item">
+                    <div class="bo-payout-item-lbl">Profit if Win</div>
+                    <div class="bo-payout-item-val" id="boWinProfit" style="color:#4ade80;">+.50</div>
+                  </div>
+                  <div class="bo-payout-item">
+                    <div class="bo-payout-item-lbl">Total Return</div>
+                    <div class="bo-payout-item-val" id="boTotalReturn">.50</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Available balance -->
+              <div class="bo-avail-row">
+                <span class="bo-avail-lbl">Available USDT</span>
+                <span class="bo-avail-val" id="boAvailUsdt">â€” USDT</span>
+              </div>
+
+              <!-- CALL / PUT buttons -->
+              <div class="bo-action-btns">
+                <button type="button" class="bo-call-btn" id="boCallBtn"
+                  onclick="boPlaceTrade('CALL')">
+                  <span class="bo-btn-icon">&#8593;</span>
+                  <span>CALL</span>
+                  <span class="bo-btn-sub">Higher</span>
+                </button>
+                <button type="button" class="bo-put-btn" id="boPutBtn"
+                  onclick="boPlaceTrade('PUT')">
+                  <span class="bo-btn-icon">&#8595;</span>
+                  <span>PUT</span>
+                  <span class="bo-btn-sub">Lower</span>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Binary Options History -->
+          <div class="bo-history-card">
+            <div class="bo-history-header">
+              <div class="bo-history-title">Trade History</div>
+              <button type="button" onclick="boLoadHistory()" style="font-size:11px;color:var(--cyan);background:none;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:700;">Refresh</button>
+            </div>
+            <div class="bo-history-scroll">
+              <div class="bo-hist-row">
+                <div class="bo-hist-head">Asset / Dir</div>
+                <div class="bo-hist-head">Stake</div>
+                <div class="bo-hist-head">Entry</div>
+                <div class="bo-hist-head">Exit</div>
+                <div class="bo-hist-head">P&amp;L</div>
+                <div class="bo-hist-head">Result</div>
+              </div>
+              <div id="boHistoryBody">
+                <div class="bo-empty">No binary option trades yet.<br>Place your first trade above.</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /bo-form-col -->
+      </div><!-- /bo-grid -->
+    </div><!-- /bo-panel -->
+
+    <!-- WIN/LOSS RESULT OVERLAY -->
+    <div class="bo-result-overlay" id="boResultOverlay">
+      <div class="bo-result-card" id="boResultCard">
+        <div class="bo-result-emoji" id="boResultEmoji">&#127881;</div>
+        <div class="bo-result-title" id="boResultTitle">YOU WON!</div>
+        <div class="bo-result-amount" id="boResultAmount">+.50 Profit</div>
+        <div class="bo-result-detail" id="boResultDetail">
+          Entry: ,000 &rarr; Exit: ,320<br>Direction: CALL (Higher)
+        </div>
+        <button type="button" class="bo-result-close" onclick="boCloseResult()">Continue Trading</button>
+      </div>
+    </div>
+</main>
   </div>
 
   <!-- BOTTOM NAV -->
@@ -2827,7 +3105,383 @@
       clearTimeout(t.__timer);
       t.__timer = setTimeout(() => t.style.opacity = '0', 3000);
     }
-  </script>
+  
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       BINARY OPTIONS ENGINE
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+    /* â”€â”€â”€ Mode Toggle â”€â”€â”€ */
+    let currentMode = 'spot';
+
+    function setMode(mode, btn) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const boPanel   = document.getElementById('boPanel');
+      const spotPanel = document.querySelector('.trade-grid');
+      const pairBar   = document.querySelector('.pair-bar');
+
+      if (mode === 'binary') {
+        boPanel.classList.add('visible');
+        if (spotPanel) spotPanel.style.display = 'none';
+        if (pairBar)   pairBar.style.display   = 'none';
+        boUpdatePayout();
+        boUpdateAvail();
+        boLoadHistory();
+        boRenderTradingView(activeCoinSym);
+      } else {
+        boPanel.classList.remove('visible');
+        if (spotPanel) spotPanel.style.display = '';
+        if (pairBar)   pairBar.style.display   = '';
+      }
+    }
+
+    /* â”€â”€â”€ BO State â”€â”€â”€ */
+    let boExpirySeconds = 60;
+    let boPayoutRate    = 0.85;
+    let boActiveTradeId = null;
+    let boTimerInterval = null;
+    let boTimerTotal    = 60;
+    let boTimerLeft     = 60;
+    let boPendingResult = null;
+    let boTvWidget      = null;
+    let boTvInterval    = '1';
+
+    /* â”€â”€â”€ Expiry selector â”€â”€â”€ */
+    function boSetExpiry(secs, btn) {
+      boExpirySeconds = secs;
+      document.querySelectorAll('#boExpiryGroup .bo-exp-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      boUpdatePayout();
+    }
+
+    /* â”€â”€â”€ Quick stake â”€â”€â”€ */
+    function boSetStake(amount) {
+      const inp = document.getElementById('boStakeInput');
+      if (inp) { inp.value = amount; boUpdatePayout(); }
+    }
+
+    /* â”€â”€â”€ Payout calculator â”€â”€â”€ */
+    function boUpdatePayout() {
+      const stake = parseFloat(document.getElementById('boStakeInput').value) || 0;
+      const profit = stake * boPayoutRate;
+      const total  = stake + profit;
+      const el1 = document.getElementById('boWinProfit');
+      const el2 = document.getElementById('boTotalReturn');
+      if (el1) el1.textContent = '+$' + profit.toFixed(2);
+      if (el2) el2.textContent = '$' + total.toFixed(2);
+    }
+
+    /* â”€â”€â”€ Available USDT display â”€â”€â”€ */
+    function boUpdateAvail() {
+      const el = document.getElementById('boAvailUsdt');
+      if (el) el.textContent = AVAIL_USDT.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USDT';
+    }
+
+    /* â”€â”€â”€ TradingView for BO panel â”€â”€â”€ */
+    function boRenderTradingView(sym) {
+      const container = document.getElementById('boTvChart');
+      if (!container) return;
+      container.innerHTML = '';
+      if (typeof TradingView !== 'undefined') {
+        boTvWidget = new TradingView.widget({
+          autosize: true,
+          symbol: 'BINANCE:' + sym + 'USDT',
+          interval: boTvInterval,
+          timezone: 'Etc/UTC',
+          theme: 'dark',
+          style: '1',
+          locale: 'en',
+          enable_publishing: false,
+          backgroundColor: '#0d1421',
+          gridColor: 'rgba(255,255,255,0.06)',
+          hide_top_toolbar: true,
+          hide_legend: true,
+          save_image: false,
+          container_id: 'boTvChart'
+        });
+      }
+    }
+
+    function boSetTf(btn) {
+      document.querySelectorAll('#boTimeframeBar .tf-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      boTvInterval = btn.getAttribute('data-interval');
+      boRenderTradingView(activeCoinSym);
+    }
+
+    /* â”€â”€â”€ Place Trade â”€â”€â”€ */
+    async function boPlaceTrade(direction) {
+      if (boActiveTradeId !== null) {
+        showToast('You already have an active trade. Wait for it to settle.', 'error');
+        return;
+      }
+
+      const stake = parseFloat(document.getElementById('boStakeInput').value);
+      if (!Number.isFinite(stake) || stake < 1) {
+        showToast('Minimum stake is ', 'error');
+        return;
+      }
+      if (stake > AVAIL_USDT + 1e-9) {
+        showToast('Insufficient USDT balance. Available: $' + AVAIL_USDT.toFixed(2), 'error');
+        return;
+      }
+      if (!Number.isFinite(price) || price <= 0) {
+        showToast('Live price not ready yet. Wait a moment.', 'error');
+        return;
+      }
+
+      // Disable buttons while placing
+      const callBtn = document.getElementById('boCallBtn');
+      const putBtn  = document.getElementById('boPutBtn');
+      callBtn.disabled = true;
+      putBtn.disabled  = true;
+
+      const req = {
+        pair: activeCoinSym + '/USDT',
+        direction: direction,
+        stake: stake,
+        entryPrice: price,
+        expirySeconds: boExpirySeconds,
+        payoutRate: boPayoutRate
+      };
+
+      try {
+        const res  = await fetch('/api/binary/place', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(req)
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/home/signin'; return;
+        }
+
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.success) {
+          showToast(json.message || 'Could not place trade', 'error');
+          callBtn.disabled = false;
+          putBtn.disabled  = false;
+          return;
+        }
+
+        const trade = json.data;
+        boActiveTradeId = trade.id;
+
+        // Update local balance optimistically
+        AVAIL_USDT = Math.max(0, AVAIL_USDT - stake);
+        boUpdateAvail();
+        updateTotal(); // refresh spot form too
+
+        showToast((direction === 'CALL' ? 'â–² CALL' : 'â–¼ PUT') + ' placed â€” $' + stake.toFixed(2) + ' on ' + activeCoinSym + '/USDT', 'success');
+
+        // Start countdown
+        boStartCountdown(boExpirySeconds, trade.id, price, stake, direction);
+
+      } catch (e) {
+        showToast('Network error placing trade', 'error');
+        callBtn.disabled = false;
+        putBtn.disabled  = false;
+      }
+    }
+
+    /* â”€â”€â”€ Countdown Timer â”€â”€â”€ */
+    function boStartCountdown(totalSecs, tradeId, entryPrice, stake, direction) {
+      boTimerTotal = totalSecs;
+      boTimerLeft  = totalSecs;
+
+      // Show banner
+      const banner = document.getElementById('boActiveBanner');
+      banner.classList.add('show');
+      const dirEl = document.getElementById('boBannerDir');
+      dirEl.className = 'bo-banner-dir ' + (direction === 'CALL' ? 'call' : 'put');
+      dirEl.textContent = direction === 'CALL' ? 'CALL â–²' : 'PUT â–¼';
+
+      document.getElementById('boBannerPair').textContent  = activeCoinSym + '/USDT';
+      document.getElementById('boBannerEntry').textContent = '$' + entryPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('boBannerStake').textContent = '$' + stake.toFixed(2);
+
+      const circumference = 2 * Math.PI * 22; // r=22 â†’ ~138.23
+      const arc = document.getElementById('boTimerArc');
+      const timerText = document.getElementById('boTimerText');
+
+      clearInterval(boTimerInterval);
+      boTimerInterval = setInterval(async () => {
+        boTimerLeft--;
+
+        // Update arc
+        const frac    = boTimerLeft / boTimerTotal;
+        const offset  = circumference * (1 - frac);
+        if (arc) arc.style.strokeDashoffset = offset;
+
+        // Format display
+        const mm = Math.floor(boTimerLeft / 60).toString().padStart(2, '0');
+        const ss = (boTimerLeft % 60).toString().padStart(2, '0');
+        if (timerText) timerText.textContent = boTimerLeft >= 60 ? mm + ':' + ss : String(boTimerLeft);
+
+        // Update live price in banner
+        const currentEl = document.getElementById('boBannerCurrent');
+        if (currentEl) currentEl.textContent = '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        // P&L indicator
+        const pnlEl = document.getElementById('boBannerPnl');
+        if (pnlEl) {
+          const winning = (direction === 'CALL' && price > entryPrice) || (direction === 'PUT' && price < entryPrice);
+          const winAmt  = stake * boPayoutRate;
+          if (winning) {
+            pnlEl.style.color = '#4ade80';
+            pnlEl.textContent = '+$' + winAmt.toFixed(2);
+          } else if (price === entryPrice) {
+            pnlEl.style.color = 'var(--muted)';
+            pnlEl.textContent = '.00';
+          } else {
+            pnlEl.style.color = '#f87171';
+            pnlEl.textContent = '-$' + stake.toFixed(2);
+          }
+        }
+
+        // Timer expired
+        if (boTimerLeft <= 0) {
+          clearInterval(boTimerInterval);
+          boTimerInterval = null;
+          await boSettleTrade(tradeId, price, entryPrice, stake, direction);
+        }
+      }, 1000);
+    }
+
+    /* â”€â”€â”€ Settle Trade â”€â”€â”€ */
+    async function boSettleTrade(tradeId, exitPrice, entryPrice, stake, direction) {
+      try {
+        const res  = await fetch('/api/binary/settle/' + tradeId + '?exitPrice=' + exitPrice, {
+          method: 'POST',
+          credentials: 'include'
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = '/home/signin'; return;
+        }
+
+        const json = await res.json().catch(() => ({}));
+        const result = json.success ? json.data : null;
+
+        const won = result ? result.status === 'WON' : false;
+        const payout = result ? (parseFloat(result.payout) || 0) : 0;
+        const profit = result ? (parseFloat(result.profit) || 0) : 0;
+
+        // Update balance
+        if (won) {
+          AVAIL_USDT += payout;
+        }
+        boUpdateAvail();
+        updateTotal();
+        resyncBalancesFromApi(); // sync from server
+
+        // Show result overlay
+        boShowResult(won, stake, profit, payout, entryPrice, exitPrice, direction);
+
+        // Reset active trade state
+        boActiveTradeId = null;
+        document.getElementById('boActiveBanner').classList.remove('show');
+        document.getElementById('boCallBtn').disabled = false;
+        document.getElementById('boPutBtn').disabled  = false;
+
+        // Reload history
+        boLoadHistory();
+
+      } catch(e) {
+        showToast('Settlement error: ' + e.message, 'error');
+        boActiveTradeId = null;
+        document.getElementById('boActiveBanner').classList.remove('show');
+        document.getElementById('boCallBtn').disabled = false;
+        document.getElementById('boPutBtn').disabled  = false;
+      }
+    }
+
+    /* â”€â”€â”€ Show Result Overlay â”€â”€â”€ */
+    function boShowResult(won, stake, profit, payout, entryPrice, exitPrice, direction) {
+      const overlay = document.getElementById('boResultOverlay');
+      const card    = document.getElementById('boResultCard');
+      card.className = 'bo-result-card ' + (won ? 'won' : 'lost');
+      document.getElementById('boResultEmoji').textContent = won ? 'ðŸŽ‰' : 'ðŸ˜”';
+      document.getElementById('boResultTitle').textContent = won ? 'YOU WON!' : 'YOU LOST';
+
+      if (won) {
+        document.getElementById('boResultAmount').textContent = '+$' + profit.toFixed(2) + ' Profit';
+        document.getElementById('boResultAmount').style.color = '#4ade80';
+      } else {
+        document.getElementById('boResultAmount').textContent = '-$' + stake.toFixed(2) + ' Lost';
+        document.getElementById('boResultAmount').style.color = '#f87171';
+      }
+
+      const fmt = p => '$' + p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('boResultDetail').innerHTML =
+        'Entry: ' + fmt(entryPrice) + ' &rarr; Exit: ' + fmt(exitPrice) +
+        '<br>Direction: ' + direction + (direction === 'CALL' ? ' (Higher)' : ' (Lower)') +
+        (won ? '<br>Total returned: ' + fmt(payout) : '');
+
+      overlay.classList.add('show');
+    }
+
+    function boCloseResult() {
+      document.getElementById('boResultOverlay').classList.remove('show');
+    }
+
+    /* â”€â”€â”€ History â”€â”€â”€ */
+    async function boLoadHistory() {
+      try {
+        const res  = await fetch('/api/binary/history', { credentials: 'include' });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!json.success || !json.data) return;
+        boRenderHistory(json.data);
+      } catch(e) {}
+    }
+
+    function boRenderHistory(trades) {
+      const body = document.getElementById('boHistoryBody');
+      if (!body) return;
+      if (!trades || !trades.length) {
+        body.innerHTML = '<div class="bo-empty">No binary option trades yet.<br>Place your first trade above.</div>';
+        return;
+      }
+      body.innerHTML = trades.map(t => {
+        const dirClass = t.direction === 'CALL' ? 'bo-dir-call' : 'bo-dir-put';
+        const dirArrow = t.direction === 'CALL' ? 'â–²' : 'â–¼';
+        const stClass  = t.status === 'WON' ? 'bo-status-won' : t.status === 'LOST' ? 'bo-status-lost' : 'bo-status-pending';
+        const stLabel  = t.status === 'WON' ? 'âœ“ WON' : t.status === 'LOST' ? 'âœ— LOST' : 'â³';
+        const profitVal = t.status === 'WON'
+          ? '<span style="color:#4ade80;">+$' + (parseFloat(t.profit)||0).toFixed(2) + '</span>'
+          : t.status === 'LOST'
+            ? '<span style="color:#f87171;">-$' + (parseFloat(t.stake)||0).toFixed(2) + '</span>'
+            : '<span style="color:var(--yellow);">â€”</span>';
+        const fmt = p => p ? '$' + parseFloat(p).toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}) : 'â€”';
+        return '<div class="bo-hist-row">' +
+          '<div class="bo-hist-cell"><span style="font-size:11px;color:var(--muted);">' + (t.pair||'') + '</span><br>' +
+            '<span class="bo-dir-badge ' + dirClass + '">' + dirArrow + ' ' + t.direction + '</span></div>' +
+          '<div class="bo-hist-cell">' + fmt(t.stake) + '</div>' +
+          '<div class="bo-hist-cell">' + fmt(t.entryPrice) + '</div>' +
+          '<div class="bo-hist-cell">' + fmt(t.exitPrice) + '</div>' +
+          '<div class="bo-hist-cell">' + profitVal + '</div>' +
+          '<div class="bo-hist-cell ' + stClass + '">' + stLabel + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    /* â”€â”€â”€ Keep BO avail updated when spot balances sync â”€â”€â”€ */
+    const _origApplyWallet = applyWalletSnapshot;
+    window.applyWalletSnapshot = function(wallets) {
+      _origApplyWallet(wallets);
+      boUpdateAvail();
+    };
+
+    /* â”€â”€â”€ Initial BO setup â”€â”€â”€ */
+    document.addEventListener('DOMContentLoaded', function() {
+      boUpdatePayout();
+      boUpdateAvail();
+    });
+</script>
 </body>
 
 </html>
