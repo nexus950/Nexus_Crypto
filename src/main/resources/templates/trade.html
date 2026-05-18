@@ -3153,6 +3153,16 @@
       boExpirySeconds = secs;
       document.querySelectorAll('#boExpiryGroup .bo-exp-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+
+      if (secs === 30) boPayoutRate = 0.75;
+      else if (secs === 60) boPayoutRate = 0.85;
+      else if (secs === 120) boPayoutRate = 0.82;
+      else if (secs === 300) boPayoutRate = 0.80;
+      else boPayoutRate = 0.70;
+
+      const pctEl = document.getElementById('boPayoutPct');
+      if (pctEl) pctEl.textContent = '+' + (boPayoutRate * 100) + '%';
+
       boUpdatePayout();
     }
 
@@ -3275,7 +3285,7 @@
         boUpdateAvail();
         updateTotal(); // refresh spot form too
 
-        showToast((direction === 'CALL' ? 'â–² CALL' : 'â–¼ PUT') + ' placed â€” $' + stake.toFixed(2) + ' on ' + activeCoinSym + '/USDT', 'success');
+        showToast((direction === 'CALL' ? '&#9650; CALL' : '&#9660; PUT') + ' placed â€” $' + stake.toFixed(2) + ' on ' + activeCoinSym + '/USDT', 'success');
 
         // Start countdown
         boStartCountdown(boExpirySeconds, trade.id, price, stake, direction);
@@ -3297,7 +3307,7 @@
       banner.classList.add('show');
       const dirEl = document.getElementById('boBannerDir');
       dirEl.className = 'bo-banner-dir ' + (direction === 'CALL' ? 'call' : 'put');
-      dirEl.textContent = direction === 'CALL' ? 'CALL â–²' : 'PUT â–¼';
+      dirEl.innerHTML = direction === 'CALL' ? 'CALL &#9650;' : 'PUT &#9660;';
 
       document.getElementById('boBannerPair').textContent  = activeCoinSym + '/USDT';
       document.getElementById('boBannerEntry').textContent = '$' + entryPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -3310,6 +3320,22 @@
       clearInterval(boTimerInterval);
       boTimerInterval = setInterval(async () => {
         boTimerLeft--;
+
+        // Fetch live price continuously from Binance to ensure it fluctuates!
+        if (boTimerLeft % 2 === 0) {
+          try {
+            const sym = activeCoinSym + 'USDT';
+            const tRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + sym);
+            if (tRes.ok) {
+              const tJson = await tRes.json();
+              if (tJson.price) {
+                price = parseFloat(tJson.price);
+                const pEl = document.getElementById('livePrice');
+                if (pEl) pEl.textContent = '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+              }
+            }
+          } catch(e) {}
+        }
 
         // Update arc
         const frac    = boTimerLeft / boTimerTotal;
@@ -3448,15 +3474,15 @@
       }
       body.innerHTML = trades.map(t => {
         const dirClass = t.direction === 'CALL' ? 'bo-dir-call' : 'bo-dir-put';
-        const dirArrow = t.direction === 'CALL' ? 'â–²' : 'â–¼';
+        const dirArrow = t.direction === 'CALL' ? '&#9650;' : '&#9660;';
         const stClass  = t.status === 'WON' ? 'bo-status-won' : t.status === 'LOST' ? 'bo-status-lost' : 'bo-status-pending';
-        const stLabel  = t.status === 'WON' ? 'âœ“ WON' : t.status === 'LOST' ? 'âœ— LOST' : 'â³';
+        const stLabel  = t.status === 'WON' ? '&#10003; WON' : t.status === 'LOST' ? '&#10007; LOST' : '&#8987;';
         const profitVal = t.status === 'WON'
           ? '<span style="color:#4ade80;">+$' + (parseFloat(t.profit)||0).toFixed(2) + '</span>'
           : t.status === 'LOST'
             ? '<span style="color:#f87171;">-$' + (parseFloat(t.stake)||0).toFixed(2) + '</span>'
-            : '<span style="color:var(--yellow);">â€”</span>';
-        const fmt = p => p ? '$' + parseFloat(p).toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}) : 'â€”';
+            : '<span style="color:var(--yellow);">&mdash;</span>';
+        const fmt = p => p ? '$' + parseFloat(p).toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}) : '&mdash;';
         return '<div class="bo-hist-row">' +
           '<div class="bo-hist-cell"><span style="font-size:11px;color:var(--muted);">' + (t.pair||'') + '</span><br>' +
             '<span class="bo-dir-badge ' + dirClass + '">' + dirArrow + ' ' + t.direction + '</span></div>' +
@@ -3469,7 +3495,6 @@
       }).join('');
     }
 
-    /* â”€â”€â”€ Keep BO avail updated when spot balances sync â”€â”€â”€ */
     const _origApplyWallet = applyWalletSnapshot;
     window.applyWalletSnapshot = function(wallets) {
       _origApplyWallet(wallets);
