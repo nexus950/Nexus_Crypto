@@ -3404,7 +3404,7 @@
       const overlay = document.getElementById('boResultOverlay');
       const card    = document.getElementById('boResultCard');
       card.className = 'bo-result-card ' + (won ? 'won' : 'lost');
-      document.getElementById('boResultEmoji').textContent = won ? 'ðŸŽ‰' : 'ðŸ˜”';
+      document.getElementById('boResultEmoji').innerHTML = won ? '&#127881;' : '&#128532;';
       document.getElementById('boResultTitle').textContent = won ? 'YOU WON!' : 'YOU LOST';
 
       if (won) {
