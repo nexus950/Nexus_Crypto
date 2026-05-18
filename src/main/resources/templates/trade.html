@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -2172,7 +2172,7 @@
           <div class="bo-form-card">
             <div class="bo-form-header">
               <div class="bo-form-title">&#9672; Binary Options</div>
-              <div class="bo-form-subtitle">Fixed-time â€¢ Instant settlement</div>
+              <div class="bo-form-subtitle">Fixed-time &bull; Instant settlement</div>
             </div>
             <div class="bo-form-body">
 
@@ -2197,11 +2197,11 @@
                   <span class="bo-stake-unit">USDT</span>
                 </div>
                 <div class="bo-quick-btns" style="margin-top:8px;">
-                  <button class="bo-quick-btn" onclick="boSetStake(10)"></button>
-                  <button class="bo-quick-btn" onclick="boSetStake(25)"></button>
-                  <button class="bo-quick-btn" onclick="boSetStake(50)"></button>
-                  <button class="bo-quick-btn" onclick="boSetStake(100)"></button>
-                  <button class="bo-quick-btn" onclick="boSetStake(250)"></button>
+                  <button class="bo-quick-btn" onclick="boSetStake(10)">$10</button>
+                  <button class="bo-quick-btn" onclick="boSetStake(25)">$25</button>
+                  <button class="bo-quick-btn" onclick="boSetStake(50)">$50</button>
+                  <button class="bo-quick-btn" onclick="boSetStake(100)">$100</button>
+                  <button class="bo-quick-btn" onclick="boSetStake(250)">$250</button>
                 </div>
               </div>
 
@@ -2227,7 +2227,7 @@
               <!-- Available balance -->
               <div class="bo-avail-row">
                 <span class="bo-avail-lbl">Available USDT</span>
-                <span class="bo-avail-val" id="boAvailUsdt">â€” USDT</span>
+                <span class="bo-avail-val" id="boAvailUsdt">&mdash; USDT</span>
               </div>
 
               <!-- CALL / PUT buttons -->
@@ -2484,7 +2484,7 @@
       // Update header UI
       document.getElementById('activeCoinIcon').src = icon;
       document.getElementById('activePairLabel').textContent = sym + ' / USDT';
-      document.getElementById('activeCoinName').textContent = name + ' Spot';
+      document.getElementById('activeCoinName').textContent = name + (currentMode === 'binary' ? ' Binary' : ' Spot');
 
       // Update form UI
       document.querySelectorAll('.form-tab.buy').forEach(el => el.textContent = 'Buy ' + sym);
@@ -2576,6 +2576,8 @@
 
       renderTradingView(activeCoinSym);
       renderBook();
+      if (typeof boUpdatePayout === 'function') boUpdatePayout();
+      if (typeof boUpdateAvail === 'function') boUpdateAvail();
     });
 
     window.addEventListener('pageshow', function (ev) {
@@ -3085,7 +3087,7 @@
     }
     pollTradeUi();
     // Backend proxy caches for 5 min; no point polling faster.
-    setInterval(pollTradeUi, 300000);
+    setInterval(pollTradeUi, 10000);
     setInterval(renderBook, 12000); // More frequent orderbook updates (Binance API is not rate-limited)
 
     // Init
@@ -3110,7 +3112,7 @@
        BINARY OPTIONS ENGINE
     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-    /* â”€â”€â”€ Mode Toggle â”€â”€â”€ */
+    /* ─── Mode Toggle ─── */
     let currentMode = 'spot';
 
     function setMode(mode, btn) {
@@ -3137,7 +3139,7 @@
       }
     }
 
-    /* â”€â”€â”€ BO State â”€â”€â”€ */
+    /* ─── BO State ─── */
     let boExpirySeconds = 60;
     let boPayoutRate    = 0.85;
     let boActiveTradeId = null;
@@ -3148,7 +3150,7 @@
     let boTvWidget      = null;
     let boTvInterval    = '1';
 
-    /* â”€â”€â”€ Expiry selector â”€â”€â”€ */
+    /* ─── Expiry selector ─── */
     function boSetExpiry(secs, btn) {
       boExpirySeconds = secs;
       document.querySelectorAll('#boExpiryGroup .bo-exp-btn').forEach(b => b.classList.remove('active'));
@@ -3166,13 +3168,13 @@
       boUpdatePayout();
     }
 
-    /* â”€â”€â”€ Quick stake â”€â”€â”€ */
+    /* ─── Quick stake ─── */
     function boSetStake(amount) {
       const inp = document.getElementById('boStakeInput');
       if (inp) { inp.value = amount; boUpdatePayout(); }
     }
 
-    /* â”€â”€â”€ Payout calculator â”€â”€â”€ */
+    /* ─── Payout calculator ─── */
     function boUpdatePayout() {
       const stake = parseFloat(document.getElementById('boStakeInput').value) || 0;
       const profit = stake * boPayoutRate;
@@ -3183,13 +3185,13 @@
       if (el2) el2.textContent = '$' + total.toFixed(2);
     }
 
-    /* â”€â”€â”€ Available USDT display â”€â”€â”€ */
+    /* ─── Available USDT display ─── */
     function boUpdateAvail() {
       const el = document.getElementById('boAvailUsdt');
       if (el) el.textContent = AVAIL_USDT.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USDT';
     }
 
-    /* â”€â”€â”€ TradingView for BO panel â”€â”€â”€ */
+    /* ─── TradingView for BO panel ─── */
     function boRenderTradingView(sym) {
       const container = document.getElementById('boTvChart');
       if (!container) return;
@@ -3221,7 +3223,7 @@
       boRenderTradingView(activeCoinSym);
     }
 
-    /* â”€â”€â”€ Place Trade â”€â”€â”€ */
+    /* ─── Place Trade ─── */
     async function boPlaceTrade(direction) {
       if (boActiveTradeId !== null) {
         showToast('You already have an active trade. Wait for it to settle.', 'error');
@@ -3285,7 +3287,7 @@
         boUpdateAvail();
         updateTotal(); // refresh spot form too
 
-        showToast((direction === 'CALL' ? '&#9650; CALL' : '&#9660; PUT') + ' placed â€” $' + stake.toFixed(2) + ' on ' + activeCoinSym + '/USDT', 'success');
+        showToast(direction + ' placed - $' + stake.toFixed(2) + ' on ' + activeCoinSym + '/USDT', 'success');
 
         // Start countdown
         boStartCountdown(boExpirySeconds, trade.id, price, stake, direction);
@@ -3297,7 +3299,7 @@
       }
     }
 
-    /* â”€â”€â”€ Countdown Timer â”€â”€â”€ */
+    /* ─── Countdown Timer ─── */
     function boStartCountdown(totalSecs, tradeId, entryPrice, stake, direction) {
       boTimerTotal = totalSecs;
       boTimerLeft  = totalSecs;
@@ -3313,7 +3315,7 @@
       document.getElementById('boBannerEntry').textContent = '$' + entryPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('boBannerStake').textContent = '$' + stake.toFixed(2);
 
-      const circumference = 2 * Math.PI * 22; // r=22 â†’ ~138.23
+      const circumference = 2 * Math.PI * 22; // r=22 &rarr; ~138.23
       const arc = document.getElementById('boTimerArc');
       const timerText = document.getElementById('boTimerText');
 
@@ -3377,7 +3379,7 @@
       }, 1000);
     }
 
-    /* â”€â”€â”€ Settle Trade â”€â”€â”€ */
+    /* ─── Settle Trade ─── */
     async function boSettleTrade(tradeId, exitPrice, entryPrice, stake, direction) {
       try {
         const res  = await fetch('/api/binary/settle/' + tradeId + '?exitPrice=' + exitPrice, {
@@ -3425,7 +3427,7 @@
       }
     }
 
-    /* â”€â”€â”€ Show Result Overlay â”€â”€â”€ */
+    /* ─── Show Result Overlay ─── */
     function boShowResult(won, stake, profit, payout, entryPrice, exitPrice, direction) {
       const overlay = document.getElementById('boResultOverlay');
       const card    = document.getElementById('boResultCard');
@@ -3448,13 +3450,15 @@
         (won ? '<br>Total returned: ' + fmt(payout) : '');
 
       overlay.classList.add('show');
+      clearTimeout(overlay._timer);
+      overlay._timer = setTimeout(boCloseResult, 4000);
     }
 
     function boCloseResult() {
       document.getElementById('boResultOverlay').classList.remove('show');
     }
 
-    /* â”€â”€â”€ History â”€â”€â”€ */
+    /* ─── History ─── */
     async function boLoadHistory() {
       try {
         const res  = await fetch('/api/binary/history', { credentials: 'include' });
@@ -3495,17 +3499,9 @@
       }).join('');
     }
 
-    const _origApplyWallet = applyWalletSnapshot;
-    window.applyWalletSnapshot = function(wallets) {
-      _origApplyWallet(wallets);
-      boUpdateAvail();
-    };
 
-    /* â”€â”€â”€ Initial BO setup â”€â”€â”€ */
-    document.addEventListener('DOMContentLoaded', function() {
-      boUpdatePayout();
-      boUpdateAvail();
-    });
+
+
 </script>
 </body>
 
