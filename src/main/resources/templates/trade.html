@@ -1767,6 +1767,10 @@
     .bo-dir-call{background:rgba(34,197,94,.12);color:#4ade80;} .bo-dir-put{background:rgba(239,68,68,.12);color:#f87171;}
     .bo-status-won{color:#4ade80;font-weight:800;} .bo-status-lost{color:#f87171;font-weight:800;} .bo-status-pending{color:var(--yellow);font-weight:700;}
     .bo-empty{padding:36px 20px;text-align:center;color:var(--dim);font-size:13px;}
+    .bo-exp-btn{display:flex;flex-direction:column;align-items:center;gap:1px;}
+    .bo-exp-rate{display:block;font-size:9px;font-weight:800;color:var(--muted);margin-top:1px;letter-spacing:.03em;transition:color .18s;}
+    .bo-exp-btn.active .bo-exp-rate{color:#c084fc;}
+    .bo-exp-btn:hover .bo-exp-rate{color:var(--text);}
   </style>
 </head>
 
@@ -1891,12 +1895,7 @@
       </div>
     </div>
     <div class="header-actions">
-      <span class="live-badge" id="liveBadge" title="Prices refresh about every 30s; wallet about every 28s"
-        style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; padding:6px 10px; border-radius:10px; background:rgba(34,211,238,.1); color:var(--cyan); border:1px solid rgba(34,211,238,.2); margin-right:8px;">
-        <span class="live-dot"
-          style="width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);"></span>
-        LIVE
-      </span>
+      
       <a href="/home/setting" class="icon-btn" aria-label="Settings">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </a>
@@ -2180,11 +2179,14 @@
               <div>
                 <div class="field-lbl">Expiry Time</div>
                 <div class="bo-expiry-group" id="boExpiryGroup">
-                  <button class="bo-exp-btn" onclick="boSetExpiry(30,this)">30s</button>
-                  <button class="bo-exp-btn active" onclick="boSetExpiry(60,this)">1m</button>
-                  <button class="bo-exp-btn" onclick="boSetExpiry(120,this)">2m</button>
-                  <button class="bo-exp-btn" onclick="boSetExpiry(300,this)">5m</button>
-                  <button class="bo-exp-btn" onclick="boSetExpiry(900,this)">15m</button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(30,this)">30s<span class="bo-exp-rate">15%</span></button>
+                  <button class="bo-exp-btn active" onclick="boSetExpiry(60,this)">1m<span class="bo-exp-rate">20%</span></button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(120,this)">2m<span class="bo-exp-rate">30%</span></button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(300,this)">5m<span class="bo-exp-rate">40%</span></button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(900,this)">15m<span class="bo-exp-rate">55%</span></button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(1800,this)">30m<span class="bo-exp-rate">65%</span></button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(3600,this)">1h<span class="bo-exp-rate">75%</span></button>
+                  <button class="bo-exp-btn" onclick="boSetExpiry(86400,this)">1day<span class="bo-exp-rate">85%</span></button>
                 </div>
               </div>
 
@@ -3073,9 +3075,6 @@
 
           renderBook(); // Re-center orderbook
 
-          // Pulse badge
-          const badge = document.getElementById('liveBadge');
-          if (badge) { badge.style.opacity = '.4'; setTimeout(() => badge.style.opacity = '1', 350); }
         }
       } catch (e) { }
     }
@@ -3141,7 +3140,7 @@
 
     /* ─── BO State ─── */
     let boExpirySeconds = 60;
-    let boPayoutRate    = 0.85;
+    let boPayoutRate    = 0.20;
     let boActiveTradeId = null;
     let boTimerInterval = null;
     let boTimerTotal    = 60;
@@ -3156,14 +3155,15 @@
       document.querySelectorAll('#boExpiryGroup .bo-exp-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      if (secs === 30) boPayoutRate = 0.75;
-      else if (secs === 60) boPayoutRate = 0.85;
-      else if (secs === 120) boPayoutRate = 0.82;
-      else if (secs === 300) boPayoutRate = 0.80;
-      else boPayoutRate = 0.70;
-
-      const pctEl = document.getElementById('boPayoutPct');
-      if (pctEl) pctEl.textContent = '+' + (boPayoutRate * 100) + '%';
+      if      (secs === 30)    boPayoutRate = 0.15;
+      else if (secs === 60)    boPayoutRate = 0.20;
+      else if (secs === 120)   boPayoutRate = 0.30;
+      else if (secs === 300)   boPayoutRate = 0.40;
+      else if (secs === 900)   boPayoutRate = 0.55;
+      else if (secs === 1800)  boPayoutRate = 0.65;
+      else if (secs === 3600)  boPayoutRate = 0.75;
+      else if (secs === 86400) boPayoutRate = 0.85;
+      else                     boPayoutRate = 0.50;
 
       boUpdatePayout();
     }
@@ -3183,6 +3183,9 @@
       const el2 = document.getElementById('boTotalReturn');
       if (el1) el1.textContent = '+$' + profit.toFixed(2);
       if (el2) el2.textContent = '$' + total.toFixed(2);
+      // Always keep the payout rate display in sync
+      const pctEl = document.getElementById('boPayoutPct');
+      if (pctEl) pctEl.textContent = '+' + Math.round(boPayoutRate * 100) + '%';
     }
 
     /* ─── Available USDT display ─── */
@@ -3345,9 +3348,16 @@
         if (arc) arc.style.strokeDashoffset = offset;
 
         // Format display
-        const mm = Math.floor(boTimerLeft / 60).toString().padStart(2, '0');
+        const mm = Math.floor((boTimerLeft % 3600) / 60).toString().padStart(2, '0');
         const ss = (boTimerLeft % 60).toString().padStart(2, '0');
-        if (timerText) timerText.textContent = boTimerLeft >= 60 ? mm + ':' + ss : String(boTimerLeft);
+        if (timerText) {
+          if (boTimerLeft >= 3600) {
+            const hh = Math.floor(boTimerLeft / 3600).toString().padStart(2, '0');
+            timerText.textContent = hh + ':' + mm + ':' + ss;
+          } else {
+            timerText.textContent = boTimerLeft >= 60 ? mm + ':' + ss : String(boTimerLeft);
+          }
+        }
 
         // Update live price in banner
         const currentEl = document.getElementById('boBannerCurrent');

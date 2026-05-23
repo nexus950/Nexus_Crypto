@@ -635,9 +635,7 @@ a.sidebar-profile { -webkit-tap-highlight-color: transparent; }
     </div>
   </div>
   <div class="header-actions">
-    <span class="live-badge" id="liveBadge" title="Dashboard is live-updating every 15s">
-      <span class="live-dot"></span> LIVE
-    </span>
+    
     <button type="button" class="icon-btn notif-dot" aria-label="Notifications">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </button>
@@ -1422,8 +1420,6 @@ function refreshDashboard() {
       if (!json || !json.success || !json.data) return;
       const changed = applyDashboardData(json.data);
       if (changed) showToast('Dashboard updated with latest data', 'success');
-      const badge = document.getElementById('liveBadge');
-      if (badge) { badge.style.opacity = '.5'; setTimeout(() => badge.style.opacity = '1', 400); }
     })
     .catch(err => { if (err !== 'Unauthorized') { /* silent */ } });
 }
