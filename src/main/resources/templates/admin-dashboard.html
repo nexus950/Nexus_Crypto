@@ -499,6 +499,38 @@ body::before {
           <p>Select a user above to view their asset portfolio.</p>
         </div>
       </div>
+
+      <!-- Direct Balance/Bonus Adjustment Form -->
+      <div id="adjustBalanceCard" class="card" style="margin-top: 25px; display: none; background: rgba(34,211,238,.02); border: 1px dashed rgba(34,211,238,.2); overflow: visible;">
+        <h4 style="font-family:'Syne',sans-serif; font-size:14px; margin-bottom:15px; color:var(--cyan); display:flex; align-items:center; gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Direct Balance / Bonus Adjustment
+        </h4>
+        <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:flex-end;">
+          <div style="flex:1; min-width:130px;">
+            <label class="modal-label" style="margin-bottom:6px; display:block;">Coin Symbol</label>
+            <select id="adjCoin" class="modal-select">
+              <option value="USDT">USDT</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="SOL">SOL</option>
+              <option value="BNB">BNB</option>
+              <option value="USDC">USDC</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:130px;">
+            <label class="modal-label" style="margin-bottom:6px; display:block;">Amount (Use minus to deduct)</label>
+            <input type="number" id="adjAmount" class="modal-input" placeholder="e.g. 100.00" step="any">
+          </div>
+          <div style="flex:2; min-width:220px;">
+            <label class="modal-label" style="margin-bottom:6px; display:block;">Adjustment Reason / Note</label>
+            <input type="text" id="adjReason" class="modal-input" placeholder="e.g. Sign up bonus, manual deposit correction">
+          </div>
+          <button type="button" class="btn-primary" onclick="submitBalanceAdjustment()" style="height:42px; display:flex; align-items:center; justify-content:center;">
+            Apply Adjustment
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ─── DEPOSIT ADDRESSES TAB ─── -->
@@ -900,6 +932,7 @@ async function loadUserAssets() {
     document.getElementById('portfolioBar').style.display  = 'none';
     document.getElementById('assetsTable').style.display   = 'none';
     document.getElementById('assetsEmpty').style.display   = '';
+    document.getElementById('adjustBalanceCard').style.display = 'none';
     document.getElementById('assetsEmpty').innerHTML = `
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
       <p>Select a user above to view their asset portfolio.</p>`;
@@ -911,13 +944,61 @@ async function loadUserAssets() {
   document.getElementById('assetsEmpty').innerHTML      = '<p style="color:var(--muted)">Loading portfolio…</p>';
   document.getElementById('assetsTable').style.display  = 'none';
   document.getElementById('portfolioBar').style.display = 'none';
+  document.getElementById('adjustBalanceCard').style.display = 'none';
   try {
     const res  = await fetch(`/api/admin/users/${userId}/wallets`);
     const json = await res.json();
     if (!json.success) throw new Error(json.message || 'API error');
+    document.getElementById('adjustBalanceCard').style.display = '';
     renderUserAssets(json.data, userName);
   } catch (e) {
     document.getElementById('assetsEmpty').innerHTML = `<p style="color:var(--red)">Failed to load assets: ${e.message}</p>`;
+  }
+}
+
+async function submitBalanceAdjustment() {
+  const sel = document.getElementById('assetsUserSelect');
+  const userId = sel ? sel.value : '';
+  if (!userId) return;
+  
+  const coin = document.getElementById('adjCoin').value;
+  const amountStr = document.getElementById('adjAmount').value;
+  const reason = document.getElementById('adjReason').value.trim();
+  
+  if (!amountStr) {
+    showToast('Please enter an amount', 'error');
+    return;
+  }
+  
+  const amount = parseFloat(amountStr);
+  if (isNaN(amount) || amount === 0) {
+    showToast('Please enter a valid non-zero amount', 'error');
+    return;
+  }
+  
+  const confirmMsg = amount > 0 
+    ? `Are you sure you want to ADD a balance/bonus of ${amount} ${coin} to this user?`
+    : `Are you sure you want to SUBTRACT ${Math.abs(amount)} ${coin} from this user's balance?`;
+    
+  if (!confirm(confirmMsg)) return;
+  
+  try {
+    const res = await fetch(`/api/admin/users/${userId}/adjust-balance`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ coinSymbol: coin, amount: amount, reason: reason || 'Admin manual adjustment' })
+    });
+    const json = await res.json();
+    if (json.success) {
+      showToast('Balance adjusted successfully', 'success');
+      document.getElementById('adjAmount').value = '';
+      document.getElementById('adjReason').value = '';
+      loadUserAssets();
+    } else {
+      showToast(json.message || 'Failed to adjust balance', 'error');
+    }
+  } catch (e) {
+    showToast('Network error adjusting balance', 'error');
   }
 }
 

@@ -3,9 +3,15 @@ package com.crypto.crypto_wallet.controller;
 import com.crypto.crypto_wallet.dto.*;
 import com.crypto.crypto_wallet.entity.DepositAddress;
 import com.crypto.crypto_wallet.entity.Wallet;
+import com.crypto.crypto_wallet.entity.User;
+import com.crypto.crypto_wallet.entity.Transaction;
+import com.crypto.crypto_wallet.entity.TransactionType;
+import com.crypto.crypto_wallet.entity.TransactionStatus;
 import com.crypto.crypto_wallet.exception.ResourceNotFoundException;
 import com.crypto.crypto_wallet.repository.DepositAddressRepository;
 import com.crypto.crypto_wallet.repository.WalletRepository;
+import com.crypto.crypto_wallet.repository.UserRepository;
+import com.crypto.crypto_wallet.repository.TransactionRepository;
 import com.crypto.crypto_wallet.service.CryptoPriceService;
 import com.crypto.crypto_wallet.service.KycService;
 import com.crypto.crypto_wallet.service.ReferralService;
@@ -40,6 +46,49 @@ public class AdminController {
     private final DepositAddressRepository depositAddressRepository;
     private final WalletRepository walletRepository;
     private final CryptoPriceService cryptoPriceService;
+    private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
+
+    // ─────────────────────────────────────────
+    //  BALANCE ADJUSTMENT & BONUS
+    // ─────────────────────────────────────────
+
+    @PostMapping("/users/{id}/adjust-balance")
+    public ResponseEntity<ApiResponse<Void>> adjustBalance(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> payload) {
+
+        String coinSymbol = payload.get("coinSymbol").toString().toUpperCase().trim();
+        BigDecimal amount = new BigDecimal(payload.get("amount").toString());
+        String reason = payload.containsKey("reason") ? payload.get("reason").toString() : "Admin manual adjustment";
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Wallet wallet = walletRepository.findByUserIdAndCoinSymbol(id, coinSymbol)
+                .orElseGet(() -> Wallet.builder()
+                        .user(user)
+                        .coinSymbol(coinSymbol)
+                        .balance(BigDecimal.ZERO)
+                        .build());
+
+        wallet.setBalance(wallet.getBalance().add(amount));
+        walletRepository.save(wallet);
+
+        // Record a transaction for audit trail and history
+        Transaction tx = Transaction.builder()
+                .user(user)
+                .type(TransactionType.DEPOSIT)
+                .coinSymbol(coinSymbol)
+                .amount(amount)
+                .txHash("MANUAL_CREDIT: " + reason)
+                .status(TransactionStatus.COMPLETED)
+                .createdAt(LocalDateTime.now())
+                .build();
+        transactionRepository.save(tx);
+
+        return ResponseEntity.ok(ApiResponse.ok("Balance adjusted successfully", null));
+    }
 
     // ─────────────────────────────────────────
     //  USER MANAGEMENT
