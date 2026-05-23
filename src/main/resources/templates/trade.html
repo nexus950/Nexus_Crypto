@@ -2580,6 +2580,7 @@
       renderBook();
       if (typeof boUpdatePayout === 'function') boUpdatePayout();
       if (typeof boUpdateAvail === 'function') boUpdateAvail();
+      if (typeof boLoadHistory === 'function') boLoadHistory();
     });
 
     window.addEventListener('pageshow', function (ev) {
@@ -3083,6 +3084,7 @@
       try { await fetchLivePrice(); } catch (e) { /* ignore */ }
       try { await resyncBalancesFromApi(); } catch (e) { /* ignore */ }
       try { await fetchLiveTrades(); } catch (e) { /* ignore */ }
+      try { await boLoadHistory(); } catch (e) { /* ignore */ }
     }
     pollTradeUi();
     // Backend proxy caches for 5 min; no point polling faster.
@@ -3303,8 +3305,8 @@
     }
 
     /* ─── Countdown Timer ─── */
-    function boStartCountdown(totalSecs, tradeId, entryPrice, stake, direction) {
-      boTimerTotal = totalSecs;
+    function boStartCountdown(totalSecs, tradeId, entryPrice, stake, direction, originalSecs) {
+      boTimerTotal = originalSecs || totalSecs;
       boTimerLeft  = totalSecs;
 
       // Show banner
@@ -3476,6 +3478,9 @@
         const json = await res.json();
         if (!json.success || !json.data) return;
         boRenderHistory(json.data);
+        if (typeof checkAndRestorePendingTrades === 'function') {
+          checkAndRestorePendingTrades(json.data);
+        }
       } catch(e) {}
     }
 
@@ -3507,6 +3512,70 @@
           '<div class="bo-hist-cell ' + stClass + '">' + stLabel + '</div>' +
         '</div>';
       }).join('');
+    }
+
+    async function checkAndRestorePendingTrades(trades) {
+      if (boActiveTradeId !== null) return; // already running a trade on the client
+      
+      const pending = trades.find(t => t.status === 'PENDING');
+      if (!pending) return;
+      
+      // Calculate remaining time
+      const expires = new Date(pending.expiresAt).getTime();
+      const now = Date.now();
+      const secondsLeft = Math.ceil((expires - now) / 1000);
+      
+      // Auto-switch to binary mode so the user sees the countdown banner
+      if (currentMode !== 'binary') {
+        const btn = document.getElementById('boModeBtn');
+        if (btn) setMode('binary', btn);
+      }
+      
+      // Auto-select the matching coin pair to align the chart and prices
+      if (pending.pair && COINS.length > 0) {
+        const baseSym = pending.pair.split('/')[0];
+        const coin = COINS.find(c => c.sym.toUpperCase() === baseSym.toUpperCase());
+        if (coin && activeCoinSym !== coin.sym) {
+          selectCoin(coin.id, coin.sym, coin.name, coin.icon, coin.price);
+        }
+      }
+      
+      if (secondsLeft > 0) {
+        boActiveTradeId = pending.id;
+        boPayoutRate = pending.payoutRate;
+        
+        // Disable buttons
+        const callBtn = document.getElementById('boCallBtn');
+        const putBtn  = document.getElementById('boPutBtn');
+        if (callBtn) callBtn.disabled = true;
+        if (putBtn) putBtn.disabled = true;
+        
+        // Start countdown with remaining seconds and original seconds
+        boStartCountdown(secondsLeft, pending.id, pending.entryPrice, pending.stake, pending.direction, pending.expirySeconds);
+      } else {
+        // Already expired while away, settle immediately!
+        // Prevent concurrent triggers by setting active trade ID
+        boActiveTradeId = pending.id;
+        const callBtn = document.getElementById('boCallBtn');
+        const putBtn  = document.getElementById('boPutBtn');
+        if (callBtn) callBtn.disabled = true;
+        if (putBtn) putBtn.disabled = true;
+        
+        await boSettleExpiredTrade(pending);
+      }
+    }
+    
+    async function boSettleExpiredTrade(t) {
+      let exitPrice = price;
+      try {
+        const sym = t.pair.replace('/', '');
+        const tRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + sym);
+        if (tRes.ok) {
+          const tJson = await tRes.json();
+          if (tJson.price) exitPrice = parseFloat(tJson.price);
+        }
+      } catch (e) {}
+      await boSettleTrade(t.id, exitPrice, t.entryPrice, t.stake, t.direction);
     }
 
 
