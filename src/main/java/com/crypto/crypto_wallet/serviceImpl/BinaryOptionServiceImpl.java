@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,6 +127,11 @@ public class BinaryOptionServiceImpl implements BinaryOptionService {
             throw new BadRequestException("Exit price is required for settlement");
         }
 
+        // Ensure option has expired before settling (with a 2-second tolerance for lag)
+        if (LocalDateTime.now().plusSeconds(2).isBefore(order.getExpiresAt())) {
+            throw new BadRequestException("Option has not expired yet");
+        }
+
         // Determine result
         // CALL wins if exit > entry, PUT wins if exit < entry
         int cmp = exitPrice.compareTo(order.getEntryPrice());
@@ -201,9 +208,14 @@ public class BinaryOptionServiceImpl implements BinaryOptionService {
                 .profit(profit)
                 .status(o.getStatus())
                 .expirySeconds(o.getExpirySeconds())
-                .expiresAt(o.getExpiresAt())
-                .createdAt(o.getCreatedAt())
-                .settledAt(o.getSettledAt())
+                .expiresAt(toZonedDateTime(o.getExpiresAt()))
+                .createdAt(toZonedDateTime(o.getCreatedAt()))
+                .settledAt(toZonedDateTime(o.getSettledAt()))
                 .build();
+    }
+
+    private ZonedDateTime toZonedDateTime(LocalDateTime ldt) {
+        if (ldt == null) return null;
+        return ldt.atZone(ZoneId.systemDefault());
     }
 }

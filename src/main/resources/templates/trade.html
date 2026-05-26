@@ -3141,6 +3141,7 @@
     }
 
     /* ─── BO State ─── */
+    let serverTimeOffset = 0; // serverTime - clientTime
     let boExpirySeconds = 60;
     let boPayoutRate    = 0.20;
     let boActiveTradeId = null;
@@ -3276,6 +3277,15 @@
           window.location.href = '/home/signin'; return;
         }
 
+        // Calculate offset
+        const serverDateHeader = res.headers.get('Date');
+        if (serverDateHeader) {
+          const serverTime = new Date(serverDateHeader).getTime();
+          if (!isNaN(serverTime)) {
+            serverTimeOffset = serverTime - Date.now();
+          }
+        }
+
         const json = await res.json().catch(() => ({}));
         if (!res.ok || !json.success) {
           showToast(json.message || 'Could not place trade', 'error');
@@ -3307,6 +3317,7 @@
     /* ─── Countdown Timer ─── */
     function boStartCountdown(totalSecs, tradeId, entryPrice, stake, direction, originalSecs) {
       boTimerTotal = originalSecs || totalSecs;
+      const targetEndTime = Date.now() + (totalSecs * 1000);
       boTimerLeft  = totalSecs;
 
       // Show banner
@@ -3326,10 +3337,11 @@
 
       clearInterval(boTimerInterval);
       boTimerInterval = setInterval(async () => {
-        boTimerLeft--;
+        const remainingMs = targetEndTime - Date.now();
+        boTimerLeft = Math.max(0, Math.ceil(remainingMs / 1000));
 
         // Fetch live price continuously from Binance to ensure it fluctuates!
-        if (boTimerLeft % 2 === 0) {
+        if (boTimerLeft % 2 === 0 && boTimerLeft > 0) {
           try {
             const sym = activeCoinSym + 'USDT';
             const tRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=' + sym);
@@ -3475,6 +3487,16 @@
       try {
         const res  = await fetch('/api/binary/history', { credentials: 'include' });
         if (!res.ok) return;
+
+        // Calculate offset
+        const serverDateHeader = res.headers.get('Date');
+        if (serverDateHeader) {
+          const serverTime = new Date(serverDateHeader).getTime();
+          if (!isNaN(serverTime)) {
+            serverTimeOffset = serverTime - Date.now();
+          }
+        }
+
         const json = await res.json();
         if (!json.success || !json.data) return;
         boRenderHistory(json.data);
@@ -3520,9 +3542,9 @@
       const pending = trades.find(t => t.status === 'PENDING');
       if (!pending) return;
       
-      // Calculate remaining time
+      // Calculate remaining time using synchronized server time
       const expires = new Date(pending.expiresAt).getTime();
-      const now = Date.now();
+      const now = Date.now() + serverTimeOffset;
       const secondsLeft = Math.ceil((expires - now) / 1000);
       
       // Auto-switch to binary mode so the user sees the countdown banner

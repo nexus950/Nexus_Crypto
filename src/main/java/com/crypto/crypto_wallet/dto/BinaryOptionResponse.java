@@ -3,7 +3,7 @@ package com.crypto.crypto_wallet.dto;
 import lombok.Builder;
 import lombok.Data;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
@@ -19,7 +19,7 @@ public class BinaryOptionResponse {
     private BigDecimal profit;       // net profit on WIN (payout - stake)
     private String status;           // PENDING | WON | LOST
     private Integer expirySeconds;
-    private LocalDateTime expiresAt;
-    private LocalDateTime createdAt;
-    private LocalDateTime settledAt;
+    private ZonedDateTime expiresAt;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime settledAt;
 }
