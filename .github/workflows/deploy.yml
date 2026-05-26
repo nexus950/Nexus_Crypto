@@ -7,12 +7,10 @@ on:
       - master
 
 env:
-  REGISTRY: ghcr.io
-  # This dynamically sets the image name based on your github username and repository
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: nexus950/nexus-crypto
 
 jobs:
-  # Job 1: Build the Maven application to verify code safety
+  # Job 1: Build the Maven application
   build-and-test:
     name: Build & Test Maven Project
     runs-on: ubuntu-latest
@@ -33,14 +31,11 @@ jobs:
       - name: Compile and Package (Skip Tests for Fast Deploy)
         run: ./mvnw clean package -DskipTests
 
-  # Job 2: Build and publish the Docker container to GitHub Container Registry (GHCR)
+  # Job 2: Build and push Docker image to Docker Hub
   build-and-push-docker:
     name: Build & Push Docker Image
     needs: build-and-test
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
 
     steps:
       - name: Checkout Code
@@ -49,33 +44,22 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to GitHub Container Registry
+      - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract Metadata for Docker Tags
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest
-            type=sha,format=short
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # Job 3: Connect to Ubuntu VPS, pull the fresh image, and run the container stack
+  # Job 3: Deploy to VPS via SSH
   deploy:
     name: Deploy to VPS via SSH
     needs: build-and-push-docker
@@ -84,62 +68,56 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Securely copies docker-compose.yml to the VPS
       - name: Copy docker-compose.yml to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_SSH_HOST }}
           username: ${{ secrets.VPS_SSH_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_SSH_PORT || 22 }}
+          port: ${{ secrets.VPS_SSH_PORT }}
           source: "docker-compose.yml"
           target: "~/nexus-crypto/"
 
-      # Runs commands on the VPS to log in, pull, and update the application
       - name: SSH Command to Restart Application Stack
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_SSH_HOST }}
           username: ${{ secrets.VPS_SSH_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_SSH_PORT || 22 }}
+          port: ${{ secrets.VPS_SSH_PORT }}
           script: |
-            # Ensure the deployment directory exists
             mkdir -p ~/nexus-crypto
             cd ~/nexus-crypto
 
-            # 1. Create a secure .env file if it doesn't already exist
+            # 1. Create .env if it doesn't exist
             if [ ! -f .env ]; then
-              echo "[INFO] Creating secure .env file with generated credentials..."
+              echo "[INFO] Creating .env file..."
               DB_ROOT_PASS=$(openssl rand -hex 16)
               DB_APP_PASS=$(openssl rand -hex 16)
-              
               echo "DB_ROOT_PASSWORD=${DB_ROOT_PASS}" > .env
               echo "DB_USER=nexus_user" >> .env
               echo "DB_PASSWORD=${DB_APP_PASS}" >> .env
+              echo "MASTER_KEY_SECRET=${{ secrets.MASTER_KEY_SECRET }}" >> .env
             else
-              echo "[INFO] Using existing .env configuration..."
+              echo "[INFO] Using existing .env..."
+              # Always keep MASTER_KEY_SECRET up to date
+              sed -i '/^MASTER_KEY_SECRET=/d' .env
+              echo "MASTER_KEY_SECRET=${{ secrets.MASTER_KEY_SECRET }}" >> .env
             fi
 
-            # 2. Update/insert the DOCKER_IMAGE dynamically inside .env
-            # Convert repo name to lowercase as required by GHCR
-            REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-            sed -i '/^DOCKER_IMAGE=/d' .env
-            echo "DOCKER_IMAGE=ghcr.io/${REPO_LOWER}:latest" >> .env
+            # 2. Log in to Docker Hub
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-            # 3. Log in to GHCR inside the VPS using Action Actor and Token
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-            # 4. Pull the fresh image
-            echo "[INFO] Pulling latest Docker images..."
+            # 3. Pull latest image
+            echo "[INFO] Pulling latest Docker image..."
             docker compose pull
 
-            # 5. Bring up the containers in detached mode and remove stale or orphan containers
-            echo "[INFO] Restarting docker-compose stack..."
+            # 4. Restart stack
+            echo "[INFO] Restarting stack..."
             docker compose up -d --remove-orphans
 
-            # 6. Housekeeping: Remove unused/dangling Docker images to save space on VPS
-            echo "[INFO] Cleaning up dangling Docker images..."
+            # 5. Cleanup dangling images
+            echo "[INFO] Cleaning up..."
             docker image prune -f
 
             echo "[SUCCESS] Deployment complete!"

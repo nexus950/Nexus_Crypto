@@ -25,7 +25,7 @@ services:
 
   # Spring Boot application service
   app:
-    image: ${DOCKER_IMAGE:-nexus-crypto-app:latest}
+    image: nexus950/nexus-crypto:latest
     container_name: nexus-crypto-app
     restart: always
     depends_on:
