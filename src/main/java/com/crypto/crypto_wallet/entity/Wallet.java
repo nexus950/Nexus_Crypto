@@ -29,4 +29,8 @@ public class Wallet {
 
     // Deposit address shown to user
     private String depositAddress;
+
+    // Stores AES-encrypted balance string when system is in encrypted state
+    @Column(length = 500)
+    private String encryptedBalance;
 }
