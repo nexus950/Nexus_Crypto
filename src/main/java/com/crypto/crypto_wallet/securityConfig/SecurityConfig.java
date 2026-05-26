@@ -158,8 +158,8 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:*",
                 "http://127.0.0.1:*",
-                // FIX 3: Removed trailing /* — origins must not include a path
-                "https://spectrum-outsource-heat.ngrok-free.dev"
+                "https://nexus-crypto.net",
+                "https://www.nexus-crypto.net"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
