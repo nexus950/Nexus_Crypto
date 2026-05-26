@@ -866,6 +866,19 @@ async function loadKyc() {
   } catch (e) { console.error(e); }
 }
 
+function getWebUrl(path) {
+  if (!path) return '';
+  let cleanPath = path.replace(/\\/g, '/');
+  if (cleanPath.includes('/uploads/kyc/')) {
+    return cleanPath.substring(cleanPath.indexOf('/uploads/kyc/'));
+  }
+  if (cleanPath.includes('uploads/kyc/')) {
+    return '/' + cleanPath.substring(cleanPath.indexOf('uploads/kyc/'));
+  }
+  if (cleanPath.startsWith('/')) return cleanPath;
+  return '/' + cleanPath;
+}
+
 function reviewKyc(id) {
   const k = window.kycDataMap[id];
   currentKycId = id;
@@ -875,9 +888,9 @@ function reviewKyc(id) {
     <strong>Address:</strong> ${k.address}, ${k.country}<br>
     <strong>Doc Type:</strong> ${k.documentType}<br>
     <strong>Doc Num:</strong> ${k.documentNumber}`;
-  document.getElementById('kImgFront').src  = '/' + k.frontImagePath.replace(/\\/g,'/');
-  document.getElementById('kImgBack').src   = '/' + k.backImagePath.replace(/\\/g,'/');
-  document.getElementById('kImgSelfie').src = '/' + k.selfieImagePath.replace(/\\/g,'/');
+  document.getElementById('kImgFront').src  = getWebUrl(k.frontImagePath);
+  document.getElementById('kImgBack').src   = getWebUrl(k.backImagePath);
+  document.getElementById('kImgSelfie').src = getWebUrl(k.selfieImagePath);
   document.getElementById('kRejectReason').value = '';
   document.getElementById('kycModal').classList.add('open');
 }

@@ -15,6 +15,7 @@ services:
       - "127.0.0.1:3306:3306" # Binds 3306 only to localhost for security, so it is not exposed publicly
     volumes:
       - mysql-data:/var/lib/mysql
+      - kyc-uploads:/app/uploads/kyc
     networks:
       - nexus-network
     healthcheck:

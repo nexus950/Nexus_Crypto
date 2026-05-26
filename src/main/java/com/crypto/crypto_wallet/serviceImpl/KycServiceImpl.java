@@ -86,7 +86,7 @@ public class KycServiceImpl implements KycService {
                     getExtension(file.getOriginalFilename());
             Path target = dir.resolve(filename);
             Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
-            return target.toString();
+            return "/uploads/kyc/" + userId + "/" + filename;
         } catch (IOException e) {
             throw new RuntimeException("Failed to save file: " + e.getMessage());
         }
