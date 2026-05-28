@@ -2792,7 +2792,8 @@
     }
 
     function relTime(dateStr) {
-      const t = new Date(dateStr);
+      const s = String(dateStr);
+      const t = new Date(s.endsWith('Z') ? s : s + 'Z');
       if (Number.isNaN(t.getTime())) return '—';
       const diff = Date.now() - t.getTime();
       const m = Math.floor(diff / 60000);
@@ -3543,7 +3544,8 @@
       if (!pending) return;
       
       // Calculate remaining time using synchronized server time
-      const expires = new Date(pending.expiresAt).getTime();
+      const expiresStr = String(pending.expiresAt);
+      const expires = new Date(expiresStr.endsWith('Z') ? expiresStr : expiresStr + 'Z').getTime();
       const now = Date.now() + serverTimeOffset;
       const secondsLeft = Math.ceil((expires - now) / 1000);
       

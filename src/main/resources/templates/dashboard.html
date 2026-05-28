@@ -904,7 +904,7 @@ const TXS = (DASH_TXS && DASH_TXS.length > 0)
       type:   t.type,
       sym:    t.coinSymbol,
       amount: t.amount,
-      date:   new Date(t.createdAt)
+      date:   new Date(String(t.createdAt).endsWith('Z') ? t.createdAt : t.createdAt + 'Z')
     }))
   : [];
 
