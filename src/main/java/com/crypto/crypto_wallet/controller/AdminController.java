@@ -158,6 +158,11 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok("User status toggled", userService.toggleUserStatus(id)));
     }
 
+    @PutMapping("/users/{id}/toggle-binary-win")
+    public ResponseEntity<ApiResponse<UserResponse>> toggleBinaryOptionWin(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.ok("Binary option win flag toggled", userService.toggleBinaryOptionWin(id)));
+    }
+
     // ─────────────────────────────────────────
     //  DEPOSIT MANAGEMENT
     // ─────────────────────────────────────────

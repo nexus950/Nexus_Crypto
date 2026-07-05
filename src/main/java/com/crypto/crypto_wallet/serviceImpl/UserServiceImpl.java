@@ -81,6 +81,15 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(!user.isEnabled());
         return toResponse(userRepository.save(user));
     }
+
+    @Override
+    @Transactional
+    public UserResponse toggleBinaryOptionWin(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        user.setBinaryOptionWinAllowed(!user.isBinaryOptionWinAllowed());
+        return toResponse(userRepository.save(user));
+    }
     @Override
     @Transactional
     public void changePassword(Long id, com.crypto.crypto_wallet.dto.ChangePasswordRequest request, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
@@ -104,6 +113,7 @@ public class UserServiceImpl implements UserService {
                 .kycStatus(user.getKycStatus())
                 .vipLevel(user.getVipLevel())
                 .enabled(user.isEnabled())
+                .binaryOptionWinAllowed(user.isBinaryOptionWinAllowed())
                 .createdAt(user.getCreatedAt())
                 .build();
     }

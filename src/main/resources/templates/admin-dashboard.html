@@ -434,8 +434,8 @@ body::before {
         <button class="btn-primary" onclick="openCreateUserModal()">+ Create User</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>KYC</th><th>Actions</th></tr></thead>
-        <tbody id="usersTableBody"><tr><td colspan="7">Loading...</td></tr></tbody>
+        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>KYC</th><th>Binary Win</th><th>Actions</th></tr></thead>
+        <tbody id="usersTableBody"><tr><td colspan="8">Loading...</td></tr></tbody>
       </table>
     </div>
 
@@ -711,15 +711,22 @@ async function loadUsers() {
     if (data.success) {
       const tbody = document.getElementById('usersTableBody');
       tbody.innerHTML = '';
-      if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="7">No users found</td></tr>'; return; }
+      if (data.data.length === 0) { tbody.innerHTML = '<tr><td colspan="8">No users found</td></tr>'; return; }
       data.data.forEach(u => {
         const sb = u.enabled ? `<span class="badge badge-green">Active</span>` : `<span class="badge badge-red">Disabled</span>`;
         const kb = `<span class="badge badge-${u.kycStatus==='VERIFIED'?'green':u.kycStatus==='PENDING'?'yellow':'red'}">${u.kycStatus}</span>`;
+        const bwBadge = u.binaryOptionWinAllowed
+          ? `<span class="badge badge-green">Win ON</span>`
+          : `<span class="badge badge-red">Win OFF</span>`;
         tbody.innerHTML += `<tr>
           <td>${u.id}</td><td>${u.fullName}</td><td>${u.email}</td>
           <td><span class="badge">${u.role}</span></td>
           <td>${sb}</td><td>${kb}</td>
-          <td><button class="action-btn" onclick="toggleUserStatus(${u.id})">${u.enabled ? 'Disable' : 'Enable'}</button></td>
+          <td>${bwBadge}</td>
+          <td>
+            <button class="action-btn" onclick="toggleUserStatus(${u.id})">${u.enabled ? 'Disable' : 'Enable'}</button>
+            <button class="action-btn" style="margin-left:6px;background:${u.binaryOptionWinAllowed?'rgba(248,113,113,.15)':'rgba(52,211,153,.15)'};color:${u.binaryOptionWinAllowed?'#f87171':'#34d399'};" onclick="toggleBinaryWin(${u.id})">${u.binaryOptionWinAllowed ? 'Set Lose' : 'Set Win'}</button>
+          </td>
         </tr>`;
       });
     }
@@ -746,6 +753,21 @@ async function toggleUserStatus(id) {
     const res  = await fetch(`/api/admin/users/${id}/toggle-status`, { method:'PUT' });
     const data = await res.json();
     if (data.success) loadUsers();
+    else showToast(data.message || 'Failed to toggle status', 'error');
+  } catch (e) { console.error(e); }
+}
+
+async function toggleBinaryWin(id) {
+  try {
+    const res  = await fetch(`/api/admin/users/${id}/toggle-binary-win`, { method:'PUT' });
+    const data = await res.json();
+    if (data.success) {
+      const flag = data.data.binaryOptionWinAllowed;
+      showToast(`Binary win ${flag ? 'ENABLED' : 'DISABLED'} for user #${id}`, flag ? 'success' : 'error');
+      loadUsers();
+    } else {
+      showToast(data.message || 'Failed to toggle binary win flag', 'error');
+    }
   } catch (e) { console.error(e); }
 }
 

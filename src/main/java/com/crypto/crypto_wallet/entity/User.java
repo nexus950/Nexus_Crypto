@@ -60,6 +60,15 @@ public class User {
     /** Date when dailyWithdrawalUsed was last reset */
     private LocalDate withdrawalLimitResetDate;
 
+    /**
+     * When true, the user's binary option trades can win normally.
+     * When false (default for all users), every binary option trade is forced to LOST.
+     * Only an admin can set this to true per user.
+     */
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean binaryOptionWinAllowed = false;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Wallet> wallets;
 

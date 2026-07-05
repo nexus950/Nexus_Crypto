@@ -17,5 +17,6 @@ public class UserResponse {
     private KycStatus kycStatus;
     private String vipLevel;
     private boolean enabled;
+    private boolean binaryOptionWinAllowed;
     private LocalDateTime createdAt;
 }
