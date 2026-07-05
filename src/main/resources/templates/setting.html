@@ -1378,7 +1378,9 @@
         <nav class="settings-nav" id="settingsNav">
           <button class="settings-nav-item active" data-tab="general">General</button>
           <button class="settings-nav-item" data-tab="security">Security</button>
+          <!-- KYC NAV COMMENTED OUT - not needed now
           <button class="settings-nav-item" data-tab="kyc">KYC Verification</button>
+          -->
           <button class="settings-nav-item" data-tab="api">API Keys</button>
           <button class="settings-nav-item" data-tab="sessions">Sessions</button>
           <button class="settings-nav-item" data-tab="danger">Danger Zone</button>
@@ -1456,6 +1458,7 @@
           <!-- Security Tab -->
           <div class="tab-content" id="tab-security">
             <div class="settings-grid">
+              <!-- TWO-FACTOR AUTHENTICATION COMMENTED OUT - not needed now
               <div class="settings-card">
                 <div class="card-title">Two-Factor Authentication</div>
                 <div class="twofa-steps">
@@ -1487,6 +1490,7 @@
                 </div>
                 <button class="btn btn-primary" style="margin-top:16px;">Enable 2FA</button>
               </div>
+              -->
 
               <div class="settings-card">
                 <div class="card-title">Password</div>
@@ -1514,7 +1518,8 @@
             </div>
           </div>
 
-          <!-- KYC Verification Tab -->
+          <!-- KYC VERIFICATION TAB COMMENTED OUT - not needed now -->
+          <div id="tab-kyc-disabled" style="display:none;">
           <div class="tab-content" id="tab-kyc">
             <div id="kycStatusContainer">
               <!-- Rendered by JS -->
@@ -1604,6 +1609,7 @@
               </form>
             </div>
           </div>
+          </div><!-- end tab-kyc-disabled -->
 
           <!-- API Keys Tab -->
           <div class="tab-content" id="tab-api">

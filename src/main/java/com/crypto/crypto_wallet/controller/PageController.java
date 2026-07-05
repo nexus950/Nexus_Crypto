@@ -65,9 +65,10 @@ public class PageController {
             DashboardResponse dashboardResponse = dashboardService.getDashboard(currentUser.getId());
             model.addAttribute("dashboard", dashboardResponse);
             model.addAttribute("user", currentUser);
-            model.addAttribute("kycVerified",
-                currentUser.getKycStatus() != null &&
-                currentUser.getKycStatus().name().equals("VERIFIED"));
+            // KYC check commented out - not needed now
+            // model.addAttribute("kycVerified",
+            //     currentUser.getKycStatus() != null &&
+            //     currentUser.getKycStatus().name().equals("VERIFIED"));
         } catch (Exception e) {
             return "redirect:/home/signin";
         }
