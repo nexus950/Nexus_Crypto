@@ -158,6 +158,8 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:*",
                 "http://127.0.0.1:*",
+                "https://*.ngrok-free.app",
+                "https://*.ngrok-free.dev",
                 "https://nexus-crypto.net",
                 "https://www.nexus-crypto.net"
         ));

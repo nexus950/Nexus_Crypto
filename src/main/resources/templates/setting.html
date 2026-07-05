@@ -1378,9 +1378,9 @@
         <nav class="settings-nav" id="settingsNav">
           <button class="settings-nav-item active" data-tab="general">General</button>
           <button class="settings-nav-item" data-tab="security">Security</button>
-          <!-- KYC NAV COMMENTED OUT - not needed now
+          
           <button class="settings-nav-item" data-tab="kyc">KYC Verification</button>
-          -->
+          
           <button class="settings-nav-item" data-tab="api">API Keys</button>
           <button class="settings-nav-item" data-tab="sessions">Sessions</button>
           <button class="settings-nav-item" data-tab="danger">Danger Zone</button>
@@ -1516,10 +1516,10 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div>  
 
           <!-- KYC VERIFICATION TAB COMMENTED OUT - not needed now -->
-          <div id="tab-kyc-disabled" style="display:none;">
+          <div id="tab-kyc-disabled" style="display:block;">
           <div class="tab-content" id="tab-kyc">
             <div id="kycStatusContainer">
               <!-- Rendered by JS -->
@@ -1527,7 +1527,7 @@
             </div>
 
             <!-- Submit KYC Form (shown when UNVERIFIED or REJECTED) -->
-            <div class="settings-card" id="kycFormCard" style="display:none; margin-top:20px;">
+            <div class="settings-card" id="kycFormCard" style="display:block; margin-top:20px;">
               <div class="card-title">Submit Identity Verification</div>
               <form id="kycForm" onsubmit="submitKyc(event)">
                 <div class="settings-grid">
@@ -1576,7 +1576,7 @@
                     <div class="input-label">Document Front</div>
                     <div class="file-upload-zone" onclick="document.getElementById('kycFrontImg').click()">
                       <div class="upload-text" id="kycFrontText" style="font-size:12px;">Click to select</div>
-                      <input type="file" id="kycFrontImg" style="display:none;" accept="image/*" required
+                      <input type="file" id="kycFrontImg" style="display:block;" accept="image/*" required
                         onchange="updateKycFileName(this, 'kycFrontText')">
                     </div>
                   </div>
@@ -1584,7 +1584,7 @@
                     <div class="input-label">Document Back</div>
                     <div class="file-upload-zone" onclick="document.getElementById('kycBackImg').click()">
                       <div class="upload-text" id="kycBackText" style="font-size:12px;">Click to select</div>
-                      <input type="file" id="kycBackImg" style="display:none;" accept="image/*" required
+                      <input type="file" id="kycBackImg" style="display:block;" accept="image/*" required
                         onchange="updateKycFileName(this, 'kycBackText')">
                     </div>
                   </div>
@@ -1592,7 +1592,7 @@
                     <div class="input-label">Selfie with Document</div>
                     <div class="file-upload-zone" onclick="document.getElementById('kycSelfieImg').click()">
                       <div class="upload-text" id="kycSelfieText" style="font-size:12px;">Click to select</div>
-                      <input type="file" id="kycSelfieImg" style="display:none;" accept="image/*" required
+                      <input type="file" id="kycSelfieImg" style="display:block;" accept="image/*" required
                         onchange="updateKycFileName(this, 'kycSelfieText')">
                     </div>
                   </div>
